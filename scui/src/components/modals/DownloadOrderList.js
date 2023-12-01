@@ -1,0 +1,259 @@
+
+
+import * as React from "react";
+import ReactExport from "react-export-excel";
+
+import DownloadIcon from '@mui/icons-material/Download';
+import { IconButton } from "@mui/material";
+
+export default function DownloadOrderList(prop) {
+    const ExcelFile = ReactExport.ExcelFile;
+    const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+    const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+    const orderList = prop.Data ?? [];
+
+    const OrderHeadCell = [
+        {
+            label:'Order Id',
+            id:'order_id'
+        },{
+            label:'Order Date',
+            id:'order_date'
+        },{
+            label:'Customer Name',
+            id:'full_customer_name'
+        },{
+            label:'Length',
+            id:'length'
+        },{
+            label:'Height',
+            id:'height'
+        },{
+            label:'Rows',
+            id:'rows'
+        },{
+            label:'Quantity',
+            id:'quantity'
+        },{
+            label:'square feet',
+            id:'sq_feet'
+        },{
+            label:'Pipe Type',
+            id:'pipe_type'
+        },{
+            label:'Expansion Type',
+            id:'expansion_type'
+        },{
+            label:'',
+            id:'pbStraight'
+        },{
+            label:'',
+            id:'pbStraightQty'
+        },{
+            label:'',
+            id:'pbStraightSize'
+        },{
+            label:'',
+            id:'pbStraightTotQty'
+        },{
+            label:'',
+            id:'pbSingle'
+        },{
+            label:'',
+            id:'pbSingleQty'
+        },{
+            label:'',
+            id:'pbSingleSize'
+        },{
+            label:'',
+            id:'pbSingleTotQty'
+        },{
+            label:'',
+            id:'pbCross'
+        },{
+            label:'',
+            id:'pbCrossQty'
+        },{
+            label:'',
+            id:'pbCrossSize'
+        },{
+            label:'',
+            id:'pbCrossTotQty'
+        },{
+            label:'',
+            id:'pbOther'
+        },{
+            label:'',
+            id:'pbOtherQty'
+        },{
+            label:'',
+            id:'pbOtherTotQty'
+        },{
+            label:'',
+            id:'pipe_comment'
+        },{
+            label:'',
+            id:'end_plate_material'
+        },{
+            label:'',
+            id:'end_plate_modal'
+        },{
+            label:'',
+            id:'cover_type'
+        },{
+            label:'',
+            id:'cover_detail'
+        },{
+            label:'',
+            id:'ep_comments'
+        },{
+            label:'',
+            id:'fin_per_inch'
+        },{
+            label:'',
+            id:'fin_comments'
+        },{
+            label:'',
+            id:'circuit_models'
+        },{
+            label:'',
+            id:'circuit_no'
+        },{
+            label:'',
+            id:'liquid_line'
+        },{
+            label:'',
+            id:'discharge_line'
+        },{
+            label:'',
+            id:'brazing_comment'
+        },{
+            label:'',
+            id:'paint'
+        },{
+            label:'',
+            id:'packing_type'
+        },{
+            label:'',
+            id:'dispatch_mode'
+        },{
+            label:'',
+            id:'dispatch_comment'
+        },{
+            label:'',
+            id:'final_comment'
+        },{
+            label:'',
+            id:'cnc_nesting_pgm_no'
+        },{
+            label:'',
+            id:'cnc_nested'
+        },{
+            label:'',
+            id:'cnc_nesting_status'
+        },{
+            label:'',
+            id:'cnc_nesting_status_dt'
+        },{
+            label:'',
+            id:'cnc_punching_status'
+        },{
+            label:'',
+            id:'cnc_punching_status_dt'
+        },{
+            label:'',
+            id:'ep_DateTime'
+        },{
+            label:'',
+            id:'bending_status'
+        },{
+            label:'',
+            id:'bending_status_dt'
+        },{
+            label:'',
+            id:'tcutting_roll_no'
+        },{
+            label:'',
+            id:'tcutting_datetime'
+        },{
+            label:'',
+            id:'tcutting_status'
+        },{
+            label:'',
+            id:'tcutting_status_dt'
+        },{
+            label:'',
+            id:'finpunching_foilno'
+        },{
+            label:'',
+            id:'finpunch_status'
+        },{
+            label:'',
+            id:'finpunch_status_dt'
+        },{
+            label:'',
+            id:'brazing_expansion'
+        },{
+            label:'',
+            id:'brazing_status'
+        },{
+            label:'',
+            id:'brazing_status_dt'
+        },{
+            label:'',
+            id:'ca_actualfpi'
+        },{
+            label:'',
+            id:'ca_status'
+        },{
+            label:'',
+            id:'ce_status'
+        },{
+            label:'',
+            id:'pp_status'
+        },{
+            label:'',
+            id:'dispatch_status'
+        },{
+            label:'',
+            id:'ca_status_dt'
+        },{
+            label:'',
+            id:'ce_status_dt'
+        },{
+            label:'',
+            id:'pp_status_dt'
+        },{
+            label:'',
+            id:'pp_datetime'
+        },{
+            label:'',
+            id:'dispatch_status_dt'
+        },{
+            label:'',
+            id:'date_submit'
+        },{
+            label:'',
+            id:'priority'
+        },{
+            label:'',
+            id:'hold'
+        },{
+            label:'',
+            id:'order_status'
+        }
+    ]
+    return(
+        <ExcelFile element={<IconButton><DownloadIcon /></IconButton>}> 
+            <ExcelSheet data={orderList} name="Order Details">
+              {
+                OrderHeadCell.map(
+                  (item, index) => {
+                      return <ExcelColumn label={item.label} value={item.id}/>
+                  }
+                )
+              }
+            </ExcelSheet>
+        </ExcelFile>
+    )
+}

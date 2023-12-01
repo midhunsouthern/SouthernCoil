@@ -1,0 +1,16 @@
+.quadrat {
+    animation: blink-animation 2s steps(2, start) infinite;
+  }
+  
+  @keyframes blink-animation {
+    to {
+        background-color: rgb(255, 255, 3);
+    }
+  }
+
+  .status-main-big-box {width: 600px; height :100px}
+  .status-main-small-box {width:120px; height :25px}
+  .status-main-small-box:hover {width: 600px; height :100px; position: absolute; z-index: 100; transition: width 2s, height 4s; z-index: 1;}
+  .css-1t7r044-MuiDataGrid-root .MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)>.MuiDataGrid-cell {
+    overflow: visible !important;
+  }
