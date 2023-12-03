@@ -38,6 +38,9 @@ import LookupEntry from "../components/Mainpage/lookupEntry";
 import M1cncProgramMaster from "../components/Mainpage/m1_cncprogrammaster";
 import M1epBending from "../components/Mainpage/m1_epBending";
 
+/**Module 6 */
+import Scheduler from "../components/Modules/Scheduler/index";
+
 const MainRoutes = {
 	path: "",
 	element: (
@@ -519,6 +522,25 @@ const MainRoutes = {
 				</>
 			),
 		},
+		{
+			path: 'scheduler',
+			element: (
+				<>
+					<Header />
+					<div className="container-fluid">
+						<div className="row">
+							<div className="col-1">
+								<SideNav />
+							</div>
+							<div className="col-11">
+								<Scheduler />
+							</div>
+						</div>
+					</div>
+					<Footer />
+				</>
+			)
+		}
 	],
 };
 export default MainRoutes;

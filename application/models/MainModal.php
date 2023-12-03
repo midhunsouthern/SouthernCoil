@@ -249,6 +249,11 @@ class MainModal extends CI_Model
             $where_clause = "where order_status ='1' and  hold<>'true' and a.dispatch_status<>'true' and a.pp_status='true' and a.dispatch_status<>'true'";
             $order_by = "order by a.order_id asc";
             $fieldName = 'dispatch_status';
+        } elseif($pageType === "scheduler") {
+
+            $where_clause = "where a.pp_status!='true'";
+            $order_by = "order by a.order_id asc";
+            $fieldName = '';
         } else {
             $where_clause = "where order_status ='1' and a.dispatch_status<>'true' ";
             $order_by = "order by a.order_id asc";

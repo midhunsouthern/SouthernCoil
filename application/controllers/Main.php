@@ -1262,4 +1262,230 @@ class Main extends CI_Controller
             }
         }
     }
+
+    public function getOrdersToBeDispatched()
+    {
+        $ret_data = array();
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+
+        $starting_date = date('Y-m-d');
+        $orders_dates = array();
+
+        /**Get the old order with status not ready START*/
+        $this->db->select("id,coil_ready_at");
+        $this->db->order_by("coil_ready_at", "asc");
+        $this->db->where("pp_status != ", "true");
+        $this->db->where("coil_ready_at IS NOT NULL");
+        $uncompleted_order = $this->db->get("order_list")->row();
+        if ($uncompleted_order && $uncompleted_order->coil_ready_at) {
+
+            $starting_date = $uncompleted_order->coil_ready_at;
+        }
+        /**Get the old order with status not ready END*/
+
+        //prepare for 45 days
+        for ($i = 0; $i < 45; $i++) {
+            $orders_dates[] = date('Y-m-d', strtotime($starting_date . " +{$i} days"));
+        }
+
+        /***SELECT HOLIDAYS*/
+        $this->db->select("date");
+        $this->db->where("date >=", $starting_date);
+        $ret_data["holidays"] = array_column($this->db->get("holidays")->result_array(), "date");
+        /***SELECT HOLIDAYS*/
+
+
+        $this->db->select("
+        CASE 
+            WHEN COALESCE(NULLIF(a.coil_ready_at, null), 'unassigned') = 'unassigned' THEN 'unassigned' 
+            WHEN a.pp_status = 'true' AND a.coil_ready_at IS NOT NULL THEN 'ready'
+            ELSE a.coil_ready_at 
+        END as row_labels,
+        COUNT(*) as total_orders,
+        SUM(a.sq_feet) as total_sq_feet", FALSE);
+        $this->db->from("order_list a");
+        $this->db->group_by("coil_ready_at");
+        $this->db->order_by("CASE WHEN row_labels = 'unassigned' THEN 1 WHEN row_labels = 'ready' THEN 2 ELSE 3 END, coil_ready_at ASC");
+
+        $orders_result = $this->db->get()->result_array('array');
+        $orders = array();
+
+        // Check if the date exists in the result set
+        foreach ($orders_result as $result) {
+            if (in_array($result['row_labels'], array("unassigned", "ready"))) {
+                $orders[] = $result;
+            } else {
+
+                break;
+            }
+        }
+
+        foreach ($orders_dates as $date) {
+
+            $date_found = false;
+
+            // Check if the date exists in the result set
+            foreach ($orders_result as $result) {
+                if ($result['row_labels'] == $date) {
+
+                    if (in_array($date, $ret_data["holidays"])) { $result["is_holiday"] = true; }
+
+                    $orders[] = $result;
+                    $date_found = true;
+                    break;
+                }
+            }
+
+            if (!$date_found) {
+
+                $orders[] = array(
+                    "row_labels" => $date,
+                    "total_orders" => 0,
+                    "total_sq_feet" => 0,
+                    "is_holiday" => in_array($date, $ret_data["holidays"])
+                );
+            }
+        }
+
+
+        $ret_data["data"] = $orders;
+        $ret_data["orders_result"] = $orders_result;
+
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Data retrieval successful";
+
+        echo json_encode($ret_data);
+    }
+
+    public function getSchedulerOrders()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+        $pageType = $this->input->post('pageType');
+        $ret_clause = $this->mm->retQueryClause($pageType);
+
+        $ret_data['data_orders'] = $this->db->query("SELECT a.id, CONCAT(a.order_id,a.split_id) as 'order_id',a.order_id as unsplit_order_id,  a.split_id, a.order_date, 
+        ifnull( b.fname, 'Not Set') as full_customer_name, a.customer_name, a.length, a.height, a.rows,  count(h.order_id) as quantity , a.quantity as raw_quantity, 
+        CONCAT(a.length, ' x ', a.height, ' x ', a.rows,'R - ', count(h.order_id)) as size,
+            ROUND((a.length * a.height * a.rows *  count(h.order_id)) / 144)  as sq_feet, c.lkp_value as pipe_type, d.lkp_value as expansion_type, 
+            a.pbStraight,a.pbStraightQty, a.pbStraightSize, a.pbStraightTotQty, a.pbSingle, a.pbSingleQty, a.pbSingleSize, a.pbSingleTotQty, a.pbCross, a.pbCrossQty, a.pbCrossSize, 
+            a.pbCrossTotQty, a.pbOther, a.pbOtherQty, a.pbOtherTotQty, a.pipe_comment, e.lkp_value as  end_plate_material, f.lkp_value as  end_plate_modal, end_plate_orientation, a.ep_photo, a.cover_type, 
+            a.cover_detail,a.ep_comments, a.fin_per_inch, a.assembly_Photo, a.fin_comments, g.lkp_value as circuit_models, a.brazing_Photo, a.circuit_no, a.liquid_line, a.discharge_line, 
+            a.brazing_comment, a.paint, a.packing_type, a.dispatch_mode, a.dispatch_comment, a.final_comment, a.cnc_nesting_pgm_no, a.cnc_nested, a.cnc_nesting_status, a.cnc_nesting_status_dt,
+                      a.cnc_punching_status, a.cnc_punching_status_dt,
+                      a.ep_DateTime,
+                      a.bending_status,
+                      a.bending_status_dt,
+                      a.tcutting_roll_no,
+                      a.tcutting_datetime,
+                      a.tcutting_status,
+                      a.tcutting_status_dt,
+                      a.finpunching_foilno,
+                      a.finpunch_status,
+                      a.finpunch_status_dt,
+                      a.brazing_expansion,
+                      a.brazing_status,
+                      a.brazing_status_dt,
+                      a.ca_actualfpi,
+                      a.ca_status,
+                      a.ce_status,
+                      a.pp_status,
+                      a.dispatch_status,
+                      a.ca_status_dt,
+                      a.ce_status_dt,
+                      a.pp_status_dt,
+                      a.pp_datetime,
+                      a.dispatch_status_dt,
+                      a.date_submit,
+                      a.priority,
+                      a.hold,
+                      a.order_status,
+                      a.coil_ready_at,
+                      a.est_delivery_date,
+                      a.created_dt
+                      FROM order_list a left join customers b on a.customer_name = b.id
+                      left join lookup c on a.pipe_type = c.id
+                      left join lookup d on a.expansion_type = d.id
+                      left join lookup e on a.end_plate_material = e.id
+                      left join lookup f on a.end_plate_modal = f.id
+                      left join lookup g on a.circuit_models = g.id 
+                      left join brazing_details h on a.order_id = h.order_id and a.split_id = h.split_id
+                       " . $ret_clause['where_clause'] . " group by h.order_id, h.split_id " . $ret_clause['order_by'] . ";")->result_array();
+
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Data retrival successful";
+
+        echo json_encode($ret_data);
+    }
+
+    public function updateSchedulerHoliday()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+
+        $date = $this->input->post("date");
+        $is_holiday = $this->input->post("is_holiday");
+        if ($date) {
+
+            if ($is_holiday != "true") {
+                //delete 'holidays' table entry with that date
+                $this->db->delete('holidays', array('date' => $date));
+            } else {
+                // Insert entry into 'holidays' table if the date doesn't exist
+                $q = $this->db->get_where('holidays', array('date' => $date));
+                if (!$q->num_rows()) {
+                    $this->db->insert('holidays', array('date' => $date, 'created_at' => date('Y-m-d'), 'updated_at' => date('Y-m-d')));
+                }
+            }
+
+            $ret_data['status_code'] = 200;
+            $ret_data['status_msg'] = "Scheduler holiday updated successfully.";
+            echo json_encode($ret_data);
+        } else {
+
+            $ret_data['status_code'] = 422;
+            $ret_data['status_msg'] = "Invalid data received";
+            echo json_encode($ret_data);
+        }
+    }
+
+    public function updateSchedulerOrderDate()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+
+        $date = $this->input->post("date");
+        $column = $this->input->post("column");
+        if ($date and in_array($column, array("est_delivery_date", "coil_ready_at"))) {
+
+            $this->db->where('id', $this->input->post("id"));
+            $this->db->update('order_list', array($column => $date));
+
+            $ret_data['status_code'] = 200;
+            $ret_data['status_msg'] = "Scheduler $column updated successfully.";
+            echo json_encode($ret_data);
+        } else {
+
+            $ret_data['status_code'] = 422;
+            $ret_data['status_msg'] = "Invalid data received";
+            echo json_encode($ret_data);
+        }
+    }
 }
