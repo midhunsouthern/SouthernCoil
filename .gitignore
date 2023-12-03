@@ -5,3 +5,5 @@ scui/build/
 *.zip
 *.map
 .idea
+application/config/config.php
+application/config/database.php
