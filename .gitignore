@@ -4,3 +4,4 @@ scui/node_modules/
 scui/build/
 *.zip
 *.map
+.idea
