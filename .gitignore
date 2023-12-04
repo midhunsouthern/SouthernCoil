@@ -1,6 +1,3 @@
-system/
-scui/public/
 scui/node_modules/
-scui/build/
 *.zip
 *.map

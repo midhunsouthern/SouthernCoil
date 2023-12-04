@@ -294,19 +294,20 @@ export default function M3coilExpansion() {
 			field: "circuit_models",
 			headerName: "Circuit Model",
 			renderCell: (params) => {
-				<Button
-					onClick={() => {
-						setOpenImgDialog(true);
-						handleGetImagebyId(params.row.brazing_Photo);
-					}}
-					className="toolButton-grid bg-light"
-				>
-					{handleFindLookup_arr(
-						lookUpList,
-						"circuitModel",
-						params.row.circuit_models
-					)}
-				</Button>;
+				return (
+					<Button
+						fullWidth
+						onClick={() => {
+							console.log("testing data");
+							setImageBase64("");
+							setOpenImgDialog(true);
+							handleGetImagebyId("N/a", "N/a", params.row.brazing_Photo);
+						}}
+						className="toolButton-grid bg-light"
+					>
+						{params.value}
+					</Button>
+				);
 			},
 			minWidth: 70,
 			flex: 1,
@@ -570,8 +571,9 @@ export default function M3coilExpansion() {
 				onClose={handleCloseImg}
 				aria-describedby="alert-dialog-slide-description"
 				fullWidth
+				fullScreen
 				maxWidth="lg"
-				style={{ padding: "5px" }}
+				style={{ padding: "5px", height: "700px", width: "700px" }}
 			>
 				<Stack>
 					<>
@@ -585,6 +587,10 @@ export default function M3coilExpansion() {
 								{imageBase64.ep_photo?.map((item, index) => (
 									<ImageListItem key={"epphoto" + index}>
 										<img
+											style={{
+												height: "700px",
+												width: "700px",
+											}}
 											src={item}
 											srcSet={item}
 											alt={"Assembly"}
@@ -603,7 +609,7 @@ export default function M3coilExpansion() {
 						)}
 
 						{
-							<ImageList cols={1} rowHeight={164}>
+							<ImageList cols={1}>
 								{imageBase64.assembly_Photo?.map((item, index) => (
 									<ImageListItem key={"assembly" + index}>
 										<img
@@ -624,7 +630,7 @@ export default function M3coilExpansion() {
 							""
 						)}
 						{
-							<ImageList cols={1} rowHeight={164}>
+							<ImageList cols={1}>
 								{imageBase64.brazing_Photo?.map((item, index) => (
 									<ImageListItem key={"brazing" + index}>
 										<img

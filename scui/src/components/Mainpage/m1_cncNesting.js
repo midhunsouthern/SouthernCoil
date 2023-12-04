@@ -325,6 +325,7 @@ export default function M1cncNesting() {
 					<Button
 						fullWidth
 						onClick={() => {
+							setImageBase64("");
 							setOpenImgDialog(true);
 							handleGetImagebyId(params.row.ep_photo, "N/A", "N/A");
 						}}
@@ -596,7 +597,7 @@ export default function M1cncNesting() {
 							</ImageList>
 						}
 					</>
-					<>
+					{/* <>
 						{imageBase64.assembly_Photo?.length > 0 ? (
 							<DialogTitle>Assembly Images</DialogTitle>
 						) : (
@@ -604,7 +605,7 @@ export default function M1cncNesting() {
 						)}
 
 						{
-							<ImageList cols={1} rowHeight={164}>
+							<ImageList cols={1} >
 								{imageBase64.assembly_Photo?.map((item, index) => (
 									<ImageListItem key={"assembly" + index}>
 										<img
@@ -626,7 +627,7 @@ export default function M1cncNesting() {
 						)}
 
 						{
-							<ImageList cols={1} rowHeight={164}>
+							<ImageList cols={1} >
 								{imageBase64.brazing_Photo?.map((item, index) => (
 									<ImageListItem key={"brazing" + index}>
 										<img
@@ -639,7 +640,7 @@ export default function M1cncNesting() {
 								))}
 							</ImageList>
 						}
-					</>
+					</> */}
 				</Stack>
 				<DialogActions>
 					<Button onClick={() => handleCloseImg("yes")}>Close</Button>

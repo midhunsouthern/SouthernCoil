@@ -528,7 +528,7 @@ export default function M4paintPacking() {
 						)}
 
 						{
-							<ImageList cols={1} rowHeight={164}>
+							<ImageList cols={1}>
 								{imageBase64.assembly_Photo?.map((item, index) => (
 									<ImageListItem key={"assembly" + index}>
 										<img
@@ -549,7 +549,7 @@ export default function M4paintPacking() {
 							""
 						)}
 						{
-							<ImageList cols={1} rowHeight={164}>
+							<ImageList cols={1}>
 								{imageBase64.brazing_Photo?.map((item, index) => (
 									<ImageListItem key={"brazing" + index}>
 										<img
