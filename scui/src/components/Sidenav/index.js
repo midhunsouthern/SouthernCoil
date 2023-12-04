@@ -11,6 +11,7 @@ import RoofingIcon from '@mui/icons-material/Roofing';
 import Tooltip from '@mui/material/Tooltip';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import ScheduleIcon from '@mui/icons-material/Schedule';
 import brandLogo from '../../assets/img/logo1.png';
 export default function SideNav() {
   return (
@@ -104,6 +105,15 @@ export default function SideNav() {
                       <AddShoppingCartIcon fontSize='large'/>
                     </Tooltip>
                   </NavLink> 
+                </div>
+              </li>
+              <li className="item">
+                <div className="link" >
+                  <NavLink className="inactive" exact activeClassName="active" to='/scheduler'>
+                    <Tooltip title="Scheduler"  placement="left-end">
+                      <ScheduleIcon fontSize='large'/>
+                    </Tooltip>
+                  </NavLink>
                 </div>
               </li>
             </ul>

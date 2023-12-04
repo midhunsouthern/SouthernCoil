@@ -1,3 +1,6 @@
 scui/node_modules/
 *.zip
 *.map
+.idea
+application/config/config.php
+application/config/database.php
