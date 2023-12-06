@@ -564,6 +564,8 @@ class Main extends CI_Controller
                       a.date_submit,
                       a.priority,
                       a.hold,
+                      a.coil_ready_at,
+                      a.est_delivery_date,
                       a.order_status,
                       a.created_dt
                       FROM order_list a left join customers b on a.customer_name = b.id
