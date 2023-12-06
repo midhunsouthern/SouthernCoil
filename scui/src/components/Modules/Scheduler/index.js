@@ -299,7 +299,7 @@ export default function EnhancedTable() {
 
                 if (!["ready", "unassigned"].includes(params)) {
 
-                    return moment(params?.value, "DD/MM/YYYY").format("Do MMM");
+                    return moment(params?.value, "YYYY-MM-DD").format("Do MMM");
                 }
 
                 return params.value;
