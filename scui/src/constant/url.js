@@ -1,4 +1,5 @@
-export const baseURL = "http://southerncoil.local/index.php/";
+export const baseURL = "http://localhost:8080/scoil/index.php/";
+//export const baseURL = "http://southerncoil.local/index.php/";
 //export const baseURL = 'https://scuitest.southerncoil.com/backend/index.php/';
 //export const baseURL = "https://scui.southerncoil.com/backend/index.php/";
 export const loginURL = baseURL + "login/login_acc";
@@ -55,4 +56,5 @@ export const getPendingCompletedSQ = baseURL + "main/getPendingCompletedSQ";
 export const ordersToBeDispatched = baseURL + "main/getOrdersToBeDispatched";
 export const getSchedulerOrders = baseURL + "main/getSchedulerOrders";
 export const updateSchedulerHoliday = baseURL + "main/updateSchedulerHoliday";
-export const updateSchedulerOrderDate = baseURL + "main/updateSchedulerOrderDate";
+export const updateSchedulerOrderDate =
+	baseURL + "main/updateSchedulerOrderDate";

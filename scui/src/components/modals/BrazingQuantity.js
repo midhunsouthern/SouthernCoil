@@ -242,10 +242,14 @@ export default function BrazingQuantity(prop) {
 
 	const getBtnColor = (itemId) => {
 		const idx = brazingQtyData.findIndex((item) => item.id === itemId);
-
+		const leak = brazingQtyData[idx]?.leak;
 		if (selData?.id === itemId) {
 			return "secon-bg";
-		} else if (brazingQtyData[idx]?.leak === "leakFound") {
+		} else if (
+			leak === "leakFound" ||
+			leak === "noLeak" ||
+			leak === "notRecord"
+		) {
 			return "bg-success";
 		} else {
 			return "";

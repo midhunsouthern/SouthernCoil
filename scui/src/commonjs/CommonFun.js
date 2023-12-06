@@ -88,7 +88,7 @@ export const handlePipeQty = (data) => {
 	retVal2 = retVal2 !== undefined ? retVal2 : "";
 	retVal3 = retVal3 !== undefined ? retVal3 : "";
 	retVal4 = retVal4 !== undefined ? retVal4 : "";
-	retVal = retVal1 + "" + retVal2 + "" + retVal3 + "" + retVal4;
+	retVal = retVal1 + " " + retVal2 + " " + retVal3 + " " + retVal4;
 	return retVal;
 };
 
