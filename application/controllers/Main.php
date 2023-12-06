@@ -1333,7 +1333,9 @@ class Main extends CI_Controller
             foreach ($orders_result as $result) {
                 if ($result['row_labels'] == $date) {
 
-                    if (in_array($date, $ret_data["holidays"])) { $result["is_holiday"] = true; }
+                    if (in_array($date, $ret_data["holidays"])) {
+                        $result["is_holiday"] = true;
+                    }
 
                     $orders[] = $result;
                     $date_found = true;
@@ -1420,7 +1422,7 @@ class Main extends CI_Controller
                       left join lookup g on a.circuit_models = g.id 
                       left join brazing_details h on a.order_id = h.order_id and a.split_id = h.split_id
                        " . $ret_clause['where_clause'] . " group by h.order_id, h.split_id " . $ret_clause['order_by'] . ";")->result_array();
-
+        echo $this->db->last_query();
         $ret_data['status_code'] = 200;
         $ret_data['status_msg'] = "Data retrival successful";
 
