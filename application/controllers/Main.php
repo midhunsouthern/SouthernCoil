@@ -1305,11 +1305,22 @@ class Main extends CI_Controller
         $this->db->select("
         CASE 
             WHEN COALESCE(NULLIF(a.coil_ready_at, null), 'unassigned') = 'unassigned' THEN 'unassigned' 
-            WHEN a.pp_status = 'true' AND a.coil_ready_at IS NOT NULL THEN 'ready'
+            WHEN a.pp_status = 'true' THEN 'ready'
             ELSE a.coil_ready_at 
         END as row_labels,
         COUNT(*) as total_orders,
         SUM(a.sq_feet) as total_sq_feet", FALSE);
+
+        $this->db->where(
+            array(
+                'order_status =' =>'1',
+                'hold<>' => 'true',
+                'dispatch_status<>' => 'true',
+                'pp_status = ' => 'true',
+                'dispatch_status<>' => 'true'
+            )
+        );
+
         $this->db->from("order_list a");
         $this->db->group_by("coil_ready_at");
         $this->db->order_by("CASE WHEN row_labels = 'unassigned' THEN 1 WHEN row_labels = 'ready' THEN 2 ELSE 3 END, coil_ready_at ASC");
