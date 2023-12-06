@@ -277,7 +277,7 @@ export default function EnhancedTable() {
     const dispatcherColumns = [
         {
             field: "is_holiday",
-            headerName: "Holiday?",
+            headerName: "H",
             flex: 1,
             renderCell: params => {
 
@@ -297,7 +297,7 @@ export default function EnhancedTable() {
         },
         {
             field: "row_labels",
-            headerName: "Row Labels",
+            headerName: "Date",
             valueFormatter: (params) => {
 
                 if (!["ready", "unassigned"].includes(params.value)) {
@@ -311,12 +311,12 @@ export default function EnhancedTable() {
         },
         {
             field: "total_orders",
-            headerName: "Count of Order Number",
+            headerName: "Orders",
             flex: 1,
         },
         {
             field: "total_sq_feet",
-            headerName: "Sum of Sq. Feet",
+            headerName: "Sq. Feet",
             flex: 1,
         }
     ];
@@ -340,16 +340,60 @@ export default function EnhancedTable() {
                 <div className="col-4">
                     <Card>
                         <CardContent>
-                            <Box sx={{height: 500, width: '100%'}}>
+                            <Box sx={{height: '84vh', width: '100%'}}>
                                 <DataGrid
                                     rowHeight={50}
+                                    getRowClassName={(params) => {
+                                        if (params.indexRelativeToCurrentPage % 2 === 0) {
+                                            return params.row.is_holiday
+                                                ? "Mui-even secon-bg"
+                                                : "Mui-even";
+                                        } else {
+                                            return params.row.is_holiday
+                                                ? "Mui-odd secon-bg"
+                                                : "Mui-odd";
+                                        }
+                                    }}
                                     loading={isLoadingDispatchList}
                                     columns={dispatcherColumns}
                                     rows={ordersToBeDispatchList}
-                                    getRowClassName={(params) => params.row.is_holiday && "secon-bg"}
+                                    // getRowClassName={(params) => params.row.is_holiday && "secon-bg"}
                                     editMode="row"
                                     slots={{noRowsOverlay: NoRowsOverlay}}
-                                    sx={{ '--DataGrid-overlayHeight': '300px' }}
+                                    sx={{
+                                        '--DataGrid-overlayHeight': '300px',
+                                        "& .MuiDataGrid-columnHeader": {
+                                            backgroundColor: "#943612",
+                                            color: "white",
+                                        },
+                                        ".MuiDataGrid-row.Mui-odd ": {
+                                            backgroundColor: "#FFE1D6",
+                                        },
+                                        ".MuiDataGrid-row.Mui-even ": {
+                                            backgroundColor: "#F2F2F2",
+                                        },
+                                        ".MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)>.MuiDataGrid-cell":
+                                            {
+                                                overflow: "visible !important",
+                                                whiteSpace: "break-spaces",
+                                                padding: 0,
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                fontSize: "0.95rem",
+                                            },
+                                        ".MuiDataGrid-columnHeaderTitleContainer": {
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            fontSize: "0.95rem",
+                                        },
+                                        "& .MuiDataGrid-columnHeader, .MuiDataGrid-cell": {
+                                            border: ".5px solid white",
+                                        },
+                                        "& .MuiInputBase-input": {
+                                            fontSize: "0.74rem",
+                                            padding: "16.5px 1px ",
+                                        },
+                                    }}
                                 />
                             </Box>
                         </CardContent>
@@ -359,7 +403,7 @@ export default function EnhancedTable() {
                 <div className="col-8">
                     <Card>
                         <CardContent>
-                            <Box sx={{height: 500, width: '100%'}}>
+                            <Box sx={{height: '84vh', width: '100%'}}>
                                 <DataGrid
                                     slots={{ toolbar: GridToolbar, noRowsOverlay: NoRowsOverlay }}
                                     loading={orderList.length === 0}
