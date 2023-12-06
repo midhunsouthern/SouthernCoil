@@ -274,7 +274,7 @@ export default function M3coilAssembly() {
 						color="info"
 						className="toolButton-grid "
 					>
-						{params.row.order_id}{" "}
+						{params.row.order_id}
 					</Button>
 				);
 			},
@@ -297,12 +297,18 @@ export default function M3coilAssembly() {
 			headerName: "Hair pin",
 			maxWidth: 100,
 			renderCell: (params) => {
-				<IconButton
-					onClick={() => {
-						setOpenImgDialog(true);
-						handleGetImagebyId(params.row.assembly_Photo, "N/a", "N/a");
-					}}
-				></IconButton>;
+				return (
+					<Button
+						fullWidth
+						onClick={() => {
+							setImageBase64("Opening Image");
+							setOpenImgDialog(true);
+							handleGetImagebyId("N/a", params.row.assembly_Photo, "N/a");
+						}}
+					>
+						{params.value}
+					</Button>
+				);
 			},
 			flex: 1,
 		},
@@ -514,10 +520,9 @@ export default function M3coilAssembly() {
 				onClose={handleCloseImg}
 				aria-describedby="alert-dialog-slide-description"
 				fullWidth
-				maxWidth="lg"
 				style={{ padding: "5px" }}
 			>
-				<Stack>
+				<div className="col">
 					<>
 						{imageBase64.ep_photo?.length > 0 ? (
 							<DialogTitle>End Plate Images</DialogTitle>
@@ -528,12 +533,15 @@ export default function M3coilAssembly() {
 							<ImageList cols={1} rowHeight={500}>
 								{imageBase64.ep_photo?.map((item, index) => (
 									<ImageListItem key={"epphoto" + index}>
-										<img
-											src={item}
-											srcSet={item}
-											alt={"Assembly"}
-											loading="lazy"
-										/>
+										<div className="col">
+											<img
+												className="fluid-img"
+												src={item}
+												srcSet={item}
+												alt={"Assembly"}
+												loading="lazy"
+											/>
+										</div>
 									</ImageListItem>
 								))}
 							</ImageList>
@@ -547,10 +555,11 @@ export default function M3coilAssembly() {
 						)}
 
 						{
-							<ImageList cols={1} rowHeight={164}>
+							<ImageList cols={1}>
 								{imageBase64.assembly_Photo?.map((item, index) => (
 									<ImageListItem key={"assembly" + index}>
 										<img
+											className="img-fluid"
 											src={item}
 											srcSet={item}
 											alt={"Assembly"}
@@ -568,7 +577,7 @@ export default function M3coilAssembly() {
 							""
 						)}
 						{
-							<ImageList cols={1} rowHeight={164}>
+							<ImageList cols={1}>
 								{imageBase64.brazing_Photo?.map((item, index) => (
 									<ImageListItem key={"brazing" + index}>
 										<img
@@ -582,7 +591,7 @@ export default function M3coilAssembly() {
 							</ImageList>
 						}
 					</>
-				</Stack>
+				</div>
 				<DialogActions>
 					<Button onClick={() => handleCloseImg("yes")}>Close</Button>
 				</DialogActions>

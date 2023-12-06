@@ -327,8 +327,9 @@ export default function M1epBending() {
 					<Button
 						fullWidth
 						onClick={() => {
+							setImageBase64("");
 							setOpenImgDialog(true);
-							handleGetImagebyId(params.row.ep_photo, "N/A", "N/A");
+							handleGetImagebyId("N/A", params.row.assembly_Photo, "N/A");
 						}}
 						color="info"
 						className="toolButton-grid "
@@ -561,7 +562,7 @@ export default function M1epBending() {
 				style={{ padding: "5px" }}
 			>
 				<Stack>
-					<>
+					{/* <>
 						{imageBase64.ep_photo?.length > 0 ? (
 							<DialogTitle>End Plate Images</DialogTitle>
 						) : (
@@ -581,7 +582,7 @@ export default function M1epBending() {
 								))}
 							</ImageList>
 						}
-					</>
+					</> */}
 					<>
 						{imageBase64.assembly_Photo?.length > 0 ? (
 							<DialogTitle>Assembly Images</DialogTitle>
@@ -590,7 +591,7 @@ export default function M1epBending() {
 						)}
 
 						{
-							<ImageList cols={1} rowHeight={164}>
+							<ImageList cols={1}>
 								{imageBase64.assembly_Photo?.map((item, index) => (
 									<ImageListItem key={"assembly" + index}>
 										<img
@@ -604,7 +605,7 @@ export default function M1epBending() {
 							</ImageList>
 						}
 					</>
-					<>
+					{/* <>
 						{imageBase64.brazing_Photo?.length > 0 ? (
 							<DialogTitle>Brazing Images</DialogTitle>
 						) : (
@@ -612,7 +613,7 @@ export default function M1epBending() {
 						)}
 
 						{
-							<ImageList cols={1} rowHeight={164}>
+							<ImageList cols={1} >
 								{imageBase64.brazing_Photo?.map((item, index) => (
 									<ImageListItem key={"brazing" + index}>
 										<img
@@ -625,7 +626,7 @@ export default function M1epBending() {
 								))}
 							</ImageList>
 						}
-					</>
+					</> */}
 				</Stack>
 				<DialogActions>
 					<Button onClick={() => handleCloseImg("yes")}>Close</Button>
