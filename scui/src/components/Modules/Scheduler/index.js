@@ -52,7 +52,7 @@ export default function EnhancedTable() {
 	const handleOrderList = (authID) => {
 		var bodyFormData = new FormData();
 		bodyFormData.append("authId", authID);
-		bodyFormData.append("pageType", "scheduler");
+		//bodyFormData.append("pageType", "scheduler")
 		axios({
 			method: "post",
 			url: getSchedulerOrders,
