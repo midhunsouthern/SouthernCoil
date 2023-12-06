@@ -24,6 +24,7 @@ import {
     ordersToBeDispatched,
     updateSchedulerHoliday,
     updateSchedulerOrderDate,
+    getOrderAllLakVal,
 } from "../../../constant/url";
 import Checkbox from "@mui/material/Checkbox";
 import NoRowsOverlay from "../../Component/NoRowOverlay";
@@ -55,7 +56,7 @@ export default function EnhancedTable() {
         //bodyFormData.append("pageType", "scheduler")
         axios({
             method: "post",
-            url: getSchedulerOrders,
+            url: getOrderAllLakVal,
             data: bodyFormData,
             headers: { "Content-Type": "multipart/form-data" },
         })
