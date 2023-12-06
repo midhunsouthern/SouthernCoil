@@ -218,6 +218,9 @@ export default function EnhancedTable() {
             flex: 1,
             maxWidth: 130,
             renderCell: params => {
+
+                if(params.row.pp_status === "true") return "Ready";
+
                 return <>
                     <input type="date" value={params.row.coil_ready_at} onChange={event => schedulerDateChangeHandler(params.row, event.target.value, "coil_ready_at")} />
                 </>
