@@ -297,9 +297,9 @@ export default function EnhancedTable() {
             headerName: "Row Labels",
             valueFormatter: (params) => {
 
-                if (!["ready", "unassigned"].includes(params)) {
+                if (!["ready", "unassigned"].includes(params.value)) {
 
-                    return moment(params?.value, "YYYY-MM-DD").format("Do MMM");
+                    return moment(params.value, "YYYY-MM-DD").format("Do MMM");
                 }
 
                 return params.value;
