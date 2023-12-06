@@ -1317,7 +1317,6 @@ class Main extends CI_Controller
                 'hold<>' => 'true',
                 'dispatch_status<>' => 'true',
                 'pp_status = ' => 'true',
-                'dispatch_status<>' => 'true'
             )
         );
 
