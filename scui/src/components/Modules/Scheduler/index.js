@@ -50,9 +50,9 @@ export default function EnhancedTable() {
     //Dialog States
     const [openOrderView, setOpenOrderView] = useState(false);
 
-    const handleOrderList = (authID) => {
+    const handleOrderList = () => {
         var bodyFormData = new FormData();
-        bodyFormData.append("authId", authID);
+        bodyFormData.append("authId", access);
         //bodyFormData.append("pageType", "scheduler")
         axios({
             method: "post",
@@ -79,11 +79,11 @@ export default function EnhancedTable() {
         setIsUpdate(false);
     };
 
-    const handleOrdersToBeDispatchedList = (authID) => {
+    const handleOrdersToBeDispatchedList = () => {
 
         setIsLoadingDispatchList(true)
         var bodyFormData = new FormData();
-        bodyFormData.append("authId", authID);
+        bodyFormData.append("authId", access);
         axios({
             method: "post",
             url: ordersToBeDispatched,
