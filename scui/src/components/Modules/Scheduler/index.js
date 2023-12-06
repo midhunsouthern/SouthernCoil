@@ -294,6 +294,15 @@ export default function EnhancedTable() {
         {
             field: "row_labels",
             headerName: "Row Labels",
+            valueFormatter: (params) => {
+
+                if (!["ready", "unassigned"].includes(params)) {
+
+                    return moment(params?.value, "DD/MM/YYYY").format("Do MMM");
+                }
+
+                return params.value;
+            },
             flex: 1,
         },
         {
