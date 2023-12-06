@@ -1313,7 +1313,7 @@ class Main extends CI_Controller
 
         $this->db->where(
             array(
-                'order_status =' =>'1',
+                'order_status =' => '1',
                 'hold<>' => 'true',
                 'dispatch_status<>' => 'true',
                 'pp_status = ' => 'true',
@@ -1435,7 +1435,7 @@ class Main extends CI_Controller
                       left join lookup g on a.circuit_models = g.id 
                       left join brazing_details h on a.order_id = h.order_id and a.split_id = h.split_id
                        " . $ret_clause['where_clause'] . " group by h.order_id, h.split_id " . $ret_clause['order_by'] . ";")->result_array();
-        echo $this->db->last_query();
+
         $ret_data['status_code'] = 200;
         $ret_data['status_msg'] = "Data retrival successful";
 
