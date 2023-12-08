@@ -229,7 +229,8 @@ export default function CreateOrder() {
 		bodyFormData.append("pbSingleTotQty", pbSingleTotQty);
 		bodyFormData.append("pbCross", pbCross);
 		bodyFormData.append("pbCrossQty", pbCrossQty);
-		bodyFormData.append("pbCrossTotQty", pbCrossSize);
+		bodyFormData.append("pbCrossSize", pbCrossSize);
+		bodyFormData.append("pbCrossTotQty", pbCrossTotQty);
 		bodyFormData.append("pbOther", pbOther);
 		bodyFormData.append("pbOtherQty", pbOtherQty);
 		bodyFormData.append("pbOtherSize", pbOtherSize);
