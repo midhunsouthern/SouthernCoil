@@ -208,7 +208,7 @@ export default function AddRemoveOrderQuantity(prop) {
 	return (
 		<div className="col">
 			<h3 className="text-center">
-				<AddIcon /> / <RemoveIcon /> Quantities tst @ {orderId + splitId}
+				<AddIcon /> / <RemoveIcon /> Quantities @ {orderId + splitId}
 			</h3>
 			<p className="text-center">
 				Input the number of Quantity you want to add.
