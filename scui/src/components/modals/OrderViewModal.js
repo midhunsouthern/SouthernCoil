@@ -158,7 +158,7 @@ export default function OrderViewModal(prop) {
 				if (res_data.status_code === 200) {
 					setLookupList(res_data);
 				} else {
-					console.log(res_data.status_msg);
+					//console.log(res_data.status_msg);
 				}
 			})
 			.catch(function (response) {
@@ -240,7 +240,7 @@ export default function OrderViewModal(prop) {
 					setAssemblyPhoto(ret_data_cd[0].assembly_Photo);
 					setBrazingPhoto(ret_data_cd[0].brazing_Photo);
 				} else {
-					console.log(res_data.status_msg);
+					//console.log(res_data.status_msg);
 				}
 			})
 			.catch(function (response) {
@@ -250,7 +250,6 @@ export default function OrderViewModal(prop) {
 	};
 
 	function printPage() {
-		console.log("print");
 		let printContents = document.getElementById("orderView").innerHTML;
 		let originalContents = document.body.innerHTML;
 		document.body.innerHTML = printContents;

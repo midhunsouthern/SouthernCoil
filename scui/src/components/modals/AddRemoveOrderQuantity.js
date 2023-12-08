@@ -21,7 +21,6 @@ export default function AddRemoveOrderQuantity(prop) {
 	const [childSriesList, setChildSeriesList] = useState([]);
 
 	const handleContentGet = (orderId, splitId) => {
-		console.log("content get called");
 		var bodyFormData = new FormData();
 		bodyFormData.append("orderId", orderId);
 		bodyFormData.append("splitId", splitId);
@@ -36,7 +35,6 @@ export default function AddRemoveOrderQuantity(prop) {
 				//handle success
 				const res_data = response.data;
 				if (res_data.status_code === 200) {
-					console.log("content get", res_data.data);
 					setParentSeriesList(res_data.data);
 					setChildSeriesList([]);
 					toast(res_data.status_msg);
