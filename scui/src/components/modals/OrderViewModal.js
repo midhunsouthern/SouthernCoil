@@ -105,7 +105,7 @@ export default function OrderViewModal(prop) {
 	const [epPhoto, setEpPhoto] = useState([]);
 	const [assemblyPhoto, setAssemblyPhoto] = useState([]);
 	const [brazingPhoto, setBrazingPhoto] = useState([]);
-	const [lookUpList, setLookupList] = React.useState([]);
+	const [lookUpList, setLookupList] = useState([]);
 
 	const [isUpdate, setIsUpdate] = useState(false);
 	const [openImg, setOpenImg] = useState(false);
@@ -344,7 +344,9 @@ export default function OrderViewModal(prop) {
 											{lookUpList["pipeType"]?.map((item) => {
 												return (
 													<>
-														{pipeType.includes(item.id) ? item.lkp_value : null}
+														{pipeType?.includes(item.id)
+															? item.lkp_value
+															: null}
 													</>
 												);
 											})}
@@ -357,7 +359,7 @@ export default function OrderViewModal(prop) {
 											{lookUpList["expansionType"]?.map((item) => {
 												return (
 													<>
-														{expansionType.includes(item.id)
+														{expansionType?.includes(item.id)
 															? item.lkp_value
 															: ""}
 													</>
@@ -456,7 +458,7 @@ export default function OrderViewModal(prop) {
 											{lookUpList["epMaterial"]?.map((item) => {
 												return (
 													<>
-														{endPlateMaterial.includes(item.id)
+														{endPlateMaterial?.includes(item.id)
 															? item.lkp_value
 															: ""}
 													</>
@@ -470,7 +472,7 @@ export default function OrderViewModal(prop) {
 											{lookUpList["epModal"]?.map((item) => {
 												return (
 													<>
-														{endPlateModel.includes(item.id)
+														{endPlateModel?.includes(item.id)
 															? item.lkp_value
 															: ""}
 													</>
@@ -510,7 +512,7 @@ export default function OrderViewModal(prop) {
 											{lookUpList["oreientation"]?.map((item) => {
 												return (
 													<>
-														{endPlateOrientation.includes(item.id)
+														{endPlateOrientation?.includes(item.id)
 															? item.lkp_value
 															: ""}
 														<br />
@@ -545,7 +547,7 @@ export default function OrderViewModal(prop) {
 																{lookUpList["coverDetail"]?.map((itemd) => {
 																	if (
 																		itemd.lkp_id === item.id &&
-																		coverDetail.indexOf(itemd.id) !== -1
+																		coverDetail?.indexOf(itemd.id) !== -1
 																	) {
 																		return (
 																			<>
@@ -618,7 +620,7 @@ export default function OrderViewModal(prop) {
 											{lookUpList["circuitModel"]?.map((item) => {
 												return (
 													<>
-														{circuitModels.indexOf(item.id) !== -1
+														{circuitModels?.indexOf(item.id) !== -1
 															? item.lkp_value
 															: ""}
 														<br />
@@ -664,7 +666,7 @@ export default function OrderViewModal(prop) {
 											{lookUpList["liquidLine"]?.map((item) => {
 												return (
 													<>
-														{liquidLine.indexOf(item.id) !== -1 &&
+														{liquidLine?.indexOf(item.id) !== -1 &&
 															item.lkp_value}
 														<br />
 													</>
@@ -678,7 +680,7 @@ export default function OrderViewModal(prop) {
 											{lookUpList["dischargeLine"]?.map((item) => {
 												return (
 													<>
-														{dischargeLine.indexOf(item.id) !== -1
+														{dischargeLine?.indexOf(item.id) !== -1
 															? item.lkp_value
 															: ""}
 														<br />
@@ -703,7 +705,7 @@ export default function OrderViewModal(prop) {
 											{lookUpList["paintType"]?.map((item) => {
 												return (
 													<>
-														{paintType.indexOf(item.id) !== -1
+														{paintType?.indexOf(item.id) !== -1
 															? item.lkp_value
 															: ""}
 														<br />
@@ -718,7 +720,7 @@ export default function OrderViewModal(prop) {
 											{lookUpList["packingType"]?.map((item) => {
 												return (
 													<>
-														{packingType.indexOf(item.id) !== -1
+														{packingType?.indexOf(item.id) !== -1
 															? item.lkp_value
 															: ""}
 														<br />
@@ -733,7 +735,7 @@ export default function OrderViewModal(prop) {
 											{lookUpList["dispatchMode"]?.map((item) => {
 												return (
 													<>
-														{dispatchMode.indexOf(item.id) !== -1
+														{dispatchMode?.indexOf(item.id) !== -1
 															? item.lkp_value
 															: ""}
 														<br />

@@ -582,6 +582,7 @@ export default function EnhancedTable() {
 				key={Math.random(1, 100)}
 			>
 				<div
+					className="p-5"
 					style={{
 						width: "100%",
 						marginTop: "10px",
