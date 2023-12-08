@@ -571,8 +571,6 @@ export default function M3coilExpansion() {
 				onClose={handleCloseImg}
 				aria-describedby="alert-dialog-slide-description"
 				fullWidth
-				fullScreen
-				maxWidth="lg"
 				style={{ padding: "5px", height: "700px", width: "700px" }}
 			>
 				<Stack>
