@@ -1330,13 +1330,27 @@ class Main extends CI_Controller
         // Check if the date exists in the result set
         foreach ($orders_result as $result) {
             if (in_array($result['row_labels'], array("unassigned", "ready"))) {
-                $orders[] = $result;
+                $orders[$result['row_labels']] = $result;
             } else {
 
                 break;
             }
         }
 
+        foreach (array("unassigned", "ready") as $label) {
+
+            if (!isset($orders[$label])) {
+
+                $orders[$label] = array(
+                    "row_labels" => $label,
+                    "total_orders" => 0,
+                    "total_sq_feet" => 0,
+                    "is_holiday" => false
+                );
+            }
+        }
+
+        $orders = array_values($orders);
         foreach ($orders_dates as $date) {
 
             $date_found = false;
