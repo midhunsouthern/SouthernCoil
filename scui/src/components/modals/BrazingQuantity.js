@@ -594,7 +594,7 @@ export default function BrazingQuantity(prop) {
 						</div>
 					</div>
 					<div className="col-2">
-						<p className="text-center p-0">H</p>
+						<p className="text-center p-0">L</p>
 						<div className="input-group">
 							<button
 								className="btn secon-bg text-white p-0"
@@ -617,7 +617,7 @@ export default function BrazingQuantity(prop) {
 						</div>
 					</div>
 					<div className="col-2">
-						<p className="text-center p-0">H</p>
+						<p className="text-center p-0">N</p>
 						<div className="input-group">
 							<button
 								className="btn secon-bg text-white p-0"
