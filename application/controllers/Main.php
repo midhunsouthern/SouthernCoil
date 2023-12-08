@@ -1304,8 +1304,8 @@ class Main extends CI_Controller
 
         $this->db->select("
         CASE 
-            WHEN COALESCE(NULLIF(a.coil_ready_at, null), 'unassigned') = 'unassigned' THEN 'unassigned' 
             WHEN a.pp_status = 'true' THEN 'ready'
+            WHEN COALESCE(NULLIF(a.coil_ready_at, null), 'unassigned') = 'unassigned' THEN 'unassigned'
             ELSE a.coil_ready_at 
         END as row_labels,
         COUNT(*) as total_orders,
