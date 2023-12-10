@@ -264,7 +264,7 @@ export default function OrderViewModal(prop) {
 	}, [length, height, row, quantity]);
 
 	useEffect(() => {
-		if (prop.orderId !== null) {
+		if (prop.orderId !== null || prop.orderId !== 0) {
 			handleGetLookup();
 			handleOrderinfo();
 		}
