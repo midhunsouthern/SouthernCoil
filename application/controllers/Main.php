@@ -1314,7 +1314,7 @@ class Main extends CI_Controller
         $this->db->where(
             array(
                 'order_status =' =>'1',
-                //'hold<>' => 'true',
+                'hold<>' => 'true',
                 'dispatch_status<>' => 'true',
                 //'pp_status = ' => 'true',
             )
