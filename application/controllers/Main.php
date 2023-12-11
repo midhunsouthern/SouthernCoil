@@ -1321,7 +1321,7 @@ class Main extends CI_Controller
         );
 
         $this->db->from("order_list a");
-        $this->db->group_by("coil_ready_at");
+        $this->db->group_by("row_labels");
         $this->db->order_by("CASE WHEN row_labels = 'unassigned' THEN 1 WHEN row_labels = 'ready' THEN 2 ELSE 3 END, coil_ready_at ASC");
 
         $orders_result = $this->db->get()->result_array('array');
