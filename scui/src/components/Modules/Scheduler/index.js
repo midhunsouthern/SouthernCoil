@@ -374,7 +374,7 @@ export default function EnhancedTable() {
 						<CardContent>
 							<Box sx={{ height: "84vh", width: "100%" }}>
 								<DataGrid
-									rowHeight={50}
+									density="compact"
 									getRowClassName={(params) => {
 										if (params.indexRelativeToCurrentPage % 2 === 0) {
 											return params.row.is_holiday
@@ -391,7 +391,7 @@ export default function EnhancedTable() {
 									rows={ordersToBeDispatchList}
 									// getRowClassName={(params) => params.row.is_holiday && "secon-bg"}
 									editMode="row"
-									slots={{ noRowsOverlay: NoRowsOverlay }}
+									slots={{ toolbar: GridToolbar, noRowsOverlay: NoRowsOverlay }}
 									sx={{
 										"--DataGrid-overlayHeight": "300px",
 										"& .MuiDataGrid-columnHeader": {
