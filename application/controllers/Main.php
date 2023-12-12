@@ -534,7 +534,7 @@ class Main extends CI_Controller
         CONCAT(a.length, ' x ', a.height, ' x ', a.rows,'R - ', count(h.order_id)) as size,
             ROUND((a.length * a.height * a.rows *  count(h.order_id)) / 144)  as sq_feet, c.lkp_value as pipe_type, d.lkp_value as expansion_type, 
             a.pbStraight,a.pbStraightQty, a.pbStraightSize, a.pbStraightTotQty, a.pbSingle, a.pbSingleQty, a.pbSingleSize, a.pbSingleTotQty, a.pbCross, a.pbCrossQty, a.pbCrossSize, 
-            a.pbCrossTotQty, a.pbOther, a.pbOtherSize, a.pbOtherQty, a.pbOtherTotQty, a.pipe_comment, e.lkp_value as  end_plate_material, f.lkp_value as  end_plate_modal, end_plate_orientation, a.ep_photo, a.cover_type, 
+            a.pbCrossTotQty, a.pbOther, a.pbOtherQty, a.pbOtherTotQty, a.pipe_comment, e.lkp_value as  end_plate_material, f.lkp_value as  end_plate_modal, end_plate_orientation, a.ep_photo, a.cover_type, 
             a.cover_detail,a.ep_comments, a.fin_per_inch, a.assembly_Photo, a.fin_comments, g.lkp_value as circuit_models, a.brazing_Photo, a.circuit_no, a.liquid_line, a.discharge_line, 
             a.brazing_comment, a.paint, a.packing_type, a.dispatch_mode, a.dispatch_comment, a.final_comment, a.cnc_nesting_pgm_no, a.cnc_nested, a.cnc_nesting_status, a.cnc_nesting_status_dt,
                       a.cnc_punching_status, a.cnc_punching_status_dt,
@@ -577,6 +577,21 @@ class Main extends CI_Controller
                       left join brazing_details h on a.order_id = h.order_id and a.split_id = h.split_id
                        " . $ret_clause['where_clause'] . " group by h.order_id, h.split_id " . $ret_clause['order_by'] . ";")->result_array();
 
+
+        $orders = array();
+        foreach ($ret_data['data_orders'] as $order) {
+
+            if ($order["pp_status"] == "true") {
+
+                $order["coil_ready_at"] = "Ready";
+                $orders[] = $order;
+            } else {
+
+                $orders[] = $order;
+            }
+        }
+
+        $ret_data['data_orders'] = $orders;
         $ret_data['status_code'] = 200;
         $ret_data['status_msg'] = "Data retrival successful";
 
@@ -1321,7 +1336,7 @@ class Main extends CI_Controller
         );
 
         $this->db->from("order_list a");
-        $this->db->group_by("coil_ready_at");
+        $this->db->group_by("row_labels");
         $this->db->order_by("CASE WHEN row_labels = 'unassigned' THEN 1 WHEN row_labels = 'ready' THEN 2 ELSE 3 END, coil_ready_at ASC");
 
         $orders_result = $this->db->get()->result_array('array');
@@ -1406,7 +1421,7 @@ class Main extends CI_Controller
         CONCAT(a.length, ' x ', a.height, ' x ', a.rows,'R - ', count(h.order_id)) as size,
             ROUND((a.length * a.height * a.rows *  count(h.order_id)) / 144)  as sq_feet, c.lkp_value as pipe_type, d.lkp_value as expansion_type, 
             a.pbStraight,a.pbStraightQty, a.pbStraightSize, a.pbStraightTotQty, a.pbSingle, a.pbSingleQty, a.pbSingleSize, a.pbSingleTotQty, a.pbCross, a.pbCrossQty, a.pbCrossSize, 
-            a.pbCrossTotQty, a.pbOther, a.pbOtherSize, a.pbOtherQty, a.pbOtherTotQty, a.pipe_comment, e.lkp_value as  end_plate_material, f.lkp_value as  end_plate_modal, end_plate_orientation, a.ep_photo, a.cover_type, 
+            a.pbCrossTotQty, a.pbOther, a.pbOtherQty, a.pbOtherTotQty, a.pipe_comment, e.lkp_value as  end_plate_material, f.lkp_value as  end_plate_modal, end_plate_orientation, a.ep_photo, a.cover_type, 
             a.cover_detail,a.ep_comments, a.fin_per_inch, a.assembly_Photo, a.fin_comments, g.lkp_value as circuit_models, a.brazing_Photo, a.circuit_no, a.liquid_line, a.discharge_line, 
             a.brazing_comment, a.paint, a.packing_type, a.dispatch_mode, a.dispatch_comment, a.final_comment, a.cnc_nesting_pgm_no, a.cnc_nested, a.cnc_nesting_status, a.cnc_nesting_status_dt,
                       a.cnc_punching_status, a.cnc_punching_status_dt,
@@ -1448,7 +1463,7 @@ class Main extends CI_Controller
                       left join lookup g on a.circuit_models = g.id 
                       left join brazing_details h on a.order_id = h.order_id and a.split_id = h.split_id
                        " . $ret_clause['where_clause'] . " group by h.order_id, h.split_id " . $ret_clause['order_by'] . ";")->result_array();
-
+        echo $this->db->last_query();
         $ret_data['status_code'] = 200;
         $ret_data['status_msg'] = "Data retrival successful";
 
