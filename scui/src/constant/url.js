@@ -28,7 +28,7 @@ export const setOrderSplitNew = baseURL + "main/setOrderSplitNew";
 export const setAddBrazingQuantity = baseURL + "main/setAddBrazingQuantity";
 export const setDeleteBrazingQuantity =
 	baseURL + "main/setDeleteBrazingQuantity";
-
+export const getOrderBrazingLeak = baseURL + "main/getOrderBrazingLeak";
 export const getImagesOnly = baseURL + "main/getImagesOnly";
 //save order temp
 export const getSaveOrderGeneric = baseURL + "main/getSaveOrderGeneric";

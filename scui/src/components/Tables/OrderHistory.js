@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 
 import { AccessContext } from "../../constant/accessContext";
-import { getOrderHistory } from "../../constant/url";
+import { getOrderHistory, getOrderBrazingLeak } from "../../constant/url";
 
 import { DataGrid } from "@mui/x-data-grid";
 import {
@@ -36,6 +36,7 @@ export default function OrderHistory() {
 	const navigate = useNavigate();
 	const access = useContext(AccessContext).authID;
 	const [orderList, setOrderList] = useState([]);
+	const [BrazingLeakList, setBrazingLeakList] = useState([]);
 	const [isUpdated, setIsUpdate] = useState(false);
 	const [isEdit, setIsEdit] = useState(false);
 	const [selectedRowId, setSelectedRowId] = useState(null);
@@ -62,6 +63,35 @@ export default function OrderHistory() {
 					const ret_data_cd = res_data.data_orders;
 					setOrderList(ret_data_cd);
 					toast("Data Received.");
+				} else {
+					console.log(res_data.status_msg);
+				}
+			})
+			.catch(function (response) {
+				//handle error
+				console.log(response);
+			});
+		setIsUpdate(false);
+	};
+
+	const handleBrazingLeak = (authID) => {
+		var bodyFormData = new FormData();
+		bodyFormData.append("authId", authID);
+		axios({
+			method: "post",
+			url: getOrderBrazingLeak,
+			data: bodyFormData,
+			headers: { "Content-Type": "multipart/form-data" },
+		})
+			.then(function (response) {
+				//handle success
+				const res_data = response.data;
+				if (res_data.status_code === 101) {
+					toast("Api Authentication failed. login again.");
+				} else if (res_data.status_code === 200) {
+					const ret_data_cd = res_data.data;
+					saveAsExcel(res_data.data);
+					setBrazingLeakList(ret_data_cd);
 				} else {
 					console.log(res_data.status_msg);
 				}
@@ -173,6 +203,14 @@ export default function OrderHistory() {
 						</Typography>
 						<Tooltip title="Download Excel list">
 							<IconButton color="info" onClick={() => saveAsExcel(orderList)}>
+								<DownloadIcon />
+							</IconButton>
+						</Tooltip>
+						<Tooltip title="Download Brazing Leak list">
+							<IconButton
+								color="info"
+								onClick={() => handleBrazingLeak(access)}
+							>
 								<DownloadIcon />
 							</IconButton>
 						</Tooltip>
