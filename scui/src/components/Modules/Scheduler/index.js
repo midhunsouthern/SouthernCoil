@@ -223,7 +223,7 @@ export default function EnhancedTable() {
 			flex: 1,
 			maxWidth: 130,
 			renderCell: (params) => {
-				if (params.row.pp_status === "true") return "Ready";
+				if (params.row.coil_ready_at === "Ready") return "Ready";
 
 				return (
 					<>
