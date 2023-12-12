@@ -577,6 +577,21 @@ class Main extends CI_Controller
                       left join brazing_details h on a.order_id = h.order_id and a.split_id = h.split_id
                        " . $ret_clause['where_clause'] . " group by h.order_id, h.split_id " . $ret_clause['order_by'] . ";")->result_array();
 
+
+        $orders = array();
+        foreach ($ret_data['data_orders'] as $order) {
+
+            if ($order["pp_status"] == "true") {
+
+                $order["coil_ready_at"] = "Ready";
+                $orders[] = $order;
+            } else {
+
+                $orders[] = $order;
+            }
+        }
+
+        $ret_data['data_orders'] = $orders;
         $ret_data['status_code'] = 200;
         $ret_data['status_msg'] = "Data retrival successful";
 
@@ -1314,7 +1329,7 @@ class Main extends CI_Controller
         $this->db->where(
             array(
                 'order_status =' => '1',
-                //'hold<>' => 'true',
+                'hold<>' => 'true',
                 'dispatch_status<>' => 'true',
                 //'pp_status = ' => 'true',
             )
