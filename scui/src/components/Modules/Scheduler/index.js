@@ -9,8 +9,6 @@ import { AccessContext } from "../../../constant/accessContext";
 import {
 	Button,
 	Dialog,
-	DialogTitle,
-	DialogActions,
 	Card,
 	CardContent,
 	Box,
@@ -18,9 +16,6 @@ import {
 import Slide from "@mui/material/Slide";
 import OrderViewModal from "../../modals/OrderViewModal";
 import {
-	getSchedulerOrders,
-	setOrderGeneric,
-	setOrderDelete,
 	ordersToBeDispatched,
 	updateSchedulerHoliday,
 	updateSchedulerOrderDate,
