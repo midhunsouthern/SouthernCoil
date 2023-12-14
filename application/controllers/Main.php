@@ -1305,11 +1305,6 @@ class Main extends CI_Controller
         }
         /**Get the old order with status not ready END*/
 
-        //prepare for 45 days
-        for ($i = 0; $i < 45; $i++) {
-            $orders_dates[] = date('Y-m-d', strtotime($starting_date . " +{$i} days"));
-        }
-
         /***SELECT HOLIDAYS*/
         $this->db->select("date");
         $this->db->where("date >=", $starting_date);
@@ -1341,6 +1336,21 @@ class Main extends CI_Controller
 
         $orders_result = $this->db->get()->result_array('array');
         $orders = array();
+        $minDate = null; // Variable to store the smallest date
+
+        foreach ($orders_result as $order) {
+
+            if (!in_array($order["row_labels"], array("unassigned", "ready"))) {
+
+                $minDate = $order["row_labels"];
+                break;
+            }
+        }
+
+        //prepare for 45 days
+        for ($i = 0; $i < 45; $i++) {
+            $orders_dates[] = date('Y-m-d', strtotime($minDate . " +{$i} days"));
+        }
 
         // Check if the date exists in the result set
         foreach ($orders_result as $result) {
