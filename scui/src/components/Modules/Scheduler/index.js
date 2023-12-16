@@ -1,10 +1,13 @@
 import { useState, useContext, useEffect, forwardRef } from "react";
 import axios from "axios";
 import moment from "moment";
+import dayjs from 'dayjs';
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AccessContext } from "../../../constant/accessContext";
 import {
 	Button,
@@ -38,9 +41,6 @@ export default function EnhancedTable() {
 	const [isLoadingDispatchList, setIsLoadingDispatchList] = useState(true);
 
 	const [isUpdated, setIsUpdate] = useState(false);
-	const [selEvent, setSelEvent] = useState({
-		target: { name: "", checked: null },
-	});
 
 	//Dialog States
 	const [openOrderView, setOpenOrderView] = useState(false);
@@ -219,21 +219,17 @@ export default function EnhancedTable() {
 			maxWidth: 130,
 			renderCell: (params) => {
 				if (params.row.coil_ready_at === "Ready") return "Ready";
-
 				return (
-					<>
-						<input
-							type="date"
-							value={params.row.coil_ready_at}
-							onChange={(event) =>
+						<DatePicker
+							value={dayjs(params.row.coil_ready_at)}
+							onChange={(newValue) =>
 								schedulerDateChangeHandler(
 									params.row,
-									event.target.value,
+									newValue,
 									"coil_ready_at"
 								)
 							}
 						/>
-					</>
 				);
 			},
 		},
@@ -363,7 +359,8 @@ export default function EnhancedTable() {
 	return (
 		<Box>
 			<ToastContainer />
-			<div className="row">
+			<LocalizationProvider dateAdapter={AdapterDayjs}>
+				<div className="row">
 				<div className="col-4">
 					<Card>
 						<CardContent>
@@ -489,6 +486,7 @@ export default function EnhancedTable() {
 					</Card>
 				</div>
 			</div>
+			</LocalizationProvider>
 
 			<Dialog
 				open={openOrderView}
