@@ -289,16 +289,26 @@ export default function EnhancedTable() {
 			flex: 1,
 		},
 		{
-			field: "ready_date",
+			field: "coil_ready_at",
 			headerName: "Ready Date",
 			flex: 1,
 			maxWidth: 130,
+			valueFormatter: (params) => {
+				return moment(params?.value, "YYYY-MM-DD").isValid()
+					? moment(params?.value, "YYYY-MM-DD").format("Do MMM")
+					: params?.value;
+			},
 		},
 		{
-			field: "delievery_date",
+			field: "est_delivery_date",
 			headerName: "Delivery Date",
 			flex: 1,
 			maxWidth: 130,
+			valueFormatter: (params) => {
+				return moment(params?.value, "YYYY-MM-DD").isValid()
+					? moment(params?.value, "YYYY-MM-DD").format("Do MMM")
+					: params?.value;
+			},
 		},
 		{
 			field: "priority",

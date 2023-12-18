@@ -255,8 +255,7 @@ class MainModal extends CI_Model
             $where_clause = "where a.pp_status!='true'";
             $order_by = "order by a.order_id asc";
             $fieldName = '';
-        }*/
-        else {
+        }*/ else {
             $where_clause = "where order_status ='1' and a.dispatch_status<>'true' ";
             $order_by = "order by a.order_id asc";
             $fieldName = '';
@@ -267,5 +266,10 @@ class MainModal extends CI_Model
         $retval['fieldName'] = $fieldName;
 
         return $retval;
+    }
+
+    public function splitLookupString($lkpStr)
+    {
+        $lkpstr = trim($lkpStr);
     }
 }
