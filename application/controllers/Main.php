@@ -770,9 +770,9 @@ class Main extends CI_Controller
         $ret_clause = $this->mm->retQueryClause($pageType);
         $ret_data['pendingsq'] = $this->db->query("SELECT ROUND(SUM((a.length * a.height * a.rows * (select count(b.order_id) from brazing_details b where a.order_id = b.order_id and a.split_id = b.split_id)) /144 )) as pendingsq FROM `order_list` a " . $ret_clause['where_clause'] . "")->row();
         $ret_data['completedSq'] = $this->db->query("Select * from (SELECT  count(" . $ret_clause['fieldName'] . ") as count, sum(sq_feet) as compsq, " . $ret_clause['fieldName'] . '_dt' . " as stat_date 
-            FROM `order_list` where " . $ret_clause['fieldName'] = 'true' . " group by " . $ret_clause['fieldName'] . '_dt' . " order by " . $ret_clause['fieldName'] . "_dt desc limit 15)
+            FROM `order_list` where " . $ret_clause['fieldName']  . "= 'true' group by " . $ret_clause['fieldName'] . '_dt' . " order by " . $ret_clause['fieldName'] . "_dt desc limit 15)
             as order_gp order by stat_date asc;")->result_array();
-
+        $ret_data['completed_count'] = $this->db->query("SELECT count(*) as completed_count FROM `order_list` a where " . $ret_clause['fieldName']  . "= 'true' and " . $ret_clause['fieldName'] . '_dt= CURRENT_DATE()' . ";")->row();
         $ret_data['status_code'] = 200;
         $ret_data['status_msg'] = "Data retrival successful";
         echo json_encode($ret_data);

@@ -271,7 +271,7 @@ export default function BrazingQuantity(prop) {
 				<div className="col">
 					<p className="m-0">Order Id:{orderId + splitId}</p>
 				</div>
-				<div className="col-6 d-flex justify-content-right">
+				{/* <div className="col-6 d-flex justify-content-right">
 					<div className="col-8">
 						<div className="input-group">
 							<button
@@ -300,7 +300,7 @@ export default function BrazingQuantity(prop) {
 							</button>
 						</div>
 					</div>
-				</div>
+				</div> */}
 			</div>
 
 			<div className="row prime-border p-1 mt-3 mx-1 btnList">

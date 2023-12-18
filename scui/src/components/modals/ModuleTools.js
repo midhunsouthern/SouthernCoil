@@ -37,6 +37,7 @@ export default function ModuleTools(props) {
 	const [openStatusCalc, setOpenStatusCalc] = React.useState(false);
 	const [openStatuSqGraph, setOpenStatusSqGraph] = React.useState(false);
 	const [pendingSq, setPendingSqft] = React.useState(0);
+	const [completedCount, setCompletedCount] = React.useState(0);
 	const [chartData, setChartData] = React.useState({
 		labels: Data.map((data) => data.year),
 		datasets: [
@@ -81,8 +82,8 @@ export default function ModuleTools(props) {
 				const res_data = response.data;
 				if (res_data.status_code === 200) {
 					setPendingSqft(res_data["pendingsq"]["pendingsq"]);
+					setCompletedCount(res_data["completed_count"]["completed_count"]);
 					const cData = res_data["completedSq"];
-					console.log(cData);
 					setChartData({
 						labels: cData.map((data) => data.stat_date),
 						datasets: [
@@ -117,7 +118,10 @@ export default function ModuleTools(props) {
 			</Button>
 			<Button onClick={() => handleClickOpenSqGraph()} className="toolButton">
 				<Typography variant="p">
-					Pending Sq: <span style={{ color: "#BC1921" }}>{pendingSq}</span>
+					Pending Sq:<br></br>
+					<span style={{ color: "#BC1921" }}>
+						{pendingSq} / {completedCount}
+					</span>
 				</Typography>
 			</Button>
 			<Button onClick={() => refreshPage()} className="toolButton">
