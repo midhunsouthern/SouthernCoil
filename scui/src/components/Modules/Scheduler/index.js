@@ -384,8 +384,8 @@ export default function EnhancedTable() {
 		{
 			field: "row_labels",
 			headerName: "Date",
-			width: 150,
-			maxWidth: 150,
+			width: 120,
+			maxWidth: 120,
 			valueFormatter: (params) => {
 				if (!["ready", "unassigned"].includes(params.value)) {
 					return moment(params.value, "YYYY-MM-DD").format("Do MMM");
