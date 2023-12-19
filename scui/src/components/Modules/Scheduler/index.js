@@ -283,7 +283,7 @@ export default function EnhancedTable() {
 							}
 						}
 					/>
-					<small><a href="#" onClick={() => schedulerDateChangeHandler(params.row, null, "coil_ready_at")}>Clear</a></small>
+					<small><a href="#" onClick={() => schedulerDateChangeHandler(params.row, null, "coil_ready_at")}>CLR</a></small>
 				</>
 				);
 			},
