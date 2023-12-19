@@ -1501,6 +1501,10 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
         if ($date and in_array($column, array("est_delivery_date", "coil_ready_at"))) {
 
             $this->db->where('id', $this->input->post("id"));
+            if (empty($date) || $date === "Invalid date") {
+
+                $date = null;
+            }
             $this->db->update('order_list', array($column => $date));
 
             $ret_data['status_code'] = 200;
