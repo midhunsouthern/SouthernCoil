@@ -108,6 +108,8 @@ export default function EnhancedTable() {
 	};
 
 	const schedulerDateChangeHandler = (row, date, column) => {
+
+		date = moment(date).format("YYYY-MM-DD")
 		setOrderList(
 			orderList.map((r) => ({
 				...r,
@@ -220,16 +222,18 @@ export default function EnhancedTable() {
 			renderCell: (params) => {
 				if (params.row.coil_ready_at === "Ready") return "Ready";
 				return (
-						<DatePicker
-							value={dayjs(params.row.coil_ready_at)}
-							onChange={(newValue) =>
+					<DatePicker
+						value={dayjs(params.row.coil_ready_at)}
+						onChange={(newValue) => {
+
 								schedulerDateChangeHandler(
 									params.row,
-									newValue,
+									newValue.toString(),
 									"coil_ready_at"
 								)
 							}
-						/>
+						}
+					/>
 				);
 			},
 		},
@@ -240,19 +244,18 @@ export default function EnhancedTable() {
 			maxWidth: 130,
 			renderCell: (params) => {
 				return (
-					<>
-						<input
-							type="date"
-							value={params.row.est_delivery_date}
-							onChange={(event) =>
-								schedulerDateChangeHandler(
-									params.row,
-									event.target.value,
-									"est_delivery_date"
-								)
-							}
-						/>
-					</>
+					<DatePicker
+						value={dayjs(params.row.est_delivery_date)}
+						onChange={(newValue) => {
+
+							schedulerDateChangeHandler(
+								params.row,
+								newValue.toString(),
+								"est_delivery_date"
+							)
+						}
+						}
+					/>
 				);
 			},
 		},
