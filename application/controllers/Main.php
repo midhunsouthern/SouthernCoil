@@ -564,6 +564,7 @@ class Main extends CI_Controller
                       a.date_submit,
                       a.priority,
                       a.hold,
+                      a.is_commitment_important,
                       a.coil_ready_at,
                       a.est_delivery_date,
                       a.order_status,
@@ -1478,5 +1479,28 @@ class Main extends CI_Controller
             $ret_data['status_msg'] = "Invalid data received";
             echo json_encode($ret_data);
         }
+    }
+
+    public function updateSchedulerCommitmentStatus()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+
+        $is_important = 0;
+        if ($this->input->post('is_commitment_important') && $this->input->post('is_commitment_important') == 'true') {
+
+            $is_important = 1;
+        }
+
+        $this->db->where('id', $this->input->post("id"));
+        $this->db->update('order_list', array('is_commitment_important' => $is_important));
+
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Commitment status updated.";
+        echo json_encode($ret_data);
     }
 }
