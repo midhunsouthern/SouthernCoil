@@ -766,8 +766,10 @@ class Main extends CI_Controller
             echo json_encode($ret_data);
             return;
         }
+
         $pageType = $this->input->post('pageName');
         $ret_clause = $this->mm->retQueryClause($pageType);
+        //var_dump("SELECT ROUND(SUM((a.length * a.height * a.rows * (select count(b.order_id) from brazing_details b where a.order_id = b.order_id and a.split_id = b.split_id)) /144 )) as pendingsq FROM `order_list` a " . $ret_clause['where_clause'] . "");die;
         $ret_data['pendingsq'] = $this->db->query("SELECT ROUND(SUM((a.length * a.height * a.rows * (select count(b.order_id) from brazing_details b where a.order_id = b.order_id and a.split_id = b.split_id)) /144 )) as pendingsq FROM `order_list` a " . $ret_clause['where_clause'] . "")->row();
         $ret_data['completedSq'] = $this->db->query("Select * from (SELECT  count(" . $ret_clause['fieldName'] . ") as count, sum(sq_feet) as compsq, " . $ret_clause['fieldName'] . '_dt' . " as stat_date 
             FROM `order_list` where " . $ret_clause['fieldName']  . "= 'true' group by " . $ret_clause['fieldName'] . '_dt' . " order by " . $ret_clause['fieldName'] . "_dt desc limit 15)
@@ -1331,17 +1333,13 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
         $this->db->order_by("coil_ready_at", "asc");
         $this->db->where("pp_status != ", "true");
         $this->db->where("coil_ready_at IS NOT NULL");
+        //$this->db->where("coil_ready_at !=", '0000-00-00');
         $uncompleted_order = $this->db->get("order_list")->row();
         if ($uncompleted_order && $uncompleted_order->coil_ready_at) {
 
             $starting_date = $uncompleted_order->coil_ready_at;
         }
         /**Get the old order with status not ready END*/
-
-        //prepare for 45 days
-        for ($i = 0; $i < 45; $i++) {
-            $orders_dates[] = date('Y-m-d', strtotime($starting_date . " +{$i} days"));
-        }
 
         /***SELECT HOLIDAYS*/
         $this->db->select("date");
@@ -1357,7 +1355,7 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
             ELSE a.coil_ready_at 
         END as row_labels,
         COUNT(*) as total_orders,
-        SUM(a.sq_feet) as total_sq_feet", FALSE);
+        (ROUND(SUM((a.length * a.height * a.rows * (select count(b.order_id) from brazing_details b where a.order_id = b.order_id and a.split_id = b.split_id)) /144 ))) as total_sq_feet", FALSE);
 
         $this->db->where(
             array(
@@ -1374,6 +1372,21 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
 
         $orders_result = $this->db->get()->result_array('array');
         $orders = array();
+        $minDate = null; // Variable to store the smallest date
+
+        foreach ($orders_result as $order) {
+
+            if (!in_array($order["row_labels"], array("unassigned", "ready"))) {
+
+                $minDate = $order["row_labels"];
+                break;
+            }
+        }
+
+        //prepare for 45 days
+        for ($i = 0; $i < 45; $i++) {
+            $orders_dates[] = date('Y-m-d', strtotime($minDate . " +{$i} days"));
+        }
 
         // Check if the date exists in the result set
         foreach ($orders_result as $result) {
@@ -1434,71 +1447,6 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
 
         $ret_data['status_code'] = 200;
         $ret_data['status_msg'] = "Data retrieval successful";
-
-        echo json_encode($ret_data);
-    }
-
-    public function getSchedulerOrders()
-    {
-        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
-            $ret_data['status_code'] = 101;
-            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
-            echo json_encode($ret_data);
-            return;
-        }
-        $pageType = $this->input->post('pageType');
-        $ret_clause = $this->mm->retQueryClause($pageType);
-
-        $ret_data['data_orders'] = $this->db->query("SELECT a.id, CONCAT(a.order_id,a.split_id) as 'order_id',a.order_id as unsplit_order_id,  a.split_id, a.order_date, 
-        ifnull( b.fname, 'Not Set') as full_customer_name, a.customer_name, a.length, a.height, a.rows,  count(h.order_id) as quantity , a.quantity as raw_quantity, 
-        CONCAT(a.length, ' x ', a.height, ' x ', a.rows,'R - ', count(h.order_id)) as size,
-            ROUND((a.length * a.height * a.rows *  count(h.order_id)) / 144)  as sq_feet, c.lkp_value as pipe_type, d.lkp_value as expansion_type, 
-            a.pbStraight,a.pbStraightQty, a.pbStraightSize, a.pbStraightTotQty, a.pbSingle, a.pbSingleQty, a.pbSingleSize, a.pbSingleTotQty, a.pbCross, a.pbCrossQty, a.pbCrossSize, 
-            a.pbCrossTotQty, a.pbOther, a.pbOtherQty, a.pbOtherTotQty, a.pipe_comment, e.lkp_value as  end_plate_material, f.lkp_value as  end_plate_modal, end_plate_orientation, a.ep_photo, a.cover_type, 
-            a.cover_detail,a.ep_comments, a.fin_per_inch, a.assembly_Photo, a.fin_comments, g.lkp_value as circuit_models, a.brazing_Photo, a.circuit_no, a.liquid_line, a.discharge_line, 
-            a.brazing_comment, a.paint, a.packing_type, a.dispatch_mode, a.dispatch_comment, a.final_comment, a.cnc_nesting_pgm_no, a.cnc_nested, a.cnc_nesting_status, a.cnc_nesting_status_dt,
-                      a.cnc_punching_status, a.cnc_punching_status_dt,
-                      a.ep_DateTime,
-                      a.bending_status,
-                      a.bending_status_dt,
-                      a.tcutting_roll_no,
-                      a.tcutting_datetime,
-                      a.tcutting_status,
-                      a.tcutting_status_dt,
-                      a.finpunching_foilno,
-                      a.finpunch_status,
-                      a.finpunch_status_dt,
-                      a.brazing_expansion,
-                      a.brazing_status,
-                      a.brazing_status_dt,
-                      a.ca_actualfpi,
-                      a.ca_status,
-                      a.ce_status,
-                      a.pp_status,
-                      a.dispatch_status,
-                      a.ca_status_dt,
-                      a.ce_status_dt,
-                      a.pp_status_dt,
-                      a.pp_datetime,
-                      a.dispatch_status_dt,
-                      a.date_submit,
-                      a.priority,
-                      a.hold,
-                      a.order_status,
-                      a.coil_ready_at,
-                      a.est_delivery_date,
-                      a.created_dt
-                      FROM order_list a left join customers b on a.customer_name = b.id
-                      left join lookup c on a.pipe_type = c.id
-                      left join lookup d on a.expansion_type = d.id
-                      left join lookup e on a.end_plate_material = e.id
-                      left join lookup f on a.end_plate_modal = f.id
-                      left join lookup g on a.circuit_models = g.id 
-                      left join brazing_details h on a.order_id = h.order_id and a.split_id = h.split_id
-                       " . $ret_clause['where_clause'] . " group by h.order_id, h.split_id " . $ret_clause['order_by'] . ";")->result_array();
-        echo $this->db->last_query();
-        $ret_data['status_code'] = 200;
-        $ret_data['status_msg'] = "Data retrival successful";
 
         echo json_encode($ret_data);
     }
