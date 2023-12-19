@@ -22,7 +22,7 @@ import {
 	ordersToBeDispatched,
 	updateSchedulerHoliday,
 	updateSchedulerOrderDate,
-	getOrderAllLakVal,
+	getOrderAllLakVal, updateSchedulerCommitmentStatus,
 } from "../../../constant/url";
 import Checkbox from "@mui/material/Checkbox";
 import NoRowsOverlay from "../../Component/NoRowOverlay";
@@ -143,7 +143,51 @@ export default function EnhancedTable() {
 			});
 	};
 
+	const commitmentChangeHandler = (id, isChecked = false) => {
+
+		setOrderList(
+			orderList.map((r) => ({
+				...r,
+				'is_commitment_important': r.id === id ? (isChecked ? '1' : '0') : r['is_commitment_important'],
+			}))
+		);
+
+		var bodyFormData = new FormData();
+		bodyFormData.append("authId", access);
+		bodyFormData.append("is_commitment_important", isChecked);
+		bodyFormData.append("id", id);
+
+		axios({
+			method: "post",
+			url: updateSchedulerCommitmentStatus,
+			data: bodyFormData,
+			headers: { "Content-Type": "multipart/form-data" },
+		})
+			.then(function (response) {
+
+				console.log(response);
+			})
+			.catch(function (response) {
+				//handle error
+				console.error(response);
+			});
+	}
+
 	const columns = [
+		{
+			field: "is_commitment_important",
+			headerName: "Imp?",
+			//flex: 1,
+			width: 50,
+			maxWidth: 50,
+			renderCell: (params) => <div>
+							<Checkbox
+								color="primary"
+								checked={params.row.is_commitment_important !== '0'}
+								onChange={(event, checked) => commitmentChangeHandler(params.row.id, checked)}
+							/>
+						</div>
+		},
 		{
 			field: "order_id",
 			headerName: "Order No",
@@ -217,12 +261,17 @@ export default function EnhancedTable() {
 		{
 			field: "coil_ready_at",
 			headerName: "Ready Date",
-			flex: 1,
-			maxWidth: 130,
+			//flex: 1,
+			maxWidth: 180,
+			width: 180,
 			renderCell: (params) => {
 				if (params.row.coil_ready_at === "Ready") return "Ready";
+
+				if (params.row.is_commitment_important == '1') return params.row.coil_ready_at;
+
 				return (
-					<DatePicker
+					<>
+						<DatePicker
 						value={dayjs(params.row.coil_ready_at)}
 						onChange={(newValue) => {
 
@@ -234,17 +283,21 @@ export default function EnhancedTable() {
 							}
 						}
 					/>
+					<small><a href="#" onClick={() => schedulerDateChangeHandler(params.row, null, "coil_ready_at")}>CLR</a></small>
+				</>
 				);
 			},
 		},
 		{
 			field: "est_delivery_date",
 			headerName: "CTD",
-			flex: 1,
-			maxWidth: 130,
+			//flex: 1,
+			maxWidth: 180,
+			width: 180,
 			renderCell: (params) => {
 				return (
-					<DatePicker
+					<>
+						<DatePicker
 						value={dayjs(params.row.est_delivery_date)}
 						onChange={(newValue) => {
 
@@ -256,6 +309,8 @@ export default function EnhancedTable() {
 						}
 						}
 					/>
+					<small><a href="#" onClick={() => schedulerDateChangeHandler(params.row, null, "est_delivery_date")}>Clear</a></small>
+				</>
 				);
 			},
 		},
@@ -305,7 +360,9 @@ export default function EnhancedTable() {
 		{
 			field: "is_holiday",
 			headerName: "H",
-			flex: 1,
+			//flex: 1,
+			width: 40,
+			maxWidth: 40,
 			renderCell: (params) => {
 				if (!["unassigned", "ready"].includes(params.row.row_labels)) {
 					return (
@@ -327,6 +384,8 @@ export default function EnhancedTable() {
 		{
 			field: "row_labels",
 			headerName: "Date",
+			width: 150,
+			maxWidth: 150,
 			valueFormatter: (params) => {
 				if (!["ready", "unassigned"].includes(params.value)) {
 					return moment(params.value, "YYYY-MM-DD").format("Do MMM");
@@ -334,7 +393,7 @@ export default function EnhancedTable() {
 
 				return params.value;
 			},
-			flex: 1,
+			//flex: 1,
 		},
 		{
 			field: "total_orders",
@@ -364,7 +423,7 @@ export default function EnhancedTable() {
 			<ToastContainer />
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
 				<div className="row">
-				<div className="col-4">
+				<div className="col-3">
 					<Card>
 						<CardContent>
 							<Box sx={{ height: "84vh", width: "100%" }}>
@@ -427,7 +486,7 @@ export default function EnhancedTable() {
 					</Card>
 				</div>
 
-				<div className="col-8">
+				<div className="col-9">
 					<Card>
 						<CardContent>
 							<Box sx={{ height: "84vh", width: "100%" }}>
@@ -435,6 +494,9 @@ export default function EnhancedTable() {
 									slots={{ toolbar: GridToolbar, noRowsOverlay: NoRowsOverlay }}
 									loading={orderList.length === 0}
 									getRowClassName={(params) => {
+
+										if (params.row.is_commitment_important == '1') { return "Mui-even secon-bg" }
+
 										if (params.indexRelativeToCurrentPage % 2 === 0) {
 											return params.row.priority === "true"
 												? "Mui-even secon-bg"
