@@ -1468,6 +1468,10 @@ class Main extends CI_Controller
         if ($date and in_array($column, array("est_delivery_date", "coil_ready_at"))) {
 
             $this->db->where('id', $this->input->post("id"));
+            if (empty($date) || $date === "Invalid date") {
+
+                $date = null;
+            }
             $this->db->update('order_list', array($column => $date));
 
             $ret_data['status_code'] = 200;
