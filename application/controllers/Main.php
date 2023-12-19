@@ -1360,7 +1360,7 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
         $this->db->where(
             array(
                 'order_status =' => '1',
-                'hold<>' => 'true',
+                //'hold<>' => 'true',
                 'dispatch_status<>' => 'true',
                 //'pp_status = ' => 'true',
             )
