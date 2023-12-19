@@ -766,8 +766,10 @@ class Main extends CI_Controller
             echo json_encode($ret_data);
             return;
         }
+
         $pageType = $this->input->post('pageName');
         $ret_clause = $this->mm->retQueryClause($pageType);
+        //var_dump("SELECT ROUND(SUM((a.length * a.height * a.rows * (select count(b.order_id) from brazing_details b where a.order_id = b.order_id and a.split_id = b.split_id)) /144 )) as pendingsq FROM `order_list` a " . $ret_clause['where_clause'] . "");die;
         $ret_data['pendingsq'] = $this->db->query("SELECT ROUND(SUM((a.length * a.height * a.rows * (select count(b.order_id) from brazing_details b where a.order_id = b.order_id and a.split_id = b.split_id)) /144 )) as pendingsq FROM `order_list` a " . $ret_clause['where_clause'] . "")->row();
         $ret_data['completedSq'] = $this->db->query("SELECT  count(" . $ret_clause['fieldName'] . ") as count, sum(sq_feet) as compsq, " . $ret_clause['fieldName'] . '_dt' . " as stat_date 
             FROM `order_list` where " . $ret_clause['fieldName'] = 'true' . " group by " . $ret_clause['fieldName'] . '_dt' . " order by " . $ret_clause['fieldName'] . '_dt' . ";")->result_array();
@@ -1298,6 +1300,7 @@ class Main extends CI_Controller
         $this->db->order_by("coil_ready_at", "asc");
         $this->db->where("pp_status != ", "true");
         $this->db->where("coil_ready_at IS NOT NULL");
+        //$this->db->where("coil_ready_at !=", '0000-00-00');
         $uncompleted_order = $this->db->get("order_list")->row();
         if ($uncompleted_order && $uncompleted_order->coil_ready_at) {
 
@@ -1319,7 +1322,7 @@ class Main extends CI_Controller
             ELSE a.coil_ready_at 
         END as row_labels,
         COUNT(*) as total_orders,
-        SUM(a.sq_feet) as total_sq_feet", FALSE);
+        (ROUND(SUM((a.length * a.height * a.rows * (select count(b.order_id) from brazing_details b where a.order_id = b.order_id and a.split_id = b.split_id)) /144 ))) as total_sq_feet", FALSE);
 
         $this->db->where(
             array(
