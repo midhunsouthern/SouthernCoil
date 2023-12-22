@@ -184,6 +184,11 @@ a {
   color: white;
 }
 
+.partial-comp-bg {
+  background-color: #f9a605 !important;
+  color: white;
+}
+
 .toolButton{
   border: 1px solid grey !important;
 	color: grey !important;

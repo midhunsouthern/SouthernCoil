@@ -268,6 +268,24 @@ class MainModal extends CI_Model
         return $retval;
     }
 
+    public function lookupIdToValue($lkpStr, $lkpCat)
+    {
+        $lkpStr_Split = explode(",", $lkpStr);
+        $ret_str = '';
+        if (count($lkpStr_Split) > 0) {
+            foreach ($lkpStr_Split as $row) {
+                if (trim($row) <> '') {
+                    if ($lkpCat == 'coverDetail') {
+                        $ret_str = $this->db->get_where('lookup', array('category' => $lkpCat, 'id' => $row))->row()->sublkp_val . ',' . $ret_str;
+                    } else {
+                        $ret_str = $this->db->get_where('lookup', array('category' => $lkpCat, 'id' => $row))->row()->lkp_value . ',' . $ret_str;
+                    }
+                }
+            }
+        }
+        return $ret_str;
+    }
+
     public function splitLookupString($lkpStr)
     {
         $lkpstr = trim($lkpStr);

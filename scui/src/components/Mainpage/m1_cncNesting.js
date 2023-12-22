@@ -458,13 +458,27 @@ export default function M1cncNesting() {
 								// 	: "Mui-odd"
 								{
 									if (params.indexRelativeToCurrentPage % 2 === 0) {
-										return params.row.priority === "true"
-											? "Mui-even secon-bg"
-											: "Mui-even";
+										if (params.row.priority === "true") {
+											return "secon-bg";
+										} else if (
+											params.row.tcutting_status === "true" &&
+											params.row.finpunch_status === "true"
+										) {
+											return "partial-comp-bg";
+										} else {
+											return "Mui-even";
+										}
 									} else {
-										return params.row.priority === "true"
-											? "Mui-odd secon-bg"
-											: "Mui-odd";
+										if (params.row.priority === "true") {
+											return "secon-bg";
+										} else if (
+											params.row.tcutting_status === "true" &&
+											params.row.finpunch_status === "true"
+										) {
+											return "partial-comp-bg";
+										} else {
+											return "Mui-odd";
+										}
 									}
 								}
 							}
