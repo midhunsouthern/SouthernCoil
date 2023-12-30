@@ -30,6 +30,7 @@ export const setDeleteBrazingQuantity =
 	baseURL + "main/setDeleteBrazingQuantity";
 export const getOrderBrazingLeak = baseURL + "main/getOrderBrazingLeak";
 export const getImagesOnly = baseURL + "main/getImagesOnly";
+export const allData_excel = baseURL + "main/allData_excel";
 //save order temp
 export const getSaveOrderGeneric = baseURL + "main/getSaveOrderGeneric";
 export const deleteSaveOrderGeneric = baseURL + "main/deleteSaveOrderGeneric";

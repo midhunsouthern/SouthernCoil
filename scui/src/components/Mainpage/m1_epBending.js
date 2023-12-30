@@ -251,7 +251,7 @@ export default function M1epBending() {
 	const handleEpDateTime = (rowId, e) => {
 		const { name, checked } = e.target;
 		const date = new Date();
-		const data_val = checked ? moment(date).format("DD MMM YY H:mm") : "";
+		const data_val = checked ? moment(date).format("YYYY-MM-DD HH:mm:ss") : "";
 		const editData = orderList.map((item) =>
 			item.id === rowId && name ? { ...item, [name]: data_val } : item
 		);
@@ -380,7 +380,10 @@ export default function M1epBending() {
 			renderCell: (params) => {
 				return (
 					<Checkbox
-						checked={moment(params.row.ep_DateTime, "DD MMM YY H:mm").isValid()}
+						checked={moment(
+							params.row.ep_DateTime,
+							"YYYY-MM-DD HH:mm:ss"
+						).isValid()}
 						sx={{ m: 1 }}
 						name="ep_DateTime"
 						onChange={(e) => handleEpDateTime(params.row.id, e)}

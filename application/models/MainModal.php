@@ -276,9 +276,16 @@ class MainModal extends CI_Model
             foreach ($lkpStr_Split as $row) {
                 if (trim($row) <> '') {
                     if ($lkpCat == 'coverDetail') {
-                        $ret_str = $this->db->get_where('lookup', array('category' => $lkpCat, 'id' => $row))->row()->sublkp_val . ',' . $ret_str;
+                        $ret_q = $this->db->get_where('lookup', array('category' => $lkpCat, 'id' => $row))->row();
+                        $ret_str = isset($ret_q->sublkp_val) ? $ret_q->sublkp_val . ',' . $ret_str : '' . ',' . $ret_str;
+                    } else if ($lkpCat == 'coverType') { // input is the cover Detail data;
+                        $ret_q = $this->db->get_where('lookup', array('category' => "coverDetail", 'id' => $row))->row();
+                        $lkp_value = isset($ret_q->lkp_value) ? $ret_q->lkp_value : '';
+                        $ret_q = $this->db->get_where('lookup', array('category' => $lkpCat, 'id' => $lkp_value))->row();
+                        $ret_str = isset($ret_q->lkp_value) ? $ret_q->lkp_value . ',' . $ret_str : '' . ',' . $ret_str;
                     } else {
-                        $ret_str = $this->db->get_where('lookup', array('category' => $lkpCat, 'id' => $row))->row()->lkp_value . ',' . $ret_str;
+                        $ret_q = $this->db->get_where('lookup', array('category' => $lkpCat, 'id' => $row))->row();
+                        $ret_str = isset($ret_q->lkp_value) ? $ret_q->lkp_value . ',' . $ret_str : '' . ',' . $ret_str;
                     }
                 }
             }

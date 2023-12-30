@@ -8,6 +8,7 @@ import {
 import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import moment from "moment";
 
 import { AccessContext } from "../../constant/accessContext";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
@@ -56,13 +57,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 export default function M1cncNesting() {
-	const navigate = useNavigate();
 	const access = useContext(AccessContext).authID;
-	const [order, setOrder] = useState("asc");
-	const [orderBy, setOrderBy] = useState("calories");
-	const [selected, setSelected] = useState([]);
-	const [page, setPage] = useState(0);
-	const [rowsPerPage, setRowsPerPage] = useState(100000);
 	const [orderList, setOrderList] = useState([]);
 	const [selectedRowId, setSelectedRowId] = useState(0);
 	const [selComment, setSelComment] = useState("");
@@ -71,7 +66,6 @@ export default function M1cncNesting() {
 	const [openStatusCnf, setOpenStatusCnf] = useState(false);
 	const [openImgDialog, setOpenImgDialog] = useState(false);
 	const [animeShow, setAnimeShow] = useState(false);
-	const [isUpdated, setIsUpdate] = useState(false);
 	const [isEdit, setIsEdit] = useState(false);
 
 	const [openCommentDialog, setOpenCommentDialog] = useState(false);
@@ -126,7 +120,6 @@ export default function M1cncNesting() {
 
 	const handleNested = (rowId, e) => {
 		const { name, checked } = e.target;
-
 		var idx = orderList.findIndex((item) => item.id === rowId);
 		if (name === "cnc_nesting_status") {
 			if (orderList.at(idx).cnc_nesting_pgm_no.trim().length === 0) {
@@ -136,23 +129,31 @@ export default function M1cncNesting() {
 				);
 				return;
 			}
-			if (orderList.at(idx).cnc_nested !== "true") {
+			if (
+				orderList.at(idx).cnc_nested !== "true" &&
+				!moment(orderList.at(idx).cnc_nested, "YYYY-MM-DD HH:mm:ss").isValid()
+			) {
 				toast("Please check CNC Nesting Before updating status.", "warning");
 				return;
 			}
 		}
+
 		var editData;
 		if (name.includes("status")) {
 			editData = orderList.filter((itemA) => rowId !== itemA.id);
+			setOrderList(editData);
+			handleGenericUpdate(rowId, name, String(checked));
+			return;
 		} else {
 			editData = orderList.map((item) =>
-				item.id === rowId && name ? { ...item, [name]: String(checked) } : item
+				item.id === rowId && name
+					? { ...item, [name]: moment().format("YYYY-MM-DD HH:mm:ss") }
+					: item
 			);
+			setOrderList(editData);
+			handleGenericUpdate(rowId, name, moment().format("YYYY-MM-DD HH:mm:ss"));
+			return;
 		}
-
-		console.log(editData);
-		setOrderList(editData);
-		handleGenericUpdate(rowId, name, String(checked));
 	};
 
 	const handleEPComments = (rowId, rowValue) => {
@@ -264,7 +265,9 @@ export default function M1cncNesting() {
 	};
 
 	useEffect(() => {
-		handleGetLookup();
+		if (lookUpList.length === 0) {
+			handleGetLookup();
+		}
 		handleOrderList(access);
 	}, []);
 
@@ -376,7 +379,12 @@ export default function M1cncNesting() {
 			renderCell: (params) => {
 				return (
 					<Checkbox
-						checked={params.row.cnc_nested === "true" ? true : false}
+						checked={
+							params.row.cnc_nested === "true" ||
+							moment(params.row.cnc_nested, "YYYY-MM-DD HH:mm:ss").isValid()
+								? true
+								: false
+						}
 						sx={{ m: 1 }}
 						name="cnc_nested"
 						onChange={(e) => handleNested(params.row.id, e)}
@@ -516,7 +524,6 @@ export default function M1cncNesting() {
 								},
 							}}
 							processRowUpdate={(param, event) => {
-								console.log("processrowupdate", param);
 								handleGenericUpdateRow(
 									access,
 									["ep_comments", "cnc_nesting_pgm_no"],

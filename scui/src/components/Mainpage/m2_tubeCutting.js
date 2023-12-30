@@ -230,7 +230,7 @@ export default function M2tubeCUtting() {
 	const handleTCutDateTime = (rowId, e) => {
 		const { name, checked } = e.target;
 		const date = new Date();
-		const data_val = checked ? moment(date).format("DD MMM YY H:mm") : "";
+		const data_val = checked ? moment(date).format("YYYY-MM-DD HH:mm:ss") : "";
 		const editData = orderList.map((item) =>
 			item.id === rowId && name ? { ...item, [name]: data_val } : item
 		);
@@ -369,7 +369,7 @@ export default function M2tubeCUtting() {
 					<Checkbox
 						checked={moment(
 							params.row.tcutting_datetime,
-							"DD MMM YY H:mm"
+							"YYYY-MM-DD HH:mm:ss"
 						).isValid()}
 						sx={{ m: 1 }}
 						name="tcutting_datetime"

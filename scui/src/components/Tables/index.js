@@ -38,10 +38,10 @@ import AddRemoveOrderQuantity from "../modals/AddRemoveOrderQuantity";
 import { saveAsExcel } from "../../commonjs/CommonFun";
 import {
 	getOrderAllLakVal,
-	getOrderAll,
+	allData_excel,
 	setOrderGeneric,
-	setOrderHold,
 	setOrderDelete,
+	setOrderHold,
 	setOrderSplitNew,
 } from "../../constant/url";
 
@@ -207,6 +207,40 @@ export default function EnhancedTable() {
 				//handle error
 				console.error(response);
 			});
+	};
+
+	const handleAllDataOrderList = (authID) => {
+		var bodyFormData = new FormData();
+		bodyFormData.append("authId", authID);
+		bodyFormData.append("reqType", "live");
+		axios({
+			method: "post",
+			url: allData_excel,
+			data: bodyFormData,
+			headers: { "Content-Type": "multipart/form-data" },
+		})
+			.then(function (response) {
+				//handle success
+				const res_data = response.data;
+				if (res_data.status_code === 101) {
+					toast("Api Authentication failed. login again.");
+				} else if (res_data.status_code === 200) {
+					const ret_data_cd = res_data.data;
+					// setAllOrderList(ret_data_cd);
+					saveAsExcel(
+						ret_data_cd,
+						"Order Live " + moment().format("YYYYMMDD H_mm").toString()
+					);
+					toast("Excel Data Received.");
+				} else {
+					console.log(res_data.status_msg);
+				}
+			})
+			.catch(function (response) {
+				//handle error
+				console.log(response);
+			});
+		setIsUpdate(false);
 	};
 
 	const handleSplitUpdated = (e) => {
@@ -434,7 +468,10 @@ export default function EnhancedTable() {
 							Order Management
 						</Typography>
 						<Tooltip title="Download Excel list">
-							<IconButton color="info" onClick={() => saveAsExcel(orderList)}>
+							<IconButton
+								color="info"
+								onClick={() => handleAllDataOrderList(access)}
+							>
 								<DownloadIcon />
 							</IconButton>
 						</Tooltip>

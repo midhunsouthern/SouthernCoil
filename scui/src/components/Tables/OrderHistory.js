@@ -2,9 +2,14 @@ import { useState, useContext, useEffect, forwardRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import moment from "moment";
 
 import { AccessContext } from "../../constant/accessContext";
-import { getOrderHistory, getOrderBrazingLeak } from "../../constant/url";
+import {
+	getOrderHistory,
+	getOrderBrazingLeak,
+	allData_excel,
+} from "../../constant/url";
 
 import { DataGrid } from "@mui/x-data-grid";
 import {
@@ -36,6 +41,7 @@ export default function OrderHistory() {
 	const navigate = useNavigate();
 	const access = useContext(AccessContext).authID;
 	const [orderList, setOrderList] = useState([]);
+	const [allOrderList, setAllOrderList] = useState([]);
 	const [BrazingLeakList, setBrazingLeakList] = useState([]);
 	const [isUpdated, setIsUpdate] = useState(false);
 	const [isEdit, setIsEdit] = useState(false);
@@ -63,6 +69,40 @@ export default function OrderHistory() {
 					const ret_data_cd = res_data.data_orders;
 					setOrderList(ret_data_cd);
 					toast("Data Received.");
+				} else {
+					console.log(res_data.status_msg);
+				}
+			})
+			.catch(function (response) {
+				//handle error
+				console.log(response);
+			});
+		setIsUpdate(false);
+	};
+
+	const handleAllDataOrderList = (authID) => {
+		var bodyFormData = new FormData();
+		bodyFormData.append("authId", authID);
+		bodyFormData.append("reqType", "history");
+		axios({
+			method: "post",
+			url: allData_excel,
+			data: bodyFormData,
+			headers: { "Content-Type": "multipart/form-data" },
+		})
+			.then(function (response) {
+				//handle success
+				const res_data = response.data;
+				if (res_data.status_code === 101) {
+					toast("Api Authentication failed. login again.");
+				} else if (res_data.status_code === 200) {
+					const ret_data_cd = res_data.data;
+					// setAllOrderList(ret_data_cd);
+					saveAsExcel(
+						ret_data_cd,
+						"Order History " + moment().format("YYYYMMDD H_mm").toString()
+					);
+					toast("Excel Data Received.");
 				} else {
 					console.log(res_data.status_msg);
 				}
@@ -202,8 +242,12 @@ export default function OrderHistory() {
 							Order History
 						</Typography>
 						<Tooltip title="Download Excel list">
-							<IconButton color="info" onClick={() => saveAsExcel(orderList)}>
+							<IconButton
+								color="info"
+								onClick={() => handleAllDataOrderList(access)}
+							>
 								<DownloadIcon />
+								<p>Order History</p>
 							</IconButton>
 						</Tooltip>
 						<Tooltip title="Download Brazing Leak list">
@@ -212,6 +256,7 @@ export default function OrderHistory() {
 								onClick={() => handleBrazingLeak(access)}
 							>
 								<DownloadIcon />
+								<p>Brazing Details</p>
 							</IconButton>
 						</Tooltip>
 					</Stack>

@@ -111,7 +111,7 @@ export default function M4paintPacking() {
 	const handleGenericDatetimeCheck = (rowId, e) => {
 		const { name, checked } = e.target;
 		const date = new Date();
-		const data_val = checked ? moment(date).format("DD MMM YY H:mm") : "";
+		const data_val = checked ? moment(date).format("YYYY-MM-DD HH:mm:ss") : "";
 		const editData = orderList.map((item) =>
 			item.id === rowId && name ? { ...item, [name]: data_val } : item
 		);
@@ -320,7 +320,10 @@ export default function M4paintPacking() {
 						sx={{ m: 1 }}
 						name="pp_datetime"
 						onChange={(e) => handleGenericDatetimeCheck(params.row.id, e)}
-						checked={moment(params.row.pp_datetime, "DD MMM YY H:mm").isValid()}
+						checked={moment(
+							params.row.pp_datetime,
+							"YYYY-MM-DD HH:mm:ss"
+						).isValid()}
 					/>
 				);
 			},

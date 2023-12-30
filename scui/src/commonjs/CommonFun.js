@@ -103,7 +103,7 @@ function getSheetData(data, header) {
 	return sheetData;
 }
 
-export async function saveAsExcel(data) {
+export async function saveAsExcel(data, filename = "scui") {
 	let header = [];
 	for (var keyRefData in data[0]) {
 		var orderlbl = orderListLabelId.filter((lblId) => lblId.id === keyRefData);
@@ -124,7 +124,7 @@ export async function saveAsExcel(data) {
 		sheet1.range("A1:BZ1").style("fill", "BFBFBF");
 		range.style("border", true);
 		return workbook.outputAsync().then((res) => {
-			saveAs(res, "file.xlsx");
+			saveAs(res, filename + ".xlsx");
 		});
 	});
 }
