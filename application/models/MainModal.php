@@ -37,9 +37,9 @@ class MainModal extends CI_Model
 
     public function createOrderId()
     {
-        $this->db->select(' IFNULL(max(order_id),0) as order_id');
-        $oId = $this->db->get('order_list')->row()->order_id;
-        return substr(date("Y"), 2) . str_pad((int)substr($oId, 2) + 1, 4, "00", STR_PAD_LEFT);
+        $yr = substr(date("Y"), 2);
+        $oId = $this->db->query("select IFNULL(max(order_id),0) as order_id from order_list where order_id like '$yr%'")->row()->order_id;
+        return $yr . str_pad((int)substr($oId, 2) + 1, 4, "00", STR_PAD_LEFT);
     }
 
     private function upload_files($path, $title, $files)
