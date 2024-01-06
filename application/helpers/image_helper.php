@@ -39,7 +39,7 @@ function convert_file_to_webp($image_path, $output_path, $quality = 80)
         imagewebp($original_image, $webpImagePath, $quality);
         $imageData=file_get_contents($webpImagePath);
         $base64Webp=base64_encode($imageData);
-        $src = 'data: '.mime_content_type($webpImagePath).';base64,'.$base64Webp;
+        $src = 'data:'.mime_content_type($webpImagePath).';base64,'.$base64Webp;
         imagedestroy($original_image);
         imagedestroy(imagecreatefromwebp($webpImagePath));
         return $src;

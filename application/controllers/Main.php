@@ -282,6 +282,7 @@ class Main extends CI_Controller
     public function setOrderNew()
     {
         try { 
+           
             if (!$this->mm->access_code_verify($this->input->post('authId'))) {
                 $ret_data['status_code'] = 101;
                 $ret_data['status_msg'] = "Access Code not correct, Please login again.";
@@ -306,18 +307,17 @@ class Main extends CI_Controller
            
             if (is_null($orderId) || $orderId == '') {
                 // Insert data. 
-                $imgData = json_decode($data['image_data'], true)[0];
+                //$imgData = json_decode($data['image_data'], true)[0];
                 foreach($imageKeys as $keys=>$value){
-                    if(count($imgData[$value])>0){
-                        foreach ($imgData[$value] as $row) {
+                    if(count($_POST[$value.'Photo'])>0){
+                        foreach ($_POST[$value.'Photo'] as $row) {
                             $webpData=convert_base64_to_webp($row,getcwd().'/');
                             $refId=$keys.$uq;
                             $this->db->insert('drawing_images', array('drawing_refid' => $keys.$uq, 'drawing_base64' => $webpData));
-                            $data[$value.'_photo']=$refId;
+                            $data[$value.'_Photo']=$refId;
                         }
                     }
                 }
-                unset($data['image_data']);
     
                 if ($type == 'submit') {
                     $data['order_id'] = $this->mm->createOrderId();
@@ -388,6 +388,7 @@ class Main extends CI_Controller
     
             echo json_encode($ret_data);
                 } catch (\Throwable $th) {
+                    log_message('debug',print_r($th,true));
                     echo $th;
                 }
         
