@@ -773,9 +773,9 @@ class Main extends CI_Controller
         //var_dump("SELECT ROUND(SUM((a.length * a.height * a.rows * (select count(b.order_id) from brazing_details b where a.order_id = b.order_id and a.split_id = b.split_id)) /144 )) as pendingsq FROM `order_list` a " . $ret_clause['where_clause'] . "");die;
         $ret_data['pendingsq'] = $this->db->query("SELECT ROUND(SUM((a.length * a.height * a.rows * (select count(b.order_id) from brazing_details b where a.order_id = b.order_id and a.split_id = b.split_id)) /144 )) as pendingsq FROM `order_list` a " . $ret_clause['where_clause'] . "")->row();
         $ret_data['completedSq'] = $this->db->query("Select * from (SELECT  count(" . $ret_clause['fieldName'] . ") as count, sum(sq_feet) as compsq, SUBSTRING(" . $ret_clause['fieldName'] . '_dt' . ", 1, 10) as stat_date 
-            FROM `order_list` where " . $ret_clause['fieldName']  . "= 'true' group by " . $ret_clause['fieldName'] . '_dt' . " order by " . $ret_clause['fieldName'] . "_dt desc limit 15)
+            FROM `order_list` where " . $ret_clause['fieldName']  . "= 'true' group by stat_date order by " . $ret_clause['fieldName'] . "_dt desc limit 15)
             as order_gp order by stat_date asc;")->result_array();
-        $ret_data['completed_count'] = $this->db->query("SELECT  sum(a.sq_feet) as completed_count FROM `order_list` a where " . $ret_clause['fieldName']  . "= 'true' and " . $ret_clause['fieldName'] . '_dt= CURRENT_DATE()' . ";")->row();
+        $ret_data['completed_count'] = $this->db->query("SELECT  sum(a.sq_feet) as completed_count FROM `order_list` a where " . $ret_clause['fieldName']  . "= 'true' and substring(" . $ret_clause['fieldName'] . '_dt, 1,10)= CURRENT_DATE()' . ";")->row();
         $ret_data['status_code'] = 200;
         $ret_data['status_msg'] = "Data retrival successful";
         echo json_encode($ret_data);
@@ -1643,8 +1643,25 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
         echo json_encode($ret_data);
     }
 
+    public function piePendingSqGraph()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+
+        $pendingCount =  $this->mm->pendingSQ_graph();
+
+        $ret_data['data'] = $pendingCount;
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Data Retrieved";
+        echo json_encode($ret_data);
+    }
+
     public function test()
     {
-        echo $this->mm->lookupIdToValue('111,112,114,185,264,197,196', 'coverType');
+        echo $this->mm->pendingSQ_graph();
     }
 }

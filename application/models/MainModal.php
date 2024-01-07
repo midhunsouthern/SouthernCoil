@@ -293,8 +293,23 @@ class MainModal extends CI_Model
         return $ret_str;
     }
 
-    public function splitLookupString($lkpStr)
+    public function pendingSQ_graph()
     {
-        $lkpstr = trim($lkpStr);
+        $fieldName = array(
+            'CNC Nesting' => 'cnc_nesting_status', 'CNC Punching' => 'cnc_punching_status', 'CNC Bending' => 'bending_status', 'Tube Cutting' => 'tcutting_status',
+            'Fin Punch' => 'finpunch_status', 'Coil Assembly' => 'ca_status', 'Coil Expansion' => 'ce_status', 'Brazing Testing' => 'brazing_status', 'Paint & Packing' => 'pp_status',
+            'Dispatch' => 'dispatch_status'
+        );
+
+        $count = array();
+        $label = array();
+        foreach ($fieldName as $key => $val) {
+            $cnt_pend = $this->db->query("select count(sq_feet) as cnt_pend from order_list where $val <>'true'")->row()->cnt_pend;
+            array_push($count, $cnt_pend);
+            array_push($label, $key);
+        }
+        $pendData['Label'] = $label;
+        $pendData['Count'] = $count;
+        return $pendData;
     }
 }
