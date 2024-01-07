@@ -203,9 +203,10 @@ export default function CreateOrder() {
 		const imgData = [
 			{ ep: epPhoto, assembly: assemblyPhoto, brazing: brazingPhoto },
 		];
+		console.log(imgData);
 		const btnname = type;
 		var bodyFormData = new FormData();
-
+console.log(access);
 		bodyFormData.append("authId", access);
 		bodyFormData.append("type", btnname);
 
@@ -260,26 +261,27 @@ export default function CreateOrder() {
 		bodyFormData.append("dispatch_comment", dispatchComment);
 		bodyFormData.append("final_comment", finalComments);
 
-		bodyFormData.append("image_data", JSON.stringify(imgData));
-
-		await axios({
+		imgData.forEach((item, index) => {
+			bodyFormData.append(`epPhoto[${index}]`, item.ep);
+			bodyFormData.append(`assemblyPhoto[${index}]`, item.assembly);
+			bodyFormData.append(`brazingPhoto[${index}]`, item.brazing);
+		  });
+		  console.log(bodyFormData.toString().length);
+		  const responseOfOrder=await axios({
 			method: "post",
 			url: setOrderNew,
-			data: bodyFormData,
-			headers: { "Content-Type": "multipart/form-data" },
-		})
-			.then(function (response) {
-				//handle success
-				const res_data = response.data;
-				if (res_data.status_code === 200) {
-					if (res_data.order_id === "n/a") {
-						toast("Order Temporaly Saved Successfully");
-					} else {
-						toast("Order Successful, Order Id: " + res_data.order_id);
-						setRetOrderId(res_data.order_id);
-						setOepenOrderStatus(true);
-					}
-					setCustomerName(0);
+			data: bodyFormData
+		});
+		const res_data=responseOfOrder.data;
+		if(responseOfOrder.status===200){
+			if (res_data.order_id === "n/a") {
+				toast("Order Temporaly Saved Successfully");
+			} else {
+				toast("Order Successful, Order Id: " + res_data.order_id);
+				setRetOrderId(res_data.order_id);
+				setOepenOrderStatus(true);
+			}
+			setCustomerName(0);
 					setCustomerNameList([{ label: "Loading...", id: 0 }]);
 					setLength(0);
 					setHeight(0);
@@ -333,14 +335,7 @@ export default function CreateOrder() {
 					setBrazingPhoto([]);
 					retOrderId("");
 					//return data
-				} else {
-					console.log(res_data.status_msg);
-				}
-			})
-			.catch(function (response) {
-				//handle error
-				console.log(response);
-			});
+		}
 
 		setApiCompStatus({
 			...apiCompStatus,
