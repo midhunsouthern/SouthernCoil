@@ -294,10 +294,6 @@ class Main extends CI_Controller
             $orderId = $this->input->post('id');
             $type = $this->input->post('type');
             $data = $this->mm->arrayToDataArray($_POST);
-            $uq = time();
-            $epuq = 'ep' . $uq;
-            $asmuq = 'asm' . $uq;
-            $bzuq = 'bz' . $uq;
             $imageKeys=[
                 'ep'=>'ep',
                 'asm'=>'assembly',
@@ -308,14 +304,17 @@ class Main extends CI_Controller
             if (is_null($orderId) || $orderId == '') {
                 // Insert data. 
                 //$imgData = json_decode($data['image_data'], true)[0];
+                $image_path = realpath(APPPATH . '../uploads');
                 foreach($imageKeys as $keys=>$value){
                     if(count($_POST[$value.'Photo'])>0){
                         foreach ($_POST[$value.'Photo'] as $row) {
-                            $webpData=convert_base64_to_webp($row,getcwd().'/');
-                            $refId=$keys.$uq;
-                            $this->db->insert('drawing_images', array('drawing_refid' => $keys.$uq, 'drawing_base64' => $webpData));
-                            $data[$value.'_Photo']=$refId;
-                        }
+                            $uq = time();
+                            $refId=$keys.'_'.$uq;
+
+                             $webpData=convert_base64_to_webp($row,$image_path,$refId);
+                             $this->db->insert('drawing_images', array('drawing_refid' => $refId, 'drawing_base64' => $webpData));
+                             $data[$value.'_Photo']=$refId;
+                    }
                     }
                 }
     
