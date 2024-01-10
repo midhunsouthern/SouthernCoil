@@ -25,6 +25,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import DeleteIcon from '@mui/icons-material/Delete';
 import PreviewIcon from "@mui/icons-material/Preview";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import {
@@ -129,18 +130,61 @@ export default function OrderEditModal(prop) {
 		setDialogImg(base64);
 		setOpenImg(true);
 	};
-
+	const handleClickDeleteimg=(imgIndex,imgType)=>{
+		if(imgType==='ep'){
+			setEpPhoto(prevEpPhoto => {
+				// Create a copy of the array and then splice
+				const newEpPhoto = [...prevEpPhoto];
+				newEpPhoto.splice(imgIndex, 1);
+				return newEpPhoto;
+			});
+		} else if(imgType==='assembly'){
+			setAssemblyPhoto(prevAssemblyPhoto=>{
+				const newAssemblyPhoto=[...prevAssemblyPhoto];
+				newAssemblyPhoto.splice(imgIndex,1);
+				return newAssemblyPhoto;
+			});
+		} else{
+			setBrazingPhoto(brazePhoto=>{
+				const newBrazePhoto=[...brazePhoto];
+				newBrazePhoto.splice(imgIndex,1);
+				return newBrazePhoto;
+			});
+		}
+	};
 	const handleCloseImg = (response) => {
 		setOpenImg(false);
 	};
 
 	const handleFiles = (type, files) => {
+		console.log(files.fileList.length);
 		if (type === "ep") {
-			setEpPhoto(files.base64);
+			setEpPhoto((prevImage)=>{
+				if (prevImage.length===3) {
+					alert('You cant upload more than three images');
+					return prevImage;
+				} else {
+					return [...prevImage,...files.base64]
+				}
+			});
 		} else if (type === "assembly") {
-			setAssemblyPhoto(files.base64);
+			setAssemblyPhoto((prevImage)=>{
+				if (prevImage.length===3) {
+					alert('You cant upload more than three images');
+					return prevImage;
+				} else {
+					return [...prevImage,...files.base64]
+				}
+			});
 		} else if (type === "brazing") {
-			setBrazingPhoto(files.base64);
+			setBrazingPhoto((prevImage)=>{
+				if (prevImage.length===3) {
+					alert('You cant upload more than three images');
+					return prevImage;
+				} else {
+					return [...prevImage,...files.base64]
+				}
+			});
 		}
 	};
 
@@ -203,8 +247,27 @@ export default function OrderEditModal(prop) {
 		bodyFormData.append("dispatch_mode", dispatchMode);
 		bodyFormData.append("dispatch_comment", dispatchComment);
 		bodyFormData.append("final_comment", finalComments);
-		bodyFormData.append("image_data", JSON.stringify(imgData));
-
+		//bodyFormData.append("image_data", JSON.stringify(imgData));
+		imgData.forEach((item, index) => {
+			if (item.ep.length > 0) {
+				item.ep.forEach((img, imgIndex) => {
+					console.log('Image Index EP',imgIndex);
+					bodyFormData.append(`epPhoto[${imgIndex}]`, img);
+				});
+			}
+			if (item.assembly.length > 0) {
+				item.assembly.forEach((img, imgIndex) => {
+					console.log('Image Index Assembly',imgIndex);
+					bodyFormData.append(`assemblyPhoto[${imgIndex}]`, img);
+				});
+			}
+			if (item.brazing.length > 0) {
+				item.brazing.forEach((img, imgIndex) => {
+					console.log('Image Index Brazing',imgIndex);
+					bodyFormData.append(`brazingPhoto[${imgIndex}]`, img);
+				});
+			}
+		  });
 		axios({
 			method: "post",
 			url: setOrderNew,
@@ -1055,11 +1118,19 @@ export default function OrderEditModal(prop) {
 																alt={"epphoto"}
 																loading="lazy"
 															/>
+															<Stack direction="row" spacing={1}>
 															<IconButton
 																onClick={() => handleClickOpenimg(item)}
 															>
 																<PreviewIcon />
 															</IconButton>
+															
+															<IconButton
+																onClick={() => handleClickDeleteimg(index,'ep')}
+															>
+																<DeleteIcon />
+															</IconButton>
+															</Stack>
 														</ImageListItem>
 													))}
 												</ImageList>
@@ -1067,10 +1138,11 @@ export default function OrderEditModal(prop) {
 											<ReactFileReader
 												fileTypes={[".png", ".jpg"]}
 												base64={true}
+												multipleFiles={true}
 												handleFiles={(files) => {
 													handleFiles("ep", files);
 												}}
-												multipleFiles={true}
+												
 												key={Math.random()}
 											>
 												<PhotoCameraIcon />
@@ -1221,11 +1293,18 @@ export default function OrderEditModal(prop) {
 																alt={"assembly"}
 																loading="lazy"
 															/>
+															<Stack direction="row" spacing={1}>
 															<IconButton
 																onClick={() => handleClickOpenimg(item)}
 															>
 																<PreviewIcon />
 															</IconButton>
+															<IconButton
+																onClick={() => handleClickDeleteimg(index,'assembly')}
+															>
+																<DeleteIcon />
+															</IconButton>
+															</Stack>
 														</ImageListItem>
 													))}
 												</ImageList>
@@ -1233,9 +1312,9 @@ export default function OrderEditModal(prop) {
 											<ReactFileReader
 												fileTypes={[".png", ".jpg"]}
 												base64={true}
-												handleFiles={(files) => handleFiles("assembly", files)}
 												multipleFiles={true}
-											>
+												handleFiles={(files) => handleFiles("assembly", files)}
+												>
 												<PhotoCameraIcon />
 											</ReactFileReader>
 										</>
@@ -1337,11 +1416,18 @@ export default function OrderEditModal(prop) {
 																alt={"brazing"}
 																loading="lazy"
 															/>
+															<Stack direction="row" spacing={1}>
 															<IconButton
 																onClick={() => handleClickOpenimg(item)}
 															>
 																<PreviewIcon />
 															</IconButton>
+															<IconButton
+																onClick={() => handleClickDeleteimg(index,'brazing')}
+															>
+																<DeleteIcon />
+															</IconButton>
+															</Stack>
 														</ImageListItem>
 													))}
 												</ImageList>
@@ -1349,8 +1435,9 @@ export default function OrderEditModal(prop) {
 											<ReactFileReader
 												fileTypes={[".png", ".jpg"]}
 												base64={true}
-												handleFiles={(files) => handleFiles("brazing", files)}
 												multipleFiles={true}
+												handleFiles={(files) => handleFiles("brazing", files)}
+												
 											>
 												<PhotoCameraIcon />
 											</ReactFileReader>

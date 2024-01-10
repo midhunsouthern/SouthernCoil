@@ -41,7 +41,101 @@ class MainModal extends CI_Model
         $oId = $this->db->get('order_list')->row()->order_id;
         return substr(date("Y"), 2) . str_pad((int)substr($oId, 2) + 1, 4, "00", STR_PAD_LEFT);
     }
-
+    /**
+     * Save Order
+     */
+    public function saveOrder($data,$orderId,$type){
+        try {
+            $ref_data=[];
+            $statusCode='';
+            $message='';
+            $orderType=1;
+            $orderTableName='order_list';
+            if($orderId!=''){
+                //Check Type 
+                if($type=='save'){
+                    $orderTableName='order_list_saved';
+                    $orderType=0;
+                }
+                unset($data['id']);
+                if ($this->db->update($orderTableName, $data)) {
+                    $this->updateCE_Status($orderId);
+                    $this->saveImageOrder($orderId,$orderType);
+                    $statusCode= 200;
+                    $message = 'Order Data Update Successful';
+                } else {
+                    $statusCode = 201;
+                    $message = 'Order Data Update UnSuccessful';
+                }
+            } else {
+                if ($type == 'submit') {
+                    $data['order_id'] = $this->createOrderId();
+                    $orderTableName = 'order_list';
+                    $orderId = strval($data['order_id']);
+                    $orderType=1;
+                } elseif ($type == 'save') {
+                    $orderTableName = 'order_list_saved';
+                    $orderId = 'n/a';
+                    $orderType=0;
+                }
+                if ($this->db->insert($orderTableName, $data)) {
+                    $refId=$this->db->insert_id();
+                    if ($orderType == 1) {
+                        $this->createBrazingQuantity($ret_data['order_id'], $data['quantity']);
+                    }
+                    $this->saveImageOrder($refId,$orderType);
+                    $statusCode= 200;
+                    $message = 'Order Saved Successful';
+                }
+            }
+            return [
+                'status_code'=>$statusCode,
+                'message'=>$message,
+                'order_id'=>$orderId
+            ];
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+    /**
+     * Save Images against order id
+     */
+    private function saveImageOrder($refId,$orderType){
+        try {
+            $image_path = realpath(APPPATH . '../uploads');
+            $imageKeys=[
+                'ep'=>'ep',
+                'asm'=>'assembly',
+                'bz'=>'brazing'
+            ];
+            log_message('debug','Image Order');
+            log_message('debug',$orderType);
+            $fetchData=$this->db->select('drawing_base64')
+                            ->from('drawing_images')
+                            ->where(['drawing_refid'=>$refId,'order_type'=>$orderType])
+                            ->get();
+                            log_message('debug',json_encode($fetchData->result_array()));
+                            $resultSet=$fetchData->result_array();
+                            if(count($resultSet)>0){
+                                foreach($resultSet as $key=>$value){
+                                    unlink($image_path.'/'.$value['drawing_base64']);
+                                }
+                            }
+            $this->db->delete('drawing_images',['drawing_refid'=>$refId,'order_type'=>$orderType]);
+    
+    foreach($imageKeys as $keys=>$value){
+        if(isset($_POST[$value.'Photo'])){
+            foreach ($_POST[$value.'Photo'] as $row) {
+                 $webpData=convert_base64_to_webp($row,$image_path,$refId);
+                 $this->db->insert('drawing_images', array('drawing_refid' => $refId, 'drawing_base64' => $webpData,'order_type'=>$orderType,'draw_type'=>$keys));
+                 $data[$value.'_Photo']=$refId;
+        }
+        }
+    }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
     private function upload_files($path, $title, $files)
     {
         $config = array(

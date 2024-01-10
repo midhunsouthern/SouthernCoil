@@ -278,8 +278,26 @@ class Main extends CI_Controller
 
         echo json_encode($ret_data);
     }
-
-    public function setOrderNew()
+    /**
+     * Create a new order
+     */
+    public function setOrderNew(){
+        try {
+            log_message('debug','Set Order New');
+            $orderId=$this->input->post('id');
+            $type=$this->input->post('type');
+            $postData=$this->mm->arrayToDataArray($_POST);
+            //Unset columns
+            unset($postData['authId']);
+            unset($postData['type']);
+            $responseOrder=$this->mm->saveOrder($postData,$orderId,$type);
+            echo json_encode($responseOrder);
+        } catch (\Throwable $th) {
+            log_message('debug',$th);
+            throw $th;
+        }
+    }
+    public function setOrderNew2()
     {
         try { 
            
@@ -304,35 +322,37 @@ class Main extends CI_Controller
             if (is_null($orderId) || $orderId == '') {
                 // Insert data. 
                 //$imgData = json_decode($data['image_data'], true)[0];
-                $image_path = realpath(APPPATH . '../uploads');
-                foreach($imageKeys as $keys=>$value){
-                    if(count($_POST[$value.'Photo'])>0){
-                        foreach ($_POST[$value.'Photo'] as $row) {
-                            $uq = time();
-                            $refId=$keys.'_'.$uq;
-
-                             $webpData=convert_base64_to_webp($row,$image_path,$refId);
-                             $this->db->insert('drawing_images', array('drawing_refid' => $refId, 'drawing_base64' => $webpData));
-                             $data[$value.'_Photo']=$refId;
-                    }
-                    }
-                }
+                
     
                 if ($type == 'submit') {
                     $data['order_id'] = $this->mm->createOrderId();
                     $tbl_name = 'order_list';
                     $ret_data['order_id'] = strval($data['order_id']);
+                    $orderType=1;
                 } elseif ($type == 'save') {
                     $tbl_name = 'order_list_saved';
                     $ret_data['order_id'] = 'n/a';
+                    $orderType=0;
                 }
+                
                 unset($data['type']);
                 if ($this->db->insert($tbl_name, $data)) {
                     if ($tbl_name == 'order_list') {
                         $this->mm->createBrazingQuantity($data['order_id'], $data['quantity']);
                     }
+                    $refId=$this->db->insert_id();
                     //$this->mm->updateCE_Status();
-    
+    //Image Iploads
+    $image_path = realpath(APPPATH . '../uploads');
+    foreach($imageKeys as $keys=>$value){
+        if(count($_POST[$value.'Photo'])>0){
+            foreach ($_POST[$value.'Photo'] as $row) {
+                 $webpData=convert_base64_to_webp($row,$image_path,$refId);
+                 $this->db->insert('drawing_images', array('drawing_refid' => $refId, 'drawing_base64' => $webpData,'order_type'=>$orderType));
+                 $data[$value.'_Photo']=$refId;
+        }
+        }
+    }
                     $ret_data['status_code'] = 200;
                     $ret_data['status_msg'] = 'Order Saved Successful';
                 }
