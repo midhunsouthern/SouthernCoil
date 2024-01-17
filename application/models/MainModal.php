@@ -81,7 +81,7 @@ class MainModal extends CI_Model
                 if ($this->db->insert($orderTableName, $data)) {
                     $refId=$this->db->insert_id();
                     if ($orderType == 1) {
-                        $this->createBrazingQuantity($ret_data['order_id'], $data['quantity']);
+                        $this->createBrazingQuantity($data['order_id'], $data['quantity']);
                     }
                     $this->saveImageOrder($refId,$orderType);
                     $statusCode= 200;
@@ -279,7 +279,12 @@ class MainModal extends CI_Model
         if ($splitId !== null) {
             $this->db->where('split_id', $splitId);
         }
-        return $this->db->get("brazing_details");
+        $brazingData=$this->db->get("brazing_details")->result_array();
+        foreach ($brazingData as $key => $value) {
+            $brazingData[$key]['brazing_photo']=$this->db->select('drawing_base64')->from('drawing_images')->where(['order_serial_ref'=>$value['series_ref']])->get()->result_array();
+            log_message('debug',print_r($value,true));
+        }
+        return $brazingData;
     }
 
     public function createSplitOrderId($orderId)

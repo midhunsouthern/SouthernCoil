@@ -9,7 +9,14 @@ import {
 	Stack,
 	TextField,
 	Typography,
+	AppBar,
+	Toolbar,
+	Box
 } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
+import Grid from '@mui/material/Grid';
+import PrintIcon from '@mui/icons-material/Print';
+
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Autocomplete } from "@mui/material";
@@ -19,6 +26,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import {
+	baseURL,
 	getLookupData,
 	getOrderDataByID,
 	getCustomersDataAll,
@@ -37,7 +45,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PreviewIcon from "@mui/icons-material/Preview";
 import Slide from "@mui/material/Slide";
-
+import '../../Table.css';
+import logo from '../../assets/img/logo1.png';
 const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -107,6 +116,7 @@ export default function OrderViewModal(prop) {
 	const [brazingPhoto, setBrazingPhoto] = useState([]);
 	const [lookUpList, setLookupList] = React.useState([]);
 
+
 	const [isUpdate, setIsUpdate] = useState(false);
 	const [openImg, setOpenImg] = useState(false);
 	const [dialogImg, setDialogImg] = useState("");
@@ -167,7 +177,7 @@ export default function OrderViewModal(prop) {
 			});
 	}
 
-	const handleOrderinfo = () => {
+	const handleOrderinfo1 = () => {
 		var bodyFormData = new FormData();
 		bodyFormData.append("authId", access);
 		bodyFormData.append("id", orderRowID);
@@ -239,6 +249,7 @@ export default function OrderViewModal(prop) {
 					setEpPhoto(ret_data_cd[0].ep_photo);
 					setAssemblyPhoto(ret_data_cd[0].assembly_Photo);
 					setBrazingPhoto(ret_data_cd[0].brazing_Photo);
+
 				} else {
 					console.log(res_data.status_msg);
 				}
@@ -250,527 +261,489 @@ export default function OrderViewModal(prop) {
 	};
 
 	function printPage() {
-		console.log("print");
-		let printContents = document.getElementById("orderView").innerHTML;
-		let originalContents = document.body.innerHTML;
-		document.body.innerHTML = printContents;
-		window.print();
-		document.body.innerHTML = originalContents;
-		/*$("#staticOrderViewBackdrop").modal('dispose');*/
+		// Get the element with the ID 'orderView' and the button to hide
+
+window.print();
+
+		  
 	}
 
 	useEffect(() => {
 		handleSqFeet();
 		handleSize();
-	}, [length, height, row, quantity]);
+	}, [length, height, row, quantity, handleSqFeet, handleSize]);
 
 	useEffect(() => {
 		if (prop.orderId !== null) {
 			handleGetLookup();
-			handleOrderinfo();
+			handleOrderinfo1();
 		}
 	}, [prop.orderId]);
 	return (
 		<div>
-			{/* <!-- Modal --> */}
 			<>
-				<Button
-					onClick={() => {
-						printPage();
-					}}
-					variant="outlined"
-				>
-					Print
-				</Button>
-				<Container key={"orderView"}>
-					<div className="row">
-						<div className="col-12">
-							<div className="row  mt-2 rounded">
-								<Stack direction="row" spacing={12}>
-									<Typography variant="subtitle1" gutterBottom>
-										Date: {orderDate}
-									</Typography>
-									<Typography variant="subtitle1" gutterBottom>
-										Order No: {orderNo + splitId}
-									</Typography>
-								</Stack>
-								<div
-									className="row  mt-2 rounded"
-									style={{ backgroundColor: orange[200] }}
-								>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Customer:{customerName}
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Length: {length}
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Height: {height}
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Row: {row}
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Quantity: {quantity}
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Sq Feet: {sqfeet}
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Size: {size}
-										</Typography>
-									</div>
-								</div>
+				<Container key={"orderView"} id="orderView">
+					<Grid container spacing={4}>
+						<Grid item xs={6}>
+							<img src={logo} alt="Logo" style={{ width: '50%', height: 'auto' }} />
+						</Grid>
+						<Grid item xs={6} style={{display:'flex',justifyContent:"flex-end",alignItems:"center"}}>
+							<Box >
+							<Button id="print-ignore"
+								style={{ backgroundColor: "#C5552C", color: "white" }}
+								onClick={() => {
+									printPage();
+								}}
+								variant="contained"
+								startIcon={<PrintIcon />}
+							>
+								Print
+							</Button>
+							</Box>
+						</Grid>
+					</Grid>
+					<Grid container spacing={2} columnSpacing={2} columnGap={2} style={{padding:'10px',marginTop:'1.5em'}}>
+						<Typography>Order Details</Typography>
+						<table border={1} cellPadding={1} cellSpacing={2} style={{ width: 'inherit' }}>
+							<thead>
 
-								<div
-									className="row  mt-2 rounded"
-									style={{ backgroundColor: purple[200] }}
-								>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Pipe Type:
-											{lookUpList["pipeType"]?.map((item) => {
-												return (
-													<>
-														{pipeType.includes(item.id) ? item.lkp_value : null}
-													</>
-												);
-											})}
-										</Typography>
-									</div>
+							<tr>
+									<th>Order No</th>
+									<th>Date</th>
+									<th>Customer</th>
+									<th>Size</th>
+									<th>Sq Feet</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>{orderNo + splitId}</td>
+									<td>{orderDate}</td>
+									<td>{customerName}</td>
+									<td>{size}</td>
+									<td>{sqfeet}</td>
+								</tr>
+							</tbody>
+						</table>
+					</Grid>
+					<Grid container spacing={2}>
+						<Grid item xs={6}>
+							<Grid container spacing={2}>
+								<Grid item xs={12}>
+									<Typography variant="h6">End Plate</Typography>
+									<table>
+										<tbody>
+											<tr>
+												<th>
+													Material
+												</th>
+												<td>
+													{lookUpList["epMaterial"]?.map((item) => {
+														return (
+															<>
+																{endPlateMaterial && endPlateMaterial.includes(item.id)
+																	? item.lkp_value
+																	: ""}
+															</>
+														);
+													})}
 
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Expansion Type:{" "}
-											{lookUpList["expansionType"]?.map((item) => {
-												return (
-													<>
-														{expansionType.includes(item.id)
-															? item.lkp_value
-															: ""}
-													</>
-												);
-											})}
-										</Typography>
-									</div>
-									<div className="col-12">
-										<Typography variant="subtitle1" gutterBottom>
-											Pipe Bend Data
-										</Typography>
-										<Stack
-											direction="row"
-											spacing={10}
-											alignContent="space-between"
-										>
-											{pbStraight === "true" && (
-												<Stack>
-													<Typography variant="subtitle1" gutterBottom>
-														Straight
-													</Typography>
-													<Typography variant="subtitle1" gutterBottom>
-														Qty: {pbStraightQty}
-													</Typography>
-													<Typography variant="subtitle1" gutterBottom>
-														Size: {pbStraightSize}
-													</Typography>
-													<Typography variant="subtitle1" gutterBottom>
-														Total Qty: {pbStraightTotQty}
-													</Typography>
-												</Stack>
-											)}
-											{pbSingle === "true" && (
-												<Stack>
-													<Typography variant="subtitle1" gutterBottom>
-														Single
-													</Typography>
-													<Typography variant="subtitle1" gutterBottom>
-														Qty: {pbSingleQty}
-													</Typography>
-													<Typography variant="subtitle1" gutterBottom>
-														Size: {pbSingleSize}
-													</Typography>
-													<Typography variant="subtitle1" gutterBottom>
-														Total Qty: {pbSingleTotQty}
-													</Typography>
-												</Stack>
-											)}
-											{pbCross === "true" && (
-												<Stack>
-													<Typography variant="subtitle1" gutterBottom>
-														Cross
-													</Typography>
-													<Typography variant="subtitle1" gutterBottom>
-														Qty: {pbCrossQty}
-													</Typography>
-													<Typography variant="subtitle1" gutterBottom>
-														Size: {pbCrossSize}
-													</Typography>
-													<Typography variant="subtitle1" gutterBottom>
-														Total Qty: {pbCrossTotQty}
-													</Typography>
-												</Stack>
-											)}
-											{pbOther === "true" && (
-												<Stack>
-													<Typography variant="subtitle1" gutterBottom>
-														Other
-													</Typography>
-													<Typography variant="subtitle1" gutterBottom>
-														Qty: {pbOtherQty}
-													</Typography>
-													<Typography variant="subtitle1" gutterBottom>
-														Size: {pbOtherSize}
-													</Typography>
-													<Typography variant="subtitle1" gutterBottom>
-														Total Qty: {pbOtherTotQty}
-													</Typography>
-												</Stack>
-											)}
-										</Stack>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Pipe Comment: {pipeComment}
-										</Typography>
-									</div>
-								</div>
-								<div
-									className="row  mt-2 rounded"
-									style={{ backgroundColor: blue[200] }}
-								>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											End Plate Material:{" "}
-											{lookUpList["epMaterial"]?.map((item) => {
-												return (
-													<>
-														{endPlateMaterial.includes(item.id)
-															? item.lkp_value
-															: ""}
-													</>
-												);
-											})}
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											End Plate Model:{" "}
-											{lookUpList["epModal"]?.map((item) => {
-												return (
-													<>
-														{endPlateModel.includes(item.id)
-															? item.lkp_value
-															: ""}
-													</>
-												);
-											})}
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											End Plate Images
-										</Typography>
-										<>
-											{
-												<ImageList cols={3} rowHeight={164}>
-													{epPhoto?.map((item, index) => (
-														<ImageListItem key={"epphoto" + index}>
-															<img
-																src={item}
-																srcSet={item}
-																alt={"EpPhoto"}
-																loading="lazy"
-															/>
-															<IconButton
-																onClick={() => handleClickOpenimg(item)}
-															>
-																<PreviewIcon />
-															</IconButton>
-														</ImageListItem>
-													))}
-												</ImageList>
-											}
-										</>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											End Plate Orientation{" "}
-											{lookUpList["oreientation"]?.map((item) => {
-												return (
-													<>
-														{endPlateOrientation.includes(item.id)
-															? item.lkp_value
-															: ""}
-														<br />
-													</>
-												);
-											})}
-										</Typography>
-									</div>
-									<div className="col-12">
-										<Typography variant="subtitle1" gutterBottom>
-											Cover Type-Detail:
-											<Stack direction="row" spacing={2}>
-												{lookUpList["coverType"]?.map((item) => {
+												</td>
+											</tr>
+											<tr>
+												<th>Model</th>
+												<td>
+													{lookUpList["epModal"]?.map((item) => {
+														return (
+															<>
+																{endPlateModel && endPlateModel.includes(item.id)
+																	? item.lkp_value
+																	: ""}
+															</>
+														);
+													})}
+												</td>
+											</tr>
+											<tr>
+												<th>Orientation</th>
+												<td>
+													{lookUpList["oreientation"]?.map((item) => {
+														return (
+															<>
+																{endPlateOrientation && endPlateOrientation.includes(item.id)
+																	? item.lkp_value
+																	: ""}
+																<br />
+															</>
+														);
+													})}
+												</td>
+											</tr>
+											<tr>
+												<th>Cover Type</th>
+												<td>
+													<Stack direction="row" spacing={3}>
+														{lookUpList["coverType"]?.map((item) => {
+															return (
+																<>
+																	{item.lkp_value},
+																	{lookUpList["coverDetail"]?.map((itemd) => {
+																		if (
+																			coverDetail !== undefined && itemd.lkp_id === item.id &&
+																			coverDetail.indexOf(itemd.id) !== -1
+																		) {
+																			return (
+																				<>
+																					{itemd.sublkp_val} <br />
+																				</>
+																			);
+																		}
+																	})}
+																</>
+															);
+														})}
+													</Stack>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</Grid>
+								<Grid item xs={12}>
+									<Typography variant="h6">Pipe</Typography>
+									<table border={1} cellPadding={1} cellSpacing={2}>
+										<tbody>
+											<tr>
+												<th>Pipe Type:</th>
+												<td>{lookUpList["pipeType"]?.map((item) => {
 													return (
-														<div
-															style={{
-																backgroundColor: yellow[300],
-																padding: "3px",
-																borderRadius: "5px",
-															}}
-														>
-															<InputLabel id="cover-label">
-																{item.lkp_value}
-															</InputLabel>
-															<Stack
-																style={{
-																	backgroundColor: orange[400],
-																	padding: "3px",
-																	borderRadius: "5px",
-																}}
-															>
-																{lookUpList["coverDetail"]?.map((itemd) => {
-																	if (
-																		itemd.lkp_id === item.id &&
-																		coverDetail.indexOf(itemd.id) !== -1
-																	) {
-																		return (
-																			<>
-																				{itemd.sublkp_val} <br />
-																			</>
-																		);
-																	}
-																})}
-															</Stack>
-														</div>
+														<>
+															{pipeType && pipeType.includes(item.id) ? item.lkp_value : null}
+														</>
 													);
-												})}
-											</Stack>
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											EP Comments: {epComments}
-										</Typography>
-									</div>
-								</div>
-								<div
-									className="row  mt-2 rounded"
-									style={{ backgroundColor: lime[200] }}
-								>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Fin Per Inch: {finPerInch}
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Hair pin(Assembly) Images
-										</Typography>
-										<>
-											{
-												<ImageList cols={3} rowHeight={164}>
-													{assemblyPhoto?.map((item, index) => (
-														<ImageListItem key={"assembly" + index}>
-															<img
-																src={item}
-																srcSet={item}
-																alt={"Assembly"}
-																loading="lazy"
-															/>
-															<IconButton
-																onClick={() => handleClickOpenimg(item)}
-															>
-																<PreviewIcon />
-															</IconButton>
-														</ImageListItem>
-													))}
-												</ImageList>
-											}
-										</>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Fin Comments: {finComments}
-										</Typography>
-									</div>
-								</div>
-								<div
-									className="row mt-2 rounded"
-									style={{ backgroundColor: green[200] }}
-								>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Circuit Models:{" "}
-											{lookUpList["circuitModel"]?.map((item) => {
-												return (
-													<>
-														{circuitModels.indexOf(item.id) !== -1
-															? item.lkp_value
-															: ""}
-														<br />
-													</>
-												);
-											})}
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Hair pin(Brazing) Images
-										</Typography>
-										<>
-											{
-												<ImageList cols={3} rowHeight={164}>
-													{brazingPhoto?.map((item, index) => (
-														<ImageListItem key={"brazing" + index}>
-															<img
-																src={item}
-																srcSet={item}
-																alt={"Assembly"}
-																loading="lazy"
-															/>
-															<IconButton
-																onClick={() => handleClickOpenimg(item)}
-															>
-																<PreviewIcon />
-															</IconButton>
-														</ImageListItem>
-													))}
-												</ImageList>
-											}
-										</>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											No Of Circuit: {noCircuit}
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Liquid Line:{" "}
-											{lookUpList["liquidLine"]?.map((item) => {
-												return (
-													<>
-														{liquidLine.indexOf(item.id) !== -1 &&
-															item.lkp_value}
-														<br />
-													</>
-												);
-											})}
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Discharge Line:{" "}
-											{lookUpList["dischargeLine"]?.map((item) => {
-												return (
-													<>
-														{dischargeLine.indexOf(item.id) !== -1
-															? item.lkp_value
-															: ""}
-														<br />
-													</>
-												);
-											})}
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Brazing Comment: {brazingComments}
-										</Typography>
-									</div>
-								</div>
-								<div
-									className="row  mt-2 rounded"
-									style={{ backgroundColor: purple[200] }}
-								>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Paint Type:{" "}
-											{lookUpList["paintType"]?.map((item) => {
-												return (
-													<>
-														{paintType.indexOf(item.id) !== -1
-															? item.lkp_value
-															: ""}
-														<br />
-													</>
-												);
-											})}
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Packing Type:{" "}
-											{lookUpList["packingType"]?.map((item) => {
-												return (
-													<>
-														{packingType.indexOf(item.id) !== -1
-															? item.lkp_value
-															: ""}
-														<br />
-													</>
-												);
-											})}
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Dispatch Mode:
-											{lookUpList["dispatchMode"]?.map((item) => {
-												return (
-													<>
-														{dispatchMode.indexOf(item.id) !== -1
-															? item.lkp_value
-															: ""}
-														<br />
-													</>
-												);
-											})}
-										</Typography>
-									</div>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Displacement Comments: {dispatchComment}
-										</Typography>
-									</div>
-								</div>
-								<div
-									className="row mt-2 rounded"
-									style={{ backgroundColor: orange[200] }}
-								>
-									<div className="col-6">
-										<Typography variant="subtitle1" gutterBottom>
-											Final Comment: {finalComments}
-										</Typography>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+												})}</td>
+											</tr>
+
+											<tr>
+												<th>Expansion Type:</th>
+												<td>{lookUpList["expansionType"]?.map((item) => {
+													return (
+														<>
+															{expansionType && expansionType.includes(item.id)
+																? item.lkp_value
+																: ""}
+														</>
+													);
+												})}</td>
+											</tr>
+
+											<tr>
+												<th>Pipe Comment:</th>
+												<td> {pipeComment}</td>
+											</tr>
+
+											<tr>
+												<th>Pipe Bend:</th>
+												<td>
+													<Stack
+														direction="row"
+														spacing={10}
+														alignContent="space-between"
+													>
+														{pbStraight === "true" && (
+															<Stack direction="row" spacing={2}>
+																<Typography variant="subtitle1" gutterBottom>
+																	Straight
+																</Typography>
+
+															</Stack>
+														)}
+														{pbSingle === "true" && (
+															<Stack direction="row" spacing={2}>
+																<Typography variant="subtitle1" gutterBottom>
+																	Single
+																</Typography>
+
+															</Stack>
+														)}
+														{pbCross === "true" && (
+															<Stack direction="row" spacing={2}>
+																<Typography variant="subtitle1" gutterBottom>
+																	Cross
+																</Typography>
+
+															</Stack>
+														)}
+														{pbOther === "true" && (
+															<Stack direction="row" spacing={2}>
+																<Typography variant="subtitle1" gutterBottom>
+																	Other
+																</Typography>
+
+															</Stack>
+														)}
+													</Stack>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</Grid>
+								<Grid item xs={12}>
+									<Typography>Fins</Typography>
+									<table>
+										<tbody>
+											<tr>
+												<th>
+													Fin per Inch
+												</th>
+												<td>
+													{finPerInch}
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</Grid>
+								<Grid item xs={12}>
+									<Typography>Brzing</Typography>
+									<table>
+										<tbody>
+											<tr>
+												<th>
+													Circuit Model
+												</th>
+												<td>
+													{lookUpList["circuitModel"]?.map((item) => {
+														return (
+															<>
+																{circuitModels && circuitModels.indexOf(item.id) !== -1
+																	? item.lkp_value
+																	: ""}
+															</>
+														);
+													})}
+												</td>
+											</tr>
+											<tr>
+												<th>No of circuit</th>
+												<td>
+													{noCircuit}
+												</td>
+											</tr>
+											<tr>
+												<th>
+													Liquid Line
+												</th>
+												<td>
+													{lookUpList["liquidLine"]?.map((item) => {
+														return (
+															<>
+																{liquidLine && liquidLine.indexOf(item.id) !== -1 &&
+																	item.lkp_value}
+															</>
+														);
+													})}
+												</td>
+											</tr>
+											<tr>
+												<th>
+													Discharge Line
+												</th>
+												<td>
+													{lookUpList["dischargeLine"]?.map((item) => {
+														return (
+															<>
+																{dischargeLine && dischargeLine.indexOf(item.id) !== -1
+																	? item.lkp_value
+																	: ""}
+															</>
+														);
+													})}
+												</td>
+											</tr>
+											<tr>
+												<th>
+													Brazing Comment
+												</th>
+												<td>
+
+													{brazingComments}
+
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</Grid>
+								<Grid item xs={12}>
+									<Typography>Paint,Packing and Dispatch</Typography>
+									<table>
+										<tbody>
+											<tr>
+												<th>
+													Paint
+												</th>
+												<td>
+													{lookUpList["paintType"]?.map((item) => {
+														return (
+															<>
+																{paintType && paintType.includes(item.id)
+																	? item.lkp_value
+																	: ""}
+															</>
+														);
+													})}
+												</td>
+											</tr>
+
+											<tr>
+												<th>
+													Dispatch
+												</th>
+												<td>
+													{lookUpList["dispatchMode"]?.map((item) => {
+														return (
+															<>
+																{dispatchMode && dispatchMode.includes(item.id)
+																	? item.lkp_value
+																	: ""}
+															</>
+														);
+													})}
+												</td>
+											</tr>
+
+											<tr>
+												<th>
+													Packing
+												</th>
+												<td>
+													{lookUpList["packingType"]?.map((item) => {
+														return (
+															<>
+																{packingType && packingType.includes(item.id)
+																	? item.lkp_value
+																	: ""}
+															</>
+														);
+													})}
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</Grid>
+							</Grid>
+
+
+
+						</Grid>
+						<Grid item xs={6}>
+							<Grid container spacing={2} padding={10}>
+								<Grid item xs={12}>
+									<Typography variant="h6">End Plate</Typography>
+									<>
+										{
+											<ImageList cols={3} rowHeight={164}>
+												{epPhoto?.map((item, index) => (
+
+													<ImageListItem key={"epphoto" + index}>
+														<img
+
+															src={'http://localhost/' + item}
+															srcSet={'http://localhost/' + item}
+															alt={"EpPhoto"}
+															loading="lazy"
+														/>
+														<IconButton className="order-view-img"
+															onClick={() => handleClickOpenimg('http://localhost/' + item)}
+														>
+															<PreviewIcon />
+														</IconButton>
+													</ImageListItem>
+												))}
+											</ImageList>
+										}
+									</>
+								</Grid>
+								<Grid item xs={12}>
+									<Typography variant="h6">Assembly Images</Typography>
+									<>
+										{
+											<ImageList cols={3} rowHeight={164}>
+												{assemblyPhoto?.map((item, index) => (
+													<ImageListItem key={"assembly" + index}>
+														<img
+
+															src={'http://localhost/' + item}
+															srcSet={'http://localhost/' + item}
+															alt={"assembly"}
+															loading="lazy"
+														/>
+														<IconButton className="order-view-img"
+															onClick={() => handleClickOpenimg(item)}
+														>
+															<PreviewIcon />
+														</IconButton>
+													</ImageListItem>
+												))}
+											</ImageList>
+										}
+									</>
+								</Grid>
+								<Grid item xs={12}>
+									<Typography variant="h6">
+										Hair pin(Brazing) Images
+									</Typography>
+									<>
+										{
+											<ImageList cols={3} rowHeight={164}>
+												{brazingPhoto?.map((item, index) => (
+													<ImageListItem key={"brazing" + index}>
+														<img
+															src={'http://localhost/' + item}
+															srcSet={'http://localhost/' + item}
+															alt={"Brazing"}
+															loading="lazy"
+														/>
+														<IconButton
+															onClick={() => handleClickOpenimg(item)}
+														>
+															<PreviewIcon />
+														</IconButton>
+													</ImageListItem>
+												))}
+											</ImageList>
+										}
+									</>
+								</Grid>
+							</Grid>
+						</Grid>
+					</Grid>
 				</Container>
 			</>
 			<Dialog
+				fullScreen
 				open={openImg}
 				TransitionComponent={Transition}
 				keepMounted
 				onClose={handleCloseImg}
 				aria-describedby="alert-dialog-slide-description"
 			>
+				<AppBar sx={{ position: 'relative' }}>
+					<Toolbar>
+						<IconButton
+							edge="start"
+							color="inherit"
+							onClick={handleCloseImg}
+							aria-label="close"
+						>
+							<CloseIcon />
+						</IconButton>
+						<Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+							Sound
+						</Typography>
+						<Button autoFocus color="inherit" onClick={handleCloseImg}>
+							save
+						</Button>
+					</Toolbar>
+				</AppBar>
 				<img
 					src={dialogImg}
 					srcSet={dialogImg}

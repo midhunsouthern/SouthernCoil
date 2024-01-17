@@ -746,16 +746,30 @@ class Main extends CI_Controller
         }
         $id = $this->input->post('id');
         $ret_data['data_orders'] = $this->db->query("SELECT ifnull( b.fname, 'Not Set') as full_customer_name, a.* FROM order_list a left join customers b on a.customer_name = b.id where a.id = '$id';")->result_array();
-
-        $this->db->select('drawing_base64');
-        $ret_data['data_orders'][0]['ep_photo'] = $this->mm->formBase64Array($this->db->get_where('drawing_images', array('drawing_refid' => $ret_data['data_orders'][0]['ep_photo']))->result_array());
-        $this->db->select('drawing_base64');
-        $ret_data['data_orders'][0]['assembly_Photo'] = $this->mm->formBase64Array($this->db->get_where('drawing_images', array('drawing_refid' => $ret_data['data_orders'][0]['assembly_Photo']))->result_array());
-        $this->db->select('drawing_base64');
-        $ret_data['data_orders'][0]['brazing_Photo'] = $this->mm->formBase64Array($this->db->get_where('drawing_images', array('drawing_refid' => $ret_data['data_orders'][0]['brazing_Photo']))->result_array());
+        $imagesList=$this->db->get_where('drawing_images', array('drawing_refid' => $id))->result_array();
+        $arr = array();
+        $indices = [];
+if(count($imagesList)>0){
+        foreach ($imagesList as $item) {
+            // Get the current draw_type
+            $drawType = $item['draw_type'];
+        
+            // Initialize the index for this draw_type if it hasn't been set yet
+            if (!isset($indices[$drawType])) {
+                $indices[$drawType] = 0;
+            }
+        
+            // Assign the item to the new array and increment the index for this draw_type
+            $arr[$drawType][$indices[$drawType]] = 'uploads/'.$item['drawing_base64'];
+            $indices[$drawType]++;
+        }
+       $ret_data['data_orders'][0]['ep_photo'] = $arr['ep'];
+        $ret_data['data_orders'][0]['assembly_Photo'] = $arr['asm'];
+        $ret_data['data_orders'][0]['brazing_Photo'] = $arr['bz'];
+    } 
         $ret_data['status_code'] = 200;
         $ret_data['status_msg'] = "Data retrival successful";
-
+log_message('debug',print_r($ret_data,true));
         echo json_encode($ret_data);
     }
 
@@ -1147,8 +1161,8 @@ class Main extends CI_Controller
 
         $ret = $this->mm->getBrazingDetailsObj($orderId, $splitId);
 
-        if ($ret->num_rows() > 0) {
-            $ret_data['data'] = $ret->result_array();
+        if (count($ret) > 0) {
+            $ret_data['data'] = $ret;
             $ret_data['status_code'] = 200;
             $ret_data['status_msg'] = "Lookup data retrieved.";
         } else {
@@ -1161,6 +1175,7 @@ class Main extends CI_Controller
 
     public function setBrazingDetails()
     {
+        
         if (!$this->mm->access_code_verify($this->input->post('authId'))) {
             $ret_data['status_code'] = 101;
             $ret_data['status_msg'] = "Access Code not correct, Please login again.";
@@ -1172,7 +1187,10 @@ class Main extends CI_Controller
         $splitId = $this->input->post('splitId');
         $data = $this->input->post('data');
         $data = json_decode($data, true);
-
+        $brazingImages=json_decode($this->input->post('brazingPhoto'));
+        $array = json_decode(json_encode($brazingImages), true);
+        log_message('debug',print_r($array,true));
+        log_message('debug',print_r($data,true));
         $this->db->trans_start();
 
         $this->db->where('order_id', $orderId);
@@ -1181,8 +1199,34 @@ class Main extends CI_Controller
 
         $i = 0;
         foreach ($data as $row) {
+            unset($row['brazing_photo']);
             if ($this->db->insert('brazing_details', $row)) {
                 $i = $i + 1;
+            }
+        }
+        // Get order information
+        
+        $refId = $this->db->select('id')
+                 ->from('order_list')
+                 ->where(['order_id' => $orderId])
+                 ->get()
+                 ->row();
+        log_message('debug',print_r($refId->id,true));
+        
+        //Save Images 
+        $image_path = realpath(APPPATH . '../uploads');
+            foreach ($array as $serial_ref=>$row) {
+                // Delete Entry
+                $this->db->where('order_serial_ref',$serial_ref)->delete('drawing_images');
+                foreach($row as $key=>$imgData) {
+                    $logMessage = (preg_match('/\.webp/', $imgData) ? "Yes" : "No");
+                    log_message('debug',print_r($logMessage,true));
+                    if($logMessage=='No'){
+                        $webpData=convert_base64_to_webp($imgData,$image_path,$refId->id);
+                    } else {
+                        $webpData=$imgData;
+                    }
+                $this->db->insert('drawing_images', array('drawing_refid' => $refId->id, 'drawing_base64' => $webpData,'order_type'=>'2','draw_type'=>'bz','order_serial_ref'=>$serial_ref));
             }
         }
         $this->db->trans_complete();

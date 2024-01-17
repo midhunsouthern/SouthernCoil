@@ -1,0 +1,14 @@
+table {
+    border-collapse: collapse; /* Ensures borders are neat */
+    width: 100%;
+}
+
+table tr, table td {
+    border: 1px solid black; /* Sets a border for each row and cell */
+    text-align: center;
+}
+@media print {
+  #print-ignore , #customized-dialog-title,#order-view-close-btn,button{
+    display: none;
+  }
+}

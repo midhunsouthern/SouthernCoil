@@ -19,7 +19,11 @@ import {
 	CardContent,
 	Typography,
 	Box,
+	AppBar,
+	Toolbar,
 } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
+
 import Slide from "@mui/material/Slide";
 import { IOSSwitch } from "../../commonjs/TableFunc";
 
@@ -73,6 +77,7 @@ export default function EnhancedTable() {
 	const [openAddRemoveQuantity, setOpenAddRemoveQuantity] = useState(false);
 
 	const handleClickOpenStatus = (rowId, e) => {
+		
 		setSelectedRowId(rowId);
 		setSelEvent(e);
 		setOpenStatusCnf(true);
@@ -150,7 +155,9 @@ export default function EnhancedTable() {
 		}
 		handleGenericUpdate(rowId, name, String(checked));
 	};
-
+	const handleCloseModal = (response) => {
+		setOpenOrderView(false);
+	};
 	const handleGenericUpdate = async (rowid, field, value) => {
 		var bodyFormData = new FormData();
 		bodyFormData.append("authId", access);
@@ -232,8 +239,11 @@ export default function EnhancedTable() {
 					<Button
 						fullWidth
 						onClick={() => {
+							console.log('Open Order Edit',openOrderEdit)
 							setSelectedRowId(params.row.id);
-							setIsEdit(false);
+							//setIsEdit(false);
+							setOpenOrderEdit(false);
+							console.log('Open Order Edit',openOrderEdit)
 							setOpenOrderView(true);
 						}}
 						color="info"
@@ -499,12 +509,28 @@ export default function EnhancedTable() {
 			</Dialog>
 
 			<Dialog
+			
 				open={openOrderView}
 				TransitionComponent={Transition}
 				keepMounted
-				onClose={() => setOpenOrderView(false)}
 				key={Math.random(1, 100)}
 			>
+				 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          View Order Details
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseModal}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+		  id="order-view-close-btn"
+        >
+          <CloseIcon />
+        </IconButton>
 				<OrderViewModal orderId={selectedRowId} key={Math.random(1, 100)} />
 			</Dialog>
 
