@@ -1110,7 +1110,7 @@ export default function OrderEditModal(prop) {
 										<>
 											{
 												<ImageList cols={3} rowHeight={164}>
-													{epPhoto?.map((item, index) => (
+													{epPhoto && epPhoto?.map((item, index) => (
 														<ImageListItem key={"epphoto" + index}>
 															<img
 																src={item}
@@ -1285,7 +1285,8 @@ export default function OrderEditModal(prop) {
 										<>
 											{
 												<ImageList cols={3} rowHeight={164}>
-													{assemblyPhoto?.map((item, index) => (
+													console.log(assemblyPhoto);
+													{assemblyPhoto && assemblyPhoto?.map((item, index) => (
 														<ImageListItem key={"assembly" + index}>
 															<img
 																src={item}
@@ -1408,7 +1409,7 @@ export default function OrderEditModal(prop) {
 										<>
 											{
 												<ImageList cols={3} rowHeight={164}>
-													{brazingPhoto?.map((item, index) => (
+													{brazingPhoto && brazingPhoto?.map((item, index) => (
 														<ImageListItem key={"brazing" + index}>
 															<img
 																src={item}

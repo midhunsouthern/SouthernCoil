@@ -115,11 +115,39 @@ export default function OrderViewModal(prop) {
 	const [assemblyPhoto, setAssemblyPhoto] = useState([]);
 	const [brazingPhoto, setBrazingPhoto] = useState([]);
 	const [lookUpList, setLookupList] = React.useState([]);
+	/**
+	 * Coil Detail States
+	 */
+	const [cncNestingStatus,setCncNestingStatus]=useState([]);
+	const [cncNestingDate,setCncNestingDate]=useState([]);
+	const [cncNestingPgm,setCncNestingPgm]=useState([]);
+	const [cncPunchingStatus,setCncPunchingStatus]=useState([]);
+	const [cncPunchingDate,setCncPunchingDate]=useState([]);
+	const [bendingStatus,setBendingStatus]=useState([]);
+	const [bendingDate,setBendingDate]=useState([]);
+	const [tCuttingStatus,setTCuttingStatus]=useState([]);
+	const [tCuttingRollNo,setTCuttingRollNo]=useState([]);
+	const [tCuttingDate,setTCuttingDate]=useState([]);
+	const [finPunchStatus,setFinPunchStatus]=useState([]);
+	const [finPunchDate,setFinPunchDate]=useState([]);
+	const [brazingExpansion,setBrazingExpansion]=useState([]);
+	const [brazingStatus,setBrazingStatus]=useState([]);
+	const [brazingDate,setBrazingDate]=useState([]);
+	const [caStatus,setCaStatus]=useState([]);
+	const [caStatusDate,setCaStatusDate]=useState([]);
+	const [ceStatus,setCeStatus]=useState([]);
+	const [ceStatusDate,setCeStatusDate]=useState([]);
+	const [ppStatus,setPpStatus]=useState([]);
+	const [ppStatusDate,setPpStatusDate]=useState([]);
+	const [dispatchStatus,setDispatchStatus]=useState([]);
+	const [dispatchDate,setDispatchDate]=useState([]);
 
 
 	const [isUpdate, setIsUpdate] = useState(false);
+	const [brazingDetails,setBrazingDetails]=useState([]);
 	const [openImg, setOpenImg] = useState(false);
 	const [dialogImg, setDialogImg] = useState("");
+	const [brazingTestingImages,setBrazingTestingImages]=useState([]);
 
 	const handleClickOpenimg = (base64) => {
 		setDialogImg(base64);
@@ -249,7 +277,28 @@ export default function OrderViewModal(prop) {
 					setEpPhoto(ret_data_cd[0].ep_photo);
 					setAssemblyPhoto(ret_data_cd[0].assembly_Photo);
 					setBrazingPhoto(ret_data_cd[0].brazing_Photo);
-
+					setCncNestingStatus(ret_data_cd[0].cnc_nesting_status);
+					setCncNestingPgm(ret_data_cd[0].cnc_nesting_pgm_no);
+					setCncNestingDate(ret_data_cd[0].cnc_nesting_status_dt);
+					setCncPunchingStatus(ret_data_cd[0].cnc_punching_status);
+					setCncPunchingDate(ret_data_cd[0].cnc_punching_status_dt);
+					setBendingStatus(ret_data_cd[0].bending_status);
+					setBendingDate(ret_data_cd[0].bending_status_dt);
+					setFinPunchStatus(ret_data_cd[0].finpunch_status);
+					setFinPunchDate(ret_data_cd[0].finpunch_status_dt);
+					setBrazingStatus(ret_data_cd[0].brazing_status);
+					setBrazingDate(ret_data_cd[0].brazing_status_dt);
+					setBrazingExpansion(ret_data_cd[0].brazing_expansion);
+					setCaStatus(ret_data_cd[0].ca_status);
+					setCaStatusDate(ret_data_cd[0].ca_status_dt);
+					setCeStatus(ret_data_cd[0].ce_status);
+					setCeStatusDate(ret_data_cd[0].ce_status_dt);
+					setPpStatus(ret_data_cd[0].pp_status);
+					setPpStatusDate(ret_data_cd[0].pp_status_dt);
+					setDispatchStatus(ret_data_cd[0].dispatch_status);
+					setDispatchDate(ret_data_cd[0].dispatch_status_dt);
+					setBrazingDetails(ret_data_cd[0].brazing_details);
+					setBrazingTestingImages(ret_data_cd[0].brazing_testing_Photo);
 				} else {
 					console.log(res_data.status_msg);
 				}
@@ -631,7 +680,7 @@ window.print();
 								</Grid>
 							</Grid>
 
-
+						
 
 						</Grid>
 						<Grid item xs={6}>
@@ -640,7 +689,7 @@ window.print();
 									<Typography variant="h6">End Plate</Typography>
 									<>
 										{
-											<ImageList cols={3} rowHeight={164}>
+											<ImageList cols={1} rowHeight={164}>
 												{epPhoto?.map((item, index) => (
 
 													<ImageListItem key={"epphoto" + index}>
@@ -666,7 +715,7 @@ window.print();
 									<Typography variant="h6">Assembly Images</Typography>
 									<>
 										{
-											<ImageList cols={3} rowHeight={164}>
+											<ImageList cols={1} rowHeight={164}>
 												{assemblyPhoto?.map((item, index) => (
 													<ImageListItem key={"assembly" + index}>
 														<img
@@ -693,7 +742,7 @@ window.print();
 									</Typography>
 									<>
 										{
-											<ImageList cols={3} rowHeight={164}>
+											<ImageList cols={1} rowHeight={164}>
 												{brazingPhoto?.map((item, index) => (
 													<ImageListItem key={"brazing" + index}>
 														<img
@@ -712,6 +761,147 @@ window.print();
 											</ImageList>
 										}
 									</>
+								</Grid>
+							</Grid>
+						</Grid>
+					</Grid>
+					<Grid item xs={12}>
+						<Typography>Coil Details</Typography>
+						<table>
+							<thead>
+								<tr>
+									<th>Process</th>
+									<th>Date & Time</th>
+									<th>Comments</th>
+								</tr>
+							</thead>
+							<tbody>
+								{
+									cncNestingStatus && (
+										<tr>
+											<th>Nesting No</th>
+											<td>{cncNestingDate}</td>
+											<td>{cncNestingPgm}</td>
+										</tr>
+									)
+								}
+								{
+									cncPunchingStatus && (
+										<tr>
+											<th>Punching</th>
+											<td>{cncPunchingDate}</td>
+											<td>{cncNestingPgm}</td>
+										</tr>
+									)
+								}
+								{
+									bendingStatus && (
+										<tr>
+											<th>Bending</th>
+											<td>{bendingDate}</td>
+											<td>{cncNestingPgm}</td>
+										</tr>
+									)
+								}
+								{
+									tCuttingStatus && (
+										<tr>
+											<th>Tray</th>
+											<td>{tCuttingDate}</td>
+											<td>{cncNestingPgm}</td>
+										</tr>
+									)
+								}
+								{
+									brazingExpansion && (
+										<tr>
+											<th>Expansion</th>
+											<td>{brazingDate}</td>
+											<td>{brazingComments}</td>
+										</tr>
+									)
+								}
+								{
+									caStatus && (
+										<tr>
+
+										</tr>
+									)
+								}
+							</tbody>
+						</table>
+					</Grid>
+					<Grid container spacing={2}>
+						
+						<Grid item xs={6}>
+							<Grid container spacing={2}>
+								<Grid item xs={12}>
+								<Typography>Brazing & Leak Testing Details</Typography>
+									{
+										brazingDetails && brazingDetails.map((value, index) => (
+											<div key={index}>
+												<h3>Table {index + 1}</h3>
+												<table>
+													<tbody>
+														<tr>
+															<th>Serial No</th>
+															<td>{value.series_ref}</td>
+															{/* More <td> elements as needed */}
+														</tr>
+														<tr>
+															<th>Leak Date</th>
+															<td>{value.create_dt}</td>
+														</tr>
+														<tr>
+															<th>Leak Details</th>
+															<td>
+
+															</td>
+														</tr>
+														<tr>
+															<th>Workman details</th>
+															<td>
+																UBend:{value.uBend},
+																Header:{value.headder},
+																Header Fix:{value.headderFix}
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										))
+									}
+								</Grid>
+							</Grid>
+						</Grid>
+						<Grid item xs={6}>
+							<Grid container spacing={2}>
+								<Grid item xs={12}>
+									<Typography variant="h6">Brazing</Typography>
+									<>
+										{
+											<ImageList cols={1} rowHeight={164}>
+												{brazingTestingImages?.map((item, index) => (
+
+													<ImageListItem key={"brazing_testing" + index}>
+														<img
+
+															src={'http://localhost/' + item}
+															srcSet={'http://localhost/' + item}
+															alt={"BrazingTesting"}
+															loading="lazy"
+														/>
+														<IconButton className="order-view-img"
+															onClick={() => handleClickOpenimg('http://localhost/' + item)}
+														>
+															<PreviewIcon />
+														</IconButton>
+													</ImageListItem>
+												))}
+											</ImageList>
+										}
+									</>
+
 								</Grid>
 							</Grid>
 						</Grid>

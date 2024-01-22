@@ -738,6 +738,9 @@ class Main extends CI_Controller
 
     public function getOrderDataByID()
     {
+        try {
+            //code...
+        
         if (!$this->mm->access_code_verify($this->input->post('authId'))) {
             $ret_data['status_code'] = 101;
             $ret_data['status_msg'] = "Access Code not correct, Please login again.";
@@ -745,8 +748,34 @@ class Main extends CI_Controller
             return;
         }
         $id = $this->input->post('id');
+        log_message('debug',print_r($id,true));
+        $customerDetails=$this->db->get_where('lookup',array('category'=>'brazingLkp'))->result_array();
         $ret_data['data_orders'] = $this->db->query("SELECT ifnull( b.fname, 'Not Set') as full_customer_name, a.* FROM order_list a left join customers b on a.customer_name = b.id where a.id = '$id';")->result_array();
         $imagesList=$this->db->get_where('drawing_images', array('drawing_refid' => $id))->result_array();
+        $brazingDetails=$this->db->get_where('brazing_details',array('order_id'=>$ret_data['data_orders'][0]['order_id']))->result_array();
+        
+        if(count($brazingDetails)>0){
+            $brazingIds=[
+            'uBend',
+            'inletOutlet',
+            'headder',
+            'headderFix',
+            'distributor', 
+            'distributorFix'
+            ];
+            foreach ($brazingDetails as $brazingId => $brazingValue) {
+                foreach ($customerDetails as $customerKey => $customerValue) {
+                    foreach ($brazingIds as $key => $value) {
+                        if($customerValue['id']==$brazingValue[$value]){
+                            $brazingDetails[$brazingId][$value]=$customerValue['lkp_value'];
+                        }   
+                    }
+                }
+            }
+            log_message('debug',print_r($brazingDetails,true));
+            //$imagesResult = $this->db->get();
+            $ret_data['data_orders'][0]['brazing_details']=$brazingDetails;
+        }
         $arr = array();
         $indices = [];
 if(count($imagesList)>0){
@@ -763,14 +792,40 @@ if(count($imagesList)>0){
             $arr[$drawType][$indices[$drawType]] = 'uploads/'.$item['drawing_base64'];
             $indices[$drawType]++;
         }
+        if(isset($arr['ep'])){
        $ret_data['data_orders'][0]['ep_photo'] = $arr['ep'];
+        } else {
+            $ret_data['data_orders'][0]['ep_photo'] = [];
+        }
+        if(isset($arr['asm'])){
         $ret_data['data_orders'][0]['assembly_Photo'] = $arr['asm'];
+        } else{
+            $ret_data['data_orders'][0]['assembly_Photo'] = [];    
+        }
+        if(isset($arr['bz'])){
         $ret_data['data_orders'][0]['brazing_Photo'] = $arr['bz'];
-    } 
+        }else{
+            $ret_data['data_orders'][0]['brazing_Photo'] = [];    
+        }
+        if(isset($arr['bz-t'])){
+            $ret_data['data_orders'][0]['brazing_testing_Photo'] = $arr['bz-t'];
+            }else{
+                $ret_data['data_orders'][0]['brazing_testing_Photo'] = [];    
+            }
+    } else {
+        $ret_data['data_orders'][0]['ep_photo'] = [];
+        $ret_data['data_orders'][0]['assembly_Photo'] = [];
+        $ret_data['data_orders'][0]['brazing_Photo'] = [];
+        $ret_data['data_orders'][0]['brazing_testing_Photo'] = [];   
+    }
         $ret_data['status_code'] = 200;
         $ret_data['status_msg'] = "Data retrival successful";
-log_message('debug',print_r($ret_data,true));
         echo json_encode($ret_data);
+}
+        catch (\Throwable $th) {
+            //throw $th;
+
+        }
     }
 
     public function getImagesOnly()
@@ -1226,7 +1281,7 @@ log_message('debug',print_r($ret_data,true));
                     } else {
                         $webpData=$imgData;
                     }
-                $this->db->insert('drawing_images', array('drawing_refid' => $refId->id, 'drawing_base64' => $webpData,'order_type'=>'2','draw_type'=>'bz','order_serial_ref'=>$serial_ref));
+                $this->db->insert('drawing_images', array('drawing_refid' => $refId->id, 'drawing_base64' => $webpData,'order_type'=>'2','draw_type'=>'bz-t','order_serial_ref'=>$serial_ref));
             }
         }
         $this->db->trans_complete();
