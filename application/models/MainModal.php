@@ -246,7 +246,7 @@ class MainModal extends CI_Model
             $order_by = "order by a.order_id asc";
             $fieldName = 'pp_status';
         } elseif ($pageType == 'dispatch') {
-            $where_clause = "where order_status ='1' and  hold<>'true' and a.dispatch_status<>'true' and a.pp_status='true' and a.dispatch_status<>'true'";
+            $where_clause = "where order_status ='1' and  hold<>'true' and a.dispatch_status<>'true' and a.pp_status='true'";
             $order_by = "order by a.order_id asc";
             $fieldName = 'dispatch_status';
         }
@@ -296,20 +296,199 @@ class MainModal extends CI_Model
     public function pendingSQ_graph()
     {
         $fieldName = array(
-            'CNC Nesting' => 'cnc_nesting_status', 'CNC Punching' => 'cnc_punching_status', 'CNC Bending' => 'bending_status', 'Tube Cutting' => 'tcutting_status',
-            'Fin Punch' => 'finpunch_status', 'Coil Assembly' => 'ca_status', 'Coil Expansion' => 'ce_status', 'Brazing Testing' => 'brazing_status', 'Paint & Packing' => 'pp_status',
-            'Dispatch' => 'dispatch_status'
+            'CNC Nesting' => 'cncNesting', 'CNC Punching' => 'cncPunchingNumbering', 'CNC Bending' => 'endPlateBending', 'Tube Cutting' => 'tubeCuttingBending',
+            'Fin Punch' => 'finsPuncing', 'Coil Assembly' => 'coilAssembly', 'Coil Expansion' => 'coilExpansion', 'Brazing Testing' => 'brazingTesting',
+            'Paint & Packing' => 'paintingPacking',
+            'Dispatch' => 'dispatch'
         );
 
         $count = array();
         $label = array();
         foreach ($fieldName as $key => $val) {
-            $cnt_pend = $this->db->query("select count(sq_feet) as cnt_pend from order_list where $val <>'true'")->row()->cnt_pend;
+            $ret_clause = $this->retQueryClause($val);
+            $cnt_pend = $this->db->query("select ROUND(SUM((a.length * a.height * a.rows * (select count(b.order_id) from brazing_details b where a.order_id = b.order_id and a.split_id = b.split_id)) /144 )) as cnt_pend from order_list a " . $ret_clause['where_clause'] . ";")->row()->cnt_pend;
             array_push($count, $cnt_pend);
             array_push($label, $key);
         }
         $pendData['Label'] = $label;
         $pendData['Count'] = $count;
         return $pendData;
+    }
+
+    public function pendingGroupedSQ_graph()
+    {
+        $PendingSQ_Data = $this->pendingSQ_graph()['Count'];
+        $count = array(
+            $PendingSQ_Data[0] + $PendingSQ_Data[1] + $PendingSQ_Data[2], // cncnesting, punching, bending
+            $PendingSQ_Data[3], //tubecutting
+            $PendingSQ_Data[4] + $PendingSQ_Data[5], //finpuncing and coil assembly
+            $PendingSQ_Data[6] + $PendingSQ_Data[7], //coilexpansion and brazinb 
+            $PendingSQ_Data[8] // paint and packing
+        );
+        $label = array();
+        $label = array(
+            'End Plate',
+            'Pipe',
+            'Fin',
+            'Brazing',
+            'Paint & Packing'
+        );
+        $pendData['Label'] = $label;
+        $pendData['Count'] = $count;
+        return $pendData;
+    }
+
+    public function completedModelWiseSQ_graph()
+    {
+        $fieldName = array(
+            'Order Dt' => 'ol_date', 'CNC Nesting' => 'cnc_nest_compsq', 'CNC Punching' => 'cnc_punch_compsq', 'CNC Bending' => 'bending_compsq', 'Tube Cutting' => 'tcutting_compsq',
+            'Fin Punch' => 'finpunch_compsq', 'Coil Assembly' => 'ca_compsq', 'Coil Expansion' => 'ce_compsq', 'Brazing Testing' => 'brazing_compsq', 'Paint & Packing' => 'pp_compsq',
+            'Dispatch' => 'dispatch_compsq'
+        );
+
+        $count['ol_date'] = array();
+        $count['cnc_nest_compsq'] = array();
+        $count['cnc_punch_compsq'] = array();
+        $count['bending_compsq'] = array();
+        $count['tcutting_compsq'] = array();
+        $count['finpunch_compsq'] = array();
+        $count['ca_compsq'] = array();
+        $count['ce_compsq'] = array();
+        $count['brazing_compsq'] = array();
+        $count['pp_compsq'] = array();
+        $count['dispatch_compsq'] = array();
+        $label = array();
+
+        $query = "Select substring(a.created_dt,1,10) as ol_date, cnc_nest_compsq,cnc_punch_compsq,bending_compsq,tcutting_compsq,finpunch_compsq,ca_compsq,ce_compsq,
+brazing_compsq, pp_compsq, dispatch_compsq
+from order_list a 
+left join (SELECT  count(cnc_nesting_status) as cnc_nest_count, sum(sq_feet) as cnc_nest_compsq, SUBSTRING(cnc_nesting_status_dt, 1, 10) as cnc_nest_stat_date 
+FROM `order_list` where cnc_nesting_status= 'true' group by  cnc_nest_stat_date  order by cnc_nesting_status_dt desc limit 10) b on substring(a.created_dt,1,10) = b.cnc_nest_stat_date     
+left join (SELECT  count(cnc_punching_status) as cnc_punch_count, sum(sq_feet) as cnc_punch_compsq, SUBSTRING(cnc_punching_status_dt, 1, 10) as cnc_punch_stat_date 
+FROM `order_list` where cnc_punching_status= 'true' group by  cnc_punch_stat_date  order by cnc_punching_status_dt desc limit 10) c on substring(a.created_dt,1,10) = c.cnc_punch_stat_date    
+left join (SELECT  count(bending_status) as bending_count, sum(sq_feet) as bending_compsq, SUBSTRING(bending_status_dt, 1, 10) as bending_stat_date 
+FROM `order_list` where bending_status= 'true' group by  bending_stat_date  order by bending_status_dt desc limit 10) d on substring(a.created_dt,1,10) = d.bending_stat_date
+left join (SELECT  count(tcutting_status) as tcutting_count, sum(sq_feet) as tcutting_compsq, SUBSTRING(tcutting_status_dt, 1, 10) as tcutting_stat_date 
+FROM `order_list` where tcutting_status= 'true' group by  tcutting_stat_date  order by tcutting_stat_date desc limit 10) e on substring(a.created_dt,1,10) = e.tcutting_stat_date    
+left join (SELECT  count(finpunch_status) as finpunch_count, sum(sq_feet) as finpunch_compsq, SUBSTRING(finpunch_status_dt, 1, 10) as finpunch_stat_date 
+FROM `order_list` where finpunch_status= 'true' group by  finpunch_stat_date  order by finpunch_status_dt desc limit 10) f on substring(a.created_dt,1,10) = f.finpunch_stat_date  
+left join (SELECT  count(ca_status) as ca_count, sum(sq_feet) as ca_compsq, SUBSTRING(ca_status_dt, 1, 10) as ca_stat_date 
+FROM `order_list` where ca_status= 'true' group by  ca_stat_date  order by ca_status_dt desc limit 10) g on substring(a.created_dt,1,10) = g.ca_stat_date  
+left join (SELECT  count(ce_status) as ce_count, sum(sq_feet) as ce_compsq, SUBSTRING(ce_status_dt, 1, 10) as ce_stat_date 
+FROM `order_list` where ce_status= 'true' group by  ce_stat_date  order by ce_status_dt desc limit 10) h on substring(a.created_dt,1,10) = h.ce_stat_date   
+left join (SELECT  count(brazing_status) as brazing_count, sum(sq_feet) as brazing_compsq, SUBSTRING(brazing_status_dt, 1, 10) as brazing_stat_date 
+FROM `order_list` where brazing_status= 'true' group by  brazing_stat_date  order by brazing_status_dt desc limit 10) i on substring(a.created_dt,1,10) = i.brazing_stat_date    
+left join (SELECT  count(pp_status) as pp_count, sum(sq_feet) as pp_compsq, SUBSTRING(pp_status_dt, 1, 10) as pp_stat_date 
+FROM `order_list` where pp_status= 'true' group by  pp_stat_date  order by pp_status_dt desc limit 10) j on substring(a.created_dt,1,10) = j.pp_stat_date 
+left join (SELECT  count(dispatch_status) as dispatch_count, sum(sq_feet) as dispatch_compsq, SUBSTRING(dispatch_status_dt, 1, 10) as dispatch_stat_date 
+FROM `order_list` where dispatch_status= 'true' group by  dispatch_stat_date  order by dispatch_status_dt desc limit 10) k on substring(a.created_dt,1,10) = k.dispatch_stat_date    
+group by ol_date order by bending_stat_date desc limit 10";
+
+        $comp_data = $this->db->query($query)->result_array();
+        foreach ($fieldName as $key => $val) {;
+            foreach ($comp_data as $row) {
+                array_push($count[$val], is_null($row[$val]) ? 0 : $row[$val]);
+            }
+            array_push($label, $key);
+        }
+        $retdata['CountData'] = $count;
+        $retdata['Label'] = $label;
+        $retdata['AllData'] = $comp_data;
+        return $retdata;
+    }
+
+    public function completedModuleOverAllSQ_graph()
+    {
+        $count = array();
+        $label = array();
+        $query =
+            "Select substring(a.created_dt,1,10) as order_dt, 
+(ifnull(cnc_nest_compsq,0)+ ifnull(cnc_punch_compsq,0) + ifnull(bending_compsq,0)+
+        ifnull(tcutting_compsq,0) + ifnull(finpunch_compsq,0) + ifnull(ca_compsq,0) + ifnull(ce_compsq,0) +
+        ifnull(brazing_compsq,0) + ifnull(pp_compsq,0) + ifnull(dispatch_compsq,0))  as over_all 
+from order_list a 
+left join (SELECT  count(cnc_nesting_status) as cnc_nest_count, sum(sq_feet) as cnc_nest_compsq, SUBSTRING(cnc_nesting_status_dt, 1, 10) as cnc_nest_stat_date 
+FROM `order_list` where cnc_nesting_status= 'true' group by  cnc_nest_stat_date  order by cnc_nesting_status_dt desc limit 10) b on substring(a.created_dt,1,10) = b.cnc_nest_stat_date     
+left join (SELECT  count(cnc_punching_status) as cnc_punch_count, sum(sq_feet) as cnc_punch_compsq, SUBSTRING(cnc_punching_status_dt, 1, 10) as cnc_punch_stat_date 
+FROM `order_list` where cnc_punching_status= 'true' group by  cnc_punch_stat_date  order by cnc_punching_status_dt desc limit 10) c on substring(a.created_dt,1,10) = c.cnc_punch_stat_date    
+left join (SELECT  count(bending_status) as bending_count, sum(sq_feet) as bending_compsq, SUBSTRING(bending_status_dt, 1, 10) as bending_stat_date 
+FROM `order_list` where bending_status= 'true' group by  bending_stat_date  order by bending_status_dt desc limit 10) d on substring(a.created_dt,1,10) = d.bending_stat_date
+left join (SELECT  count(tcutting_status) as tcutting_count, sum(sq_feet) as tcutting_compsq, SUBSTRING(tcutting_status_dt, 1, 10) as tcutting_stat_date 
+FROM `order_list` where tcutting_status= 'true' group by  tcutting_stat_date  order by tcutting_stat_date desc limit 10) e on substring(a.created_dt,1,10) = e.tcutting_stat_date    
+left join (SELECT  count(finpunch_status) as finpunch_count, sum(sq_feet) as finpunch_compsq, SUBSTRING(finpunch_status_dt, 1, 10) as finpunch_stat_date 
+FROM `order_list` where finpunch_status= 'true' group by  finpunch_stat_date  order by finpunch_status_dt desc limit 10) f on substring(a.created_dt,1,10) = f.finpunch_stat_date  
+left join (SELECT  count(ca_status) as ca_count, sum(sq_feet) as ca_compsq, SUBSTRING(ca_status_dt, 1, 10) as ca_stat_date 
+FROM `order_list` where ca_status= 'true' group by  ca_stat_date  order by ca_status_dt desc limit 10) g on substring(a.created_dt,1,10) = g.ca_stat_date  
+left join (SELECT  count(ce_status) as ce_count, sum(sq_feet) as ce_compsq, SUBSTRING(ce_status_dt, 1, 10) as ce_stat_date 
+FROM `order_list` where ce_status= 'true' group by  ce_stat_date  order by ce_status_dt desc limit 10) h on substring(a.created_dt,1,10) = h.ce_stat_date   
+left join (SELECT  count(brazing_status) as brazing_count, sum(sq_feet) as brazing_compsq, SUBSTRING(brazing_status_dt, 1, 10) as brazing_stat_date 
+FROM `order_list` where brazing_status= 'true' group by  brazing_stat_date  order by brazing_status_dt desc limit 10) i on substring(a.created_dt,1,10) = i.brazing_stat_date    
+left join (SELECT  count(pp_status) as pp_count, sum(sq_feet) as pp_compsq, SUBSTRING(pp_status_dt, 1, 10) as pp_stat_date 
+FROM `order_list` where pp_status= 'true' group by  pp_stat_date  order by pp_status_dt desc limit 10) j on substring(a.created_dt,1,10) = j.pp_stat_date 
+left join (SELECT  count(dispatch_status) as dispatch_count, sum(sq_feet) as dispatch_compsq, SUBSTRING(dispatch_status_dt, 1, 10) as dispatch_stat_date 
+FROM `order_list` where dispatch_status= 'true' group by  dispatch_stat_date  order by dispatch_status_dt desc limit 10) k on substring(a.created_dt,1,10) = k.dispatch_stat_date    
+group by order_dt order by bending_stat_date desc limit 10";
+
+        $comp_data = $this->db->query($query)->result_array();
+        foreach ($comp_data as $row) {
+            array_push($count, $row['over_all']);
+            array_push($label, $row['order_dt']);
+        }
+
+        $completeData['Label'] = $label;
+        $completeData['Count'] = $count;
+        return $completeData;
+    }
+    public function dataSummary()
+    {
+        $query = "SELECT count(*) live_order,ROUND(SUM((a.length * a.height * a.rows * (select count(b.order_id) from brazing_details b where a.order_id = b.order_id 
+        and a.split_id = b.split_id)) /144 )) as live_sq, (select count(*) from brazing_details b where a.order_id = b.order_id and b.split_id = a.split_id) as coil_qty 
+        FROM `order_list` a WHERE order_status = 1 and dispatch_status <> 'true'";
+        $summ1 = $this->db->query($query)->row();
+        $query = "SELECT count(*) as completed_order FROM `order_list` a WHERE hold <> 'true' and order_status = 1 and pp_status = 'true' and dispatch_status <> 'true'";
+        $summ2 = $this->db->query($query)->row();
+
+        $query = "SELECT coil_ready_at FROM `order_list` a WHERE hold <> 'true' and order_status = 1 and coil_ready_at is not null order by coil_ready_at desc limit 1";
+        $summ3 = $this->db->query($query)->row();
+
+        $query = "SELECT  ROUND(SUM((a.length * a.height * a.rows * (select count(b.order_id) from brazing_details b where a.order_id = b.order_id and a.split_id = b.split_id)) /144 )) * (case a.cnc_nesting_status when 'true' then 1 else 0 end +
+            case a.cnc_punching_status when 'true' then 1 else 0 end +
+            case a.bending_status when 'true' then 1 else 0 end +
+            case a.tcutting_status when 'true' then 1 else 0 end +
+            case a.finpunch_status when 'true' then 1 else 0 end +
+            case a.ca_status when 'true' then 1 else 0 end +
+            case a.ce_status when 'true' then 1 else 0 end +
+            case a.brazing_status when 'true' then 1 else 0 end +
+            case a.pp_status when 'true' then 1 else 0 end) as completed_work
+            FROM order_list a
+            where hold <> 'true' and dispatch_status <> 'true' and order_status = 1 ";
+        $summ4 = $this->db->query($query)->row();
+
+        $query = "SELECT ROUND(SUM((a.length * a.height * a.rows * (select count(b.order_id) from brazing_details b where a.order_id = b.order_id and a.split_id = b.split_id)) /144 )) * (case a.cnc_nesting_status when 'true' then 0 else 1 end +
+ case a.cnc_punching_status when 'true' then 0 else 1 end +
+ case a.bending_status when 'true' then 0 else 1 end +
+case a.tcutting_status when 'true' then 0 else 1 end +
+case a.finpunch_status when 'true' then 0 else 1 end +
+case a.ca_status when 'true' then 0 else 1 end +
+case a.ce_status when 'true' then 0 else 1 end +
+case a.brazing_status when 'true' then 0 else 1 end +
+case a.pp_status when 'true' then 0 else 1 end) as pending_work
+FROM order_list a
+where hold <> 'true' and dispatch_status <> 'true' and order_status = 1;";
+        $summ5 = $this->db->query($query)->row();
+
+        $data['live_orders'] = $summ1->live_order;
+        $data['live_sq'] = $summ1->live_sq;
+        $data['coil_qty'] = $summ1->coil_qty;
+        $data['completed_orders'] = $summ2->completed_order;
+        $data['pending_orders'] = (int)$summ1->live_order - (int)$summ2->completed_order;
+        $data['last_ready'] = $summ3->coil_ready_at;
+        $data['completed_work'] = $summ4->completed_work;
+        $data['pending_work'] = $summ5->pending_work;
+        $total_work = $data['completed_work'] + $data['pending_work'];
+        $data['completed_work_cent'] = $data['completed_work'] / $total_work;
+        $data['pending_work_cent'] = $data['pending_work'] / $total_work;
+        $data['pending_man_hours'] = $data['pending_work'] / 5400; //(average ourput 600 * no of modules 9)
+        return $data;
     }
 }

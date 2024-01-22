@@ -1643,7 +1643,7 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
         echo json_encode($ret_data);
     }
 
-    public function piePendingSqGraph()
+    public function dashboardGraphData()
     {
         if (!$this->mm->access_code_verify($this->input->post('authId'))) {
             $ret_data['status_code'] = 101;
@@ -1653,8 +1653,18 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
         }
 
         $pendingCount =  $this->mm->pendingSQ_graph();
+        $pendingGroupCount =  $this->mm->pendingGroupedSQ_graph();
+        $completedModelOverAll = $this->mm->completedModuleOverAllSQ_graph();
+        $completeModalWise = $this->mm->completedModelWiseSQ_graph();
+        $summaryData = $this->mm->dataSummary();
 
-        $ret_data['data'] = $pendingCount;
+        $ret_data['pendingCount'] = $pendingCount;
+        $ret_data['pendingGroupCount'] = $pendingGroupCount;
+        $ret_data['completedModelOverAll']
+            = $completedModelOverAll;
+        $ret_data['completedModelWise'] = $completeModalWise;
+        $ret_data['summaryData'] = $summaryData;
+
         $ret_data['status_code'] = 200;
         $ret_data['status_msg'] = "Data Retrieved";
         echo json_encode($ret_data);
@@ -1662,6 +1672,7 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
 
     public function test()
     {
-        echo $this->mm->pendingSQ_graph();
+        $data = $this->mm->completedModelWiseSQ_graph();
+        var_dump($data);
     }
 }

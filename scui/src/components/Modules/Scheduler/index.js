@@ -58,7 +58,10 @@ export default function EnhancedTable() {
 					toast("Api Authentication failed. login again.");
 				} else if (res_data.status_code === 200) {
 					const ret_data_cd = res_data.data_orders;
-					setOrderList(ret_data_cd);
+					const newOrderlist = ret_data_cd.map((item, index) => {
+						return { ...item, status: statusPercentage(item) };
+					});
+					setOrderList(newOrderlist);
 				} else {
 					console.log("handleOrderList else", res_data.status_msg);
 				}
@@ -248,8 +251,7 @@ export default function EnhancedTable() {
 			width: 100,
 			maxWidth: 100,
 			renderCell: (params) => {
-				console.log("table data", params.row);
-				return statusPercentage(params.row) + "%";
+				return params.value + "%";
 			},
 			flex: 1,
 		},

@@ -137,38 +137,38 @@ export default function BrazingQuantity(prop) {
 			});
 	};
 
-	const addQuantitySeries = (paramOrder, paramSplit, paramQth) => {
-		if (paramQth < 1) {
-			toast("Enter Quantity Greater than 0.");
-			return;
-		}
-		var bodyFormData = new FormData();
-		bodyFormData.append("orderId", paramOrder);
-		bodyFormData.append("splitId", paramSplit);
-		bodyFormData.append("qtyCount", paramQth);
-		bodyFormData.append("authId", access);
-		axios({
-			method: "post",
-			url: setAddBrazingQuantity,
-			data: bodyFormData,
-			headers: { "Content-Type": "multipart/form-data" },
-		})
-			.then(function (response) {
-				//handle success
-				const res_data = response.data;
-				if (res_data.status_code === 200) {
-					setBrazingQtyData(res_data.data);
-					toast(res_data.status_msg);
-				} else if (res_data.status_code === 202) {
-				} else {
-					toast(res_data.status_msg);
-				}
-			})
-			.catch(function (response) {
-				//handle error
-				console.log(response);
-			});
-	};
+	// const addQuantitySeries = (paramOrder, paramSplit, paramQth) => {
+	// 	if (paramQth < 1) {
+	// 		toast("Enter Quantity Greater than 0.");
+	// 		return;
+	// 	}
+	// 	var bodyFormData = new FormData();
+	// 	bodyFormData.append("orderId", paramOrder);
+	// 	bodyFormData.append("splitId", paramSplit);
+	// 	bodyFormData.append("qtyCount", paramQth);
+	// 	bodyFormData.append("authId", access);
+	// 	axios({
+	// 		method: "post",
+	// 		url: setAddBrazingQuantity,
+	// 		data: bodyFormData,
+	// 		headers: { "Content-Type": "multipart/form-data" },
+	// 	})
+	// 		.then(function (response) {
+	// 			//handle success
+	// 			const res_data = response.data;
+	// 			if (res_data.status_code === 200) {
+	// 				setBrazingQtyData(res_data.data);
+	// 				toast(res_data.status_msg);
+	// 			} else if (res_data.status_code === 202) {
+	// 			} else {
+	// 				toast(res_data.status_msg);
+	// 			}
+	// 		})
+	// 		.catch(function (response) {
+	// 			//handle error
+	// 			console.log(response);
+	// 		});
+	// };
 
 	const handleSeriesSel = (seriedId) => {
 		const selData = brazingQtyData.filter((item) => item.id === seriedId)[0];
