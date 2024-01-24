@@ -58,6 +58,44 @@ export default function Dashboard() {
 		setCompLastModuleOverAllLineSQCountGraph,
 	] = React.useState();
 
+	const rowTotal = (dataArray) => {
+		// create an array
+		const myNums = [
+			parseInt(dataArray.cnc_nest_compsq),
+			parseInt(dataArray.cnc_punch_compsq),
+			parseInt(dataArray.bending_compsq),
+			parseInt(dataArray.brazing_compsq),
+			parseInt(dataArray.ca_compsq),
+			parseInt(dataArray.ce_compsq),
+			parseInt(dataArray.dispatch_compsq),
+			parseInt(dataArray.finpunch_compsq),
+			parseInt(dataArray.pp_compsq),
+			parseInt(dataArray.tcutting_compsq),
+		];
+
+		// create a variable for the sum and initialize it
+		let sum = 0;
+
+		// calculate sum using forEach() method
+		myNums.forEach((num) => {
+			sum += num;
+		});
+
+		return sum;
+	};
+
+	const colTotal = (dataArray, colName) => {
+		// create a variable for the sum and initialize it
+		let sum = 0;
+		let idx = 0;
+		// calculate sum using forEach() method
+		dataArray.forEach((row, index) => {
+			idx = index + 1;
+			sum = sum + parseInt(row[colName]);
+		});
+		return sum / idx;
+	};
+
 	const handlePendingSqCount = (authID) => {
 		var bodyFormData = new FormData();
 		bodyFormData.append("authId", authID);
@@ -73,7 +111,6 @@ export default function Dashboard() {
 				if (res_data.status_code === 101) {
 					// toast("Api Authentication failed. login again.");
 				} else if (res_data.status_code === 200) {
-					console.log("tsting data", res_data.completedModelOverAll.Label);
 					setPendingSqPie({
 						label: res_data.pendingCount.Label,
 						data: res_data.pendingCount.Count,
@@ -112,7 +149,6 @@ export default function Dashboard() {
 				//handle error
 				console.log(response);
 			});
-		console.log("summaryData", summaryData);
 	};
 
 	const renderPendingSQPie = () => {
@@ -204,7 +240,16 @@ export default function Dashboard() {
 			headerName: "Dispatch",
 			flex: 1,
 		},
+		{
+			field: "CustomField",
+			headerName: "Total",
+			valueGetter: (params) => {
+				return rowTotal(params.row);
+			},
+			flex: 1,
+		},
 	];
+
 	React.useEffect(function () {
 		handlePendingSqCount(access);
 	}, []);
@@ -236,67 +281,69 @@ export default function Dashboard() {
 	return (
 		<div className="container">
 			<div className="row">
-				<div className="col-4 p-2">
-					<div className="card">
+				<div className="col-4 ">
+					<div className="card" style={{ height: "100%" }}>
 						<h4 className="text-center">Module Status</h4>
 						{compPendingSQCountGraph}
 					</div>
 				</div>
-				<div className="col-4 p-2">
-					<div className="card ">
+				<div className="col-4">
+					<div className="card " style={{ height: "100%" }}>
 						<h4 className="text-center">Summary</h4>
 						<div>
-							<table>
-								<tr>
-									<td>Orders</td>
-									<td>{summaryData.live_order}</td>
-								</tr>
-								<tr>
-									<td>Sq.ft.</td>
-									<td>{summaryData.live_sq}</td>
-								</tr>
-								<tr>
-									<td>Coils</td>
-									<td>{summaryData.coil_qty}</td>
-								</tr>
-								<tr>
-									<td>Completed orders</td>
-									<td>{summaryData.completed_order}</td>
-								</tr>
-								<tr>
-									<td>Pending orders</td>
-									<td>{summaryData.pending_orders}</td>
-								</tr>
-								<tr>
-									<td>Last Ready date</td>
-									<td>{summaryData.last_ready}</td>
-								</tr>
-								<tr>
-									<td>Completed work</td>
-									<td>{summaryData.completed_order}</td>
-								</tr>
-								<tr>
-									<td>Completed work %</td>
-									<td>{summaryData.completed_work_cent}</td>
-								</tr>
-								<tr>
-									<td>Pending work</td>
-									<td>{summaryData.pending_orders}</td>
-								</tr>
-								<tr>
-									<td>Pending work %</td>
-									<td>{summaryData.pending_work_cent}</td>
-								</tr>
-								<tr>
-									<td>Pending as per man hours</td>
-									<td>{summaryData.pending_man_hours}</td>
-								</tr>
+							<table className="table table-bordered table-striped">
+								<tbody>
+									<tr>
+										<td>Orders</td>
+										<td>{summaryData.live_order}</td>
+									</tr>
+									<tr>
+										<td>Sq.ft.</td>
+										<td>{summaryData.live_sq}</td>
+									</tr>
+									<tr>
+										<td>Coils</td>
+										<td>{summaryData.coil_qty}</td>
+									</tr>
+									<tr>
+										<td>Completed orders</td>
+										<td>{summaryData.completed_order}</td>
+									</tr>
+									<tr>
+										<td>Pending orders</td>
+										<td>{summaryData.pending_orders}</td>
+									</tr>
+									<tr>
+										<td>Last Ready date</td>
+										<td>{summaryData.last_ready}</td>
+									</tr>
+									<tr>
+										<td>Completed work</td>
+										<td>{summaryData.completed_work}</td>
+									</tr>
+									<tr>
+										<td>Completed work %</td>
+										<td>{summaryData.completed_work_cent} %</td>
+									</tr>
+									<tr>
+										<td>Pending work</td>
+										<td>{summaryData.pending_work}</td>
+									</tr>
+									<tr>
+										<td>Pending work %</td>
+										<td>{summaryData.pending_work_cent} %</td>
+									</tr>
+									<tr>
+										<td>Pending as per man hours</td>
+										<td>{summaryData.pending_man_hours}</td>
+									</tr>
+								</tbody>
 							</table>
 						</div>
 					</div>
 				</div>
-				<div className="col-4 p-2">
-					<div className="card">
+				<div className="col-4 ">
+					<div className="card" style={{ height: "100%" }}>
 						<h4 className="text-center">Section Status</h4>
 						{compPendingGroupedSQCountGraph}
 					</div>
@@ -322,6 +369,37 @@ export default function Dashboard() {
 			<div className="row mt-2">
 				<div className="col p-2">
 					<div className="mt-3">
+						<table className="table table-striped table-bordered">
+							<tbody>
+								<tr>
+									<th>Average</th>
+									<td>
+										{colTotal(lastModuleWiseSQLine.allData, "cnc_nest_compsq")}
+									</td>
+									<td>
+										{colTotal(lastModuleWiseSQLine.allData, "cnc_punch_compsq")}
+									</td>
+									<td>
+										{colTotal(lastModuleWiseSQLine.allData, "bending_compsq")}
+									</td>
+									<td>
+										{colTotal(lastModuleWiseSQLine.allData, "tcutting_compsq")}
+									</td>
+									<td>
+										{colTotal(lastModuleWiseSQLine.allData, "finpunch_compsq")}
+									</td>
+									<td>{colTotal(lastModuleWiseSQLine.allData, "ca_compsq")}</td>
+									<td>{colTotal(lastModuleWiseSQLine.allData, "ce_compsq")}</td>
+									<td>
+										{colTotal(lastModuleWiseSQLine.allData, "brazing_compsq")}
+									</td>
+									<td>{colTotal(lastModuleWiseSQLine.allData, "pp_compsq")}</td>
+									<td>
+										{colTotal(lastModuleWiseSQLine.allData, "dispatch_compsq")}
+									</td>
+								</tr>
+							</tbody>
+						</table>
 						<DataGrid
 							slots={{ toolbar: GridToolbar }}
 							getRowId={(row) => Math.random()}

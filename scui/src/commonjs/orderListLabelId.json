@@ -254,5 +254,8 @@
     },{
         "label":"Est Delievery",
         "id":"est_delivery_date"
+    },{
+        "label":"Status Percentage",
+        "id":"status_cent"
     }
 ]

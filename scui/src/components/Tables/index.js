@@ -226,7 +226,6 @@ export default function EnhancedTable() {
 					toast("Api Authentication failed. login again.");
 				} else if (res_data.status_code === 200) {
 					const ret_data_cd = res_data.data;
-					// setAllOrderList(ret_data_cd);
 					saveAsExcel(
 						ret_data_cd,
 						"Order Live " + moment().format("YYYYMMDD H_mm").toString()

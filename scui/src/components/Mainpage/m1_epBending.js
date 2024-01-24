@@ -127,11 +127,6 @@ export default function M1epBending() {
 				return;
 			}
 		}
-		console.log(
-			"open status",
-			rowId,
-			orderList.findIndex((item) => item.id === rowId)
-		);
 		var editData;
 		if (name.includes("status")) {
 			editData = orderList.filter((itemA) => rowId !== itemA.id);

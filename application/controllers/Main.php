@@ -1556,7 +1556,7 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
             $liveClause = $this->mm->retQueryClause('live')['where_clause'];
         }
 
-        $orderList = $this->db->query("SELECT a.id, CONCAT(a.order_id,a.split_id) as order_id, a.order_date, ifnull( b.fname, 'Not Set') as full_customer_name, a.length, a.height, 
+        $orderList = $this->db->query("SELECT a.id, CONCAT(a.order_id,a.split_id) as order_id, a.order_date, a.created_dt as date_submit, ifnull( b.fname, 'Not Set') as full_customer_name, a.length, a.height, 
             a.rows, a.quantity, CONCAT(a.length, ' x ', a.height, ' x ', a.rows,'R - ', a.quantity) as size,
             a.sq_feet, c.lkp_value as pipe_type, d.lkp_value as expansion_type, a.pbStraight,a.pbStraightQty, a.pbStraightSize, a.pbStraightTotQty, a.pbSingle, a.pbSingleQty, 
             a.pbSingleSize, a.pbSingleTotQty, a.pbCross, a.pbCrossQty, a.pbCrossSize, a.pbCrossTotQty, a.pbOther,  a.pbOtherQty,a.pbOtherSize, a.pbOtherTotQty, a.pipe_comment, 
@@ -1565,7 +1565,9 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
             a.dispatch_mode, a.dispatch_comment, a.final_comment, a.cnc_nesting_pgm_no, a.cnc_nested, 
             a.cnc_nesting_status_dt,
             a.cnc_punching_status_dt,
+            a.ep_DateTime,
             a.bending_status_dt,
+            a.tcutting_datetime,
             a.tcutting_status_dt,
             a.finpunch_status_dt,
             a.ca_status_dt,
@@ -1584,23 +1586,30 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
             -- a.ce_status,
             -- a.pp_status,
             -- a.dispatch_status,
-            a.ep_DateTime,
-            a.tcutting_datetime,
-            a.coil_ready_at,
-            a.est_delivery_date,
             a.tcutting_roll_no,
             a.finpunching_foilno,
             a.ca_actualfpi,
             a.priority,
             a.hold,
             a.order_status,
-            a.created_dt as date_submit
+            a.coil_ready_at,
+            a.est_delivery_date,
+            concat((case a.cnc_nesting_status when 'true' then 1 else 0 end +
+                case a.cnc_punching_status when 'true' then 1 else 0 end +
+                case a.bending_status when 'true' then 1 else 0 end +
+                case a.tcutting_status when 'true' then 1 else 0 end +
+                case a.finpunch_status when 'true' then 1 else 0 end +
+                case a.ca_status when 'true' then 1 else 0 end +
+                case a.ce_status when 'true' then 1 else 0 end +
+                case a.brazing_status when 'true' then 1 else 0 end +
+                case a.pp_status when 'true' then 1 else 0 end +
+                case a.dispatch_status when 'true' then 1 else 0 end) * 10,'%') as status_cent
             FROM order_list a left join customers b on a.customer_name = b.id
             left join lookup c on a.pipe_type = c.id
             left join lookup d on a.expansion_type = d.id
             left join lookup e on a.end_plate_material = e.id
             left join lookup f on a.end_plate_modal = f.id
-            left join lookup g on a.circuit_models = g.id 
+            left join lookup g on a.circuit_models = g.id
             $liveClause;")->result_array();
 
         $newOrderList = array();
