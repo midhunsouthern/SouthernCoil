@@ -47,12 +47,13 @@ import PreviewIcon from "@mui/icons-material/Preview";
 import Slide from "@mui/material/Slide";
 import '../../Table.css';
 import logo from '../../assets/img/sc-straight.jpeg';
+import AutoCompleteOrder from "../Component/AutoCompleteOrder";
 const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function OrderViewModal(prop) {
-	const orderRowID = prop.orderId;
+	let orderRowID = prop.orderId;
 	const access = useContext(AccessContext).authID;
 	let dateObj = new Date();
 	const [orderNo, setOrderNo] = useState();
@@ -310,12 +311,12 @@ export default function OrderViewModal(prop) {
 	};
 
 	function printPage() {
-		// Get the element with the ID 'orderView' and the button to hide
-
-window.print();
-
-		  
+		window.print();
 	}
+	const handleSearchOrderId=(orderId)=>{
+		orderRowID=orderId.id;
+		handleOrderinfo1();
+	};
 
 	useEffect(() => {
 		handleSqFeet();
@@ -331,7 +332,13 @@ window.print();
 	return (
 		<div>
 			<>
+			
 				<Container key={"orderView"} id="orderView">
+					<Grid container spacing={3}>
+						<Grid item xs={12} style={{display:"flex",justifyContent:"center"}}>
+						<AutoCompleteOrder access={access} onSearchOrderId={handleSearchOrderId}/>
+						</Grid>
+					</Grid>
 					<Grid container spacing={4} id="print-ignore">
 						<Grid item xs={6}>
 							<img src={logo} alt="Logo" style={{ width: '50%', height: 'auto' }} />
@@ -667,7 +674,6 @@ window.print();
 						<Grid item xs={6}>
 							<Grid container spacing={2} padding={10}>
 								<Grid item xs={12}>
-									<Typography variant="h6">End Plate</Typography>
 									<>
 										{
 											<ImageList cols={1} rowHeight={164}>
@@ -693,7 +699,7 @@ window.print();
 									</>
 								</Grid>
 								<Grid item xs={12}>
-									<Typography variant="h6">Assembly Images</Typography>
+									
 									<>
 										{
 											<ImageList cols={1} rowHeight={164}>
@@ -718,9 +724,6 @@ window.print();
 									</>
 								</Grid>
 								<Grid item xs={12}>
-									<Typography variant="h6">
-										Hair pin(Brazing) Images
-									</Typography>
 									<>
 										{
 											<ImageList cols={1} rowHeight={164}>

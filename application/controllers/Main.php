@@ -4,6 +4,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 header('Access-Control-Allow-Origin: *');
 header("Access-Control-Allow-Methods: GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Content-Length, Accept-Encoding");
+
 class Main extends CI_Controller
 {
     /**
@@ -1636,5 +1638,17 @@ if(count($imagesList)>0){
         $ret_data['status_code'] = 200;
         $ret_data['status_msg'] = "Commitment status updated.";
         echo json_encode($ret_data);
+    }
+    /**
+     * Get All Active Order Id List
+     */
+    public function getActiveOrders(){
+        try {
+            $this->db->select(['order_id','id']);
+            $result=$this->db->get_where('order_list',[])->result_array();
+            echo json_encode($result);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
