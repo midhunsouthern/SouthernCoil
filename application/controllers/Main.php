@@ -1279,7 +1279,13 @@ if(count($imagesList)>0){
                     if($logMessage=='No'){
                         $webpData=convert_base64_to_webp($imgData,$image_path,$refId->id);
                     } else {
-                        $webpData=$imgData;
+
+                        // Use parse_url() to extract the path part of the URL
+                        $path = parse_url($imgData, PHP_URL_PATH);
+
+                        // Use basename() to get the filename from the path
+                        $filename = basename($path);
+                        $webpData=$filename;
                     }
                 $this->db->insert('drawing_images', array('drawing_refid' => $refId->id, 'drawing_base64' => $webpData,'order_type'=>'2','draw_type'=>'bz-t','order_serial_ref'=>$serial_ref));
             }

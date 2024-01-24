@@ -46,7 +46,7 @@ import "react-toastify/dist/ReactToastify.css";
 import PreviewIcon from "@mui/icons-material/Preview";
 import Slide from "@mui/material/Slide";
 import '../../Table.css';
-import logo from '../../assets/img/logo1.png';
+import logo from '../../assets/img/sc-straight.jpeg';
 const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -332,13 +332,13 @@ window.print();
 		<div>
 			<>
 				<Container key={"orderView"} id="orderView">
-					<Grid container spacing={4}>
+					<Grid container spacing={4} id="print-ignore">
 						<Grid item xs={6}>
 							<img src={logo} alt="Logo" style={{ width: '50%', height: 'auto' }} />
 						</Grid>
 						<Grid item xs={6} style={{display:'flex',justifyContent:"flex-end",alignItems:"center"}}>
 							<Box >
-							<Button id="print-ignore"
+							<Button 
 								style={{ backgroundColor: "#C5552C", color: "white" }}
 								onClick={() => {
 									printPage();
@@ -351,8 +351,15 @@ window.print();
 							</Box>
 						</Grid>
 					</Grid>
-					<Grid container spacing={2} columnSpacing={2} columnGap={2} style={{padding:'10px',marginTop:'1.5em'}}>
-						<Typography>Order Details</Typography>
+					<Grid container spacing={2} columnGap={2} className="print-header">
+						<Grid item xs={12} style={{display:"flex",justifyContent:"center"}}>
+							<img src={logo} alt="Logo" style={{width:"50%",height:"50%"}}/>
+						</Grid>
+						</Grid>
+
+
+					<Grid container spacing={2} columnSpacing={2} columnGap={2} className="container" style={{padding:'10px',marginTop:'1.5em'}}>
+						<Typography variant="h5">Order Details</Typography>
 						<table border={1} cellPadding={1} cellSpacing={2} style={{ width: 'inherit' }}>
 							<thead>
 
@@ -473,24 +480,6 @@ window.print();
 											</tr>
 
 											<tr>
-												<th>Expansion Type:</th>
-												<td>{lookUpList["expansionType"]?.map((item) => {
-													return (
-														<>
-															{expansionType && expansionType.includes(item.id)
-																? item.lkp_value
-																: ""}
-														</>
-													);
-												})}</td>
-											</tr>
-
-											<tr>
-												<th>Pipe Comment:</th>
-												<td> {pipeComment}</td>
-											</tr>
-
-											<tr>
 												<th>Pipe Bend:</th>
 												<td>
 													<Stack
@@ -537,7 +526,7 @@ window.print();
 									</table>
 								</Grid>
 								<Grid item xs={12}>
-									<Typography>Fins</Typography>
+									<Typography variant="h6">Fins</Typography>
 									<table>
 										<tbody>
 											<tr>
@@ -552,7 +541,7 @@ window.print();
 									</table>
 								</Grid>
 								<Grid item xs={12}>
-									<Typography>Brzing</Typography>
+									<Typography variant="h6">Brazing</Typography>
 									<table>
 										<tbody>
 											<tr>
@@ -608,21 +597,12 @@ window.print();
 													})}
 												</td>
 											</tr>
-											<tr>
-												<th>
-													Brazing Comment
-												</th>
-												<td>
 
-													{brazingComments}
-
-												</td>
-											</tr>
 										</tbody>
 									</table>
 								</Grid>
 								<Grid item xs={12}>
-									<Typography>Paint,Packing and Dispatch</Typography>
+									<Typography variant="h6">Paint,Packing and Dispatch</Typography>
 									<table>
 										<tbody>
 											<tr>
@@ -642,22 +622,7 @@ window.print();
 												</td>
 											</tr>
 
-											<tr>
-												<th>
-													Dispatch
-												</th>
-												<td>
-													{lookUpList["dispatchMode"]?.map((item) => {
-														return (
-															<>
-																{dispatchMode && dispatchMode.includes(item.id)
-																	? item.lkp_value
-																	: ""}
-															</>
-														);
-													})}
-												</td>
-											</tr>
+											
 
 											<tr>
 												<th>
@@ -668,6 +633,22 @@ window.print();
 														return (
 															<>
 																{packingType && packingType.includes(item.id)
+																	? item.lkp_value
+																	: ""}
+															</>
+														);
+													})}
+												</td>
+											</tr>
+											<tr>
+												<th>
+													Dispatch
+												</th>
+												<td>
+													{lookUpList["dispatchMode"]?.map((item) => {
+														return (
+															<>
+																{dispatchMode && dispatchMode.includes(item.id)
 																	? item.lkp_value
 																	: ""}
 															</>
@@ -765,8 +746,14 @@ window.print();
 							</Grid>
 						</Grid>
 					</Grid>
+					<div className="print-page-break"></div>
+					<Grid container spacing={2} columnGap={2} className="print-header">
+						<Grid item xs={12} style={{display:"flex",justifyContent:"center"}}>
+							<img src={logo} alt="Logo" style={{width:"50%",height:"50%"}}/>
+						</Grid>
+					</Grid>
 					<Grid item xs={12}>
-						<Typography>Coil Details</Typography>
+						<Typography variant="h4">Coil Details</Typography>
 						<table>
 							<thead>
 								<tr>
@@ -831,12 +818,18 @@ window.print();
 							</tbody>
 						</table>
 					</Grid>
+					<div className="print-page-break"></div>
+					<Grid container spacing={2} columnGap={2} className="print-header">
+						<Grid item xs={12} style={{display:"flex",justifyContent:"center"}}>
+							<img src={logo} alt="Logo" style={{width:"50%",height:"50%"}}/>
+						</Grid>
+						</Grid>
 					<Grid container spacing={2}>
 						
 						<Grid item xs={6}>
 							<Grid container spacing={2}>
 								<Grid item xs={12}>
-								<Typography>Brazing & Leak Testing Details</Typography>
+								<Typography variant="h4">Brazing & Leak Testing Details</Typography>
 									{
 										brazingDetails && brazingDetails.map((value, index) => (
 											<div key={index}>
@@ -877,7 +870,7 @@ window.print();
 						<Grid item xs={6}>
 							<Grid container spacing={2}>
 								<Grid item xs={12}>
-									<Typography variant="h6">Brazing</Typography>
+									
 									<>
 										{
 											<ImageList cols={1} rowHeight={164}>
