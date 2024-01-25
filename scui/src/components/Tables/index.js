@@ -42,10 +42,10 @@ import AddRemoveOrderQuantity from "../modals/AddRemoveOrderQuantity";
 import { saveAsExcel } from "../../commonjs/CommonFun";
 import {
 	getOrderAllLakVal,
-	getOrderAll,
+	allData_excel,
 	setOrderGeneric,
-	setOrderHold,
 	setOrderDelete,
+	setOrderHold,
 	setOrderSplitNew,
 } from "../../constant/url";
 
@@ -216,6 +216,39 @@ export default function EnhancedTable() {
 			});
 	};
 
+	const handleAllDataOrderList = (authID) => {
+		var bodyFormData = new FormData();
+		bodyFormData.append("authId", authID);
+		bodyFormData.append("reqType", "live");
+		axios({
+			method: "post",
+			url: allData_excel,
+			data: bodyFormData,
+			headers: { "Content-Type": "multipart/form-data" },
+		})
+			.then(function (response) {
+				//handle success
+				const res_data = response.data;
+				if (res_data.status_code === 101) {
+					toast("Api Authentication failed. login again.");
+				} else if (res_data.status_code === 200) {
+					const ret_data_cd = res_data.data;
+					saveAsExcel(
+						ret_data_cd,
+						"Order Live " + moment().format("YYYYMMDD H_mm").toString()
+					);
+					toast("Excel Data Received.");
+				} else {
+					console.log(res_data.status_msg);
+				}
+			})
+			.catch(function (response) {
+				//handle error
+				console.log(response);
+			});
+		setIsUpdate(false);
+	};
+
 	const handleSplitUpdated = (e) => {
 		if (e) {
 			handleOrderList(access);
@@ -299,16 +332,26 @@ export default function EnhancedTable() {
 			flex: 1,
 		},
 		{
-			field: "ready_date",
+			field: "coil_ready_at",
 			headerName: "Ready Date",
 			flex: 1,
 			maxWidth: 130,
+			valueFormatter: (params) => {
+				return moment(params?.value, "YYYY-MM-DD").isValid()
+					? moment(params?.value, "YYYY-MM-DD").format("Do MMM")
+					: params?.value;
+			},
 		},
 		{
-			field: "delievery_date",
+			field: "est_delivery_date",
 			headerName: "Delivery Date",
 			flex: 1,
 			maxWidth: 130,
+			valueFormatter: (params) => {
+				return moment(params?.value, "YYYY-MM-DD").isValid()
+					? moment(params?.value, "YYYY-MM-DD").format("Do MMM")
+					: params?.value;
+			},
 		},
 		{
 			field: "priority",
@@ -434,7 +477,10 @@ export default function EnhancedTable() {
 							Order Management
 						</Typography>
 						<Tooltip title="Download Excel list">
-							<IconButton color="info" onClick={() => saveAsExcel(orderList)}>
+							<IconButton
+								color="info"
+								onClick={() => handleAllDataOrderList(access)}
+							>
 								<DownloadIcon />
 							</IconButton>
 						</Tooltip>
@@ -608,6 +654,7 @@ export default function EnhancedTable() {
 				key={Math.random(1, 100)}
 			>
 				<div
+					className="p-5"
 					style={{
 						width: "100%",
 						marginTop: "10px",

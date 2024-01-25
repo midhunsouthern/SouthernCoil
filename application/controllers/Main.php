@@ -561,7 +561,7 @@ class Main extends CI_Controller
         CONCAT(a.length, ' x ', a.height, ' x ', a.rows,'R - ', count(h.order_id)) as size,
             ROUND((a.length * a.height * a.rows *  count(h.order_id)) / 144)  as sq_feet, c.lkp_value as pipe_type, d.lkp_value as expansion_type, 
             a.pbStraight,a.pbStraightQty, a.pbStraightSize, a.pbStraightTotQty, a.pbSingle, a.pbSingleQty, a.pbSingleSize, a.pbSingleTotQty, a.pbCross, a.pbCrossQty, a.pbCrossSize, 
-            a.pbCrossTotQty, a.pbOther, a.pbOtherQty, a.pbOtherTotQty, a.pipe_comment, e.lkp_value as  end_plate_material, f.lkp_value as  end_plate_modal, end_plate_orientation, a.ep_photo, a.cover_type, 
+            a.pbCrossTotQty, a.pbOther, a.pbOtherQty,a.pbOtherSize, a.pbOtherTotQty, a.pipe_comment, e.lkp_value as  end_plate_material, f.lkp_value as  end_plate_modal, end_plate_orientation, a.ep_photo, a.cover_type, 
             a.cover_detail,a.ep_comments, a.fin_per_inch, a.assembly_Photo, a.fin_comments, g.lkp_value as circuit_models, a.brazing_Photo, a.circuit_no, a.liquid_line, a.discharge_line, 
             a.brazing_comment, a.paint, a.packing_type, a.dispatch_mode, a.dispatch_comment, a.final_comment, a.cnc_nesting_pgm_no, a.cnc_nested, a.cnc_nesting_status, a.cnc_nesting_status_dt,
                       a.cnc_punching_status, a.cnc_punching_status_dt,
@@ -607,9 +607,9 @@ class Main extends CI_Controller
 
 
         $orders = array();
-        foreach($ret_data['data_orders'] as $order) {
-            
-            if  ($order["pp_status"] == "true") {
+        foreach ($ret_data['data_orders'] as $order) {
+
+            if ($order["pp_status"] == "true") {
 
                 $order["coil_ready_at"] = "Ready";
                 $orders[] = $order;
@@ -641,7 +641,7 @@ class Main extends CI_Controller
         $ret_data['data_orders'] = $this->db->query("SELECT a.id, CONCAT(a.order_id,a.split_id) as order_id, a.order_date, ifnull( b.fname, 'Not Set') as full_customer_name, a.length, a.height, 
             a.rows, a.quantity, CONCAT(a.length, ' x ', a.height, ' x ', a.rows,'R - ', a.quantity) as size,
             a.sq_feet, c.lkp_value as pipe_type, d.lkp_value as expansion_type, a.pbStraight,a.pbStraightQty, a.pbStraightSize, a.pbStraightTotQty, a.pbSingle, a.pbSingleQty, 
-            a.pbSingleSize, a.pbSingleTotQty, a.pbCross, a.pbCrossQty, a.pbCrossSize, a.pbCrossTotQty, a.pbOther, a.pbOtherSize, a.pbOtherQty, a.pbOtherTotQty, a.pipe_comment, 
+            a.pbSingleSize, a.pbSingleTotQty, a.pbCross, a.pbCrossQty, a.pbCrossSize, a.pbCrossTotQty, a.pbOther,  a.pbOtherQty, a.pbOtherSize, a.pbOtherTotQty, a.pipe_comment, 
             e.lkp_value as  end_plate_material, f.lkp_value as  end_plate_modal,end_plate_orientation, a.ep_photo, a.cover_type, a.cover_detail,a.ep_comments, a.fin_per_inch, a.assembly_Photo, 
             a.fin_comments, g.lkp_value as circuit_models, a.brazing_Photo, a.circuit_no, a.liquid_line, a.discharge_line, a.brazing_comment, a.paint, a.packing_type, 
             a.dispatch_mode, a.dispatch_comment, a.final_comment, a.cnc_nesting_pgm_no, a.cnc_nested, a.cnc_nesting_status, a.cnc_nesting_status_dt,
@@ -868,8 +868,10 @@ if(count($imagesList)>0){
         $ret_clause = $this->mm->retQueryClause($pageType);
         //var_dump("SELECT ROUND(SUM((a.length * a.height * a.rows * (select count(b.order_id) from brazing_details b where a.order_id = b.order_id and a.split_id = b.split_id)) /144 )) as pendingsq FROM `order_list` a " . $ret_clause['where_clause'] . "");die;
         $ret_data['pendingsq'] = $this->db->query("SELECT ROUND(SUM((a.length * a.height * a.rows * (select count(b.order_id) from brazing_details b where a.order_id = b.order_id and a.split_id = b.split_id)) /144 )) as pendingsq FROM `order_list` a " . $ret_clause['where_clause'] . "")->row();
-        $ret_data['completedSq'] = $this->db->query("SELECT  count(" . $ret_clause['fieldName'] . ") as count, sum(sq_feet) as compsq, " . $ret_clause['fieldName'] . '_dt' . " as stat_date 
-            FROM `order_list` where " . $ret_clause['fieldName'] = 'true' . " group by " . $ret_clause['fieldName'] . '_dt' . " order by " . $ret_clause['fieldName'] . '_dt' . ";")->result_array();
+        $ret_data['completedSq'] = $this->db->query("Select * from (SELECT  count(" . $ret_clause['fieldName'] . ") as count, sum(sq_feet) as compsq, SUBSTRING(" . $ret_clause['fieldName'] . '_dt' . ", 1, 10) as stat_date 
+            FROM `order_list` where " . $ret_clause['fieldName']  . "= 'true' group by stat_date order by " . $ret_clause['fieldName'] . "_dt desc limit 15)
+            as order_gp order by stat_date asc;")->result_array();
+        $ret_data['completed_count'] = $this->db->query("SELECT  sum(a.sq_feet) as completed_count FROM `order_list` a where " . $ret_clause['fieldName']  . "= 'true' and substring(" . $ret_clause['fieldName'] . '_dt, 1,10)= CURRENT_DATE()' . ";")->row();
         $ret_data['status_code'] = 200;
         $ret_data['status_msg'] = "Data retrival successful";
         echo json_encode($ret_data);
@@ -916,7 +918,7 @@ if(count($imagesList)>0){
         foreach ($data as $key => $value) {
             $keyExp = explode("_", $key);
             if (end($keyExp) == 'status') {
-                $data[$key . "_dt"] = date("Y-m-d");
+                $data[$key . "_dt"] = date("Y-m-d H:i:s");
             }
             if ($key == 'ce_status') {
                 $this->mm->updateBrazingExpansion($id, $value);
@@ -1415,6 +1417,37 @@ if(count($imagesList)>0){
         }
     }
 
+    public function getOrderBrazingLeak()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+        $ret = $this->db->query("SELECT a.order_id, a.split_id,a.series_ref as \"Series\", a.leak,a.A, a.B, a.D, a.E, a.F, a.G, a.H, a.K, a.L, a.N, b.lkp_value as uBend, 
+        c.lkp_value as inletOutlet, d.lkp_value as headder, e.lkp_value as headderFix, f.lkp_value as distributor, g.lkp_value as distributorFix, a.completion, 
+        h.brazing_status_dt as \"Brazing Completed Date\" FROM brazing_details a left join lookup b on a.uBend = b.id and b.category ='brazingLkp'
+left join lookup c on a.uBend = c.id and b.category ='brazingLkp'
+left join lookup d on a.uBend = d.id and b.category ='brazingLkp'
+left join lookup e on a.uBend = e.id and b.category ='brazingLkp'
+left join lookup f on a.uBend = f.id and b.category ='brazingLkp'
+left join lookup g on a.uBend = g.id and b.category ='brazingLkp'
+left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
+
+        if ($ret->num_rows() > 0) {
+            $ret_data['data'] = $ret->result_array();
+            $ret_data['status_code'] = 200;
+            $ret_data['status_msg'] = "Brazing Leak retrieved.";
+        } else {
+            $ret_data['status_code'] = 202;
+            $ret_data['status_msg'] = "No Brazing Leak Data to retrieved.";
+        }
+
+        echo json_encode($ret_data);
+    }
+    /**Ameer Freelancer */
+
     public function getOrdersToBeDispatched()
     {
         $ret_data = array();
@@ -1459,8 +1492,8 @@ if(count($imagesList)>0){
 
         $this->db->where(
             array(
-                'order_status =' =>'1',
-               //'hold<>' => 'true',
+                'order_status =' => '1',
+                //'hold<>' => 'true',
                 'dispatch_status<>' => 'true',
                 //'pp_status = ' => 'true',
             )
@@ -1639,9 +1672,6 @@ if(count($imagesList)>0){
         $ret_data['status_msg'] = "Commitment status updated.";
         echo json_encode($ret_data);
     }
-    /**
-     * Get All Active Order Id List
-     */
     public function getActiveOrders(){
         try {
             $this->db->select(['order_id','id']);
@@ -1650,5 +1680,148 @@ if(count($imagesList)>0){
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+    public function allData_excel()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+
+        $reqType = $this->input->post('reqType');
+        $liveClause = '';
+        if ($reqType == 'live') {
+            $liveClause = $this->mm->retQueryClause('live')['where_clause'];
+        }
+
+        $orderList = $this->db->query("SELECT a.id, CONCAT(a.order_id,a.split_id) as order_id, a.order_date, a.created_dt as date_submit, ifnull( b.fname, 'Not Set') as full_customer_name, a.length, a.height, 
+            a.rows, a.quantity, CONCAT(a.length, ' x ', a.height, ' x ', a.rows,'R - ', a.quantity) as size,
+            a.sq_feet, c.lkp_value as pipe_type, d.lkp_value as expansion_type, a.pbStraight,a.pbStraightQty, a.pbStraightSize, a.pbStraightTotQty, a.pbSingle, a.pbSingleQty, 
+            a.pbSingleSize, a.pbSingleTotQty, a.pbCross, a.pbCrossQty, a.pbCrossSize, a.pbCrossTotQty, a.pbOther,  a.pbOtherQty,a.pbOtherSize, a.pbOtherTotQty, a.pipe_comment, 
+            e.lkp_value as  end_plate_material, f.lkp_value as  end_plate_modal,end_plate_orientation, a.cover_type, a.cover_detail,a.ep_comments, a.fin_per_inch, 
+            a.fin_comments, g.lkp_value as circuit_models, a.circuit_no, a.liquid_line, a.discharge_line, a.brazing_comment, a.paint, a.packing_type, 
+            a.dispatch_mode, a.dispatch_comment, a.final_comment, a.cnc_nesting_pgm_no, a.cnc_nested, 
+            a.cnc_nesting_status_dt,
+            a.cnc_punching_status_dt,
+            a.ep_DateTime,
+            a.bending_status_dt,
+            a.tcutting_datetime,
+            a.tcutting_status_dt,
+            a.finpunch_status_dt,
+            a.ca_status_dt,
+            a.ce_status_dt,
+            a.brazing_status_dt,
+            a.pp_datetime,
+            a.pp_status_dt,
+            a.dispatch_status_dt,
+            -- a.cnc_nesting_status, 
+            -- a.cnc_punching_status, 
+            -- a.bending_status,
+            -- a.tcutting_status,
+            -- a.finpunch_status,
+            -- a.brazing_status,
+            -- a.ca_status,
+            -- a.ce_status,
+            -- a.pp_status,
+            -- a.dispatch_status,
+            a.tcutting_roll_no,
+            a.finpunching_foilno,
+            a.ca_actualfpi,
+            a.priority,
+            a.hold,
+            a.order_status,
+            a.coil_ready_at,
+            a.est_delivery_date,
+            concat((case a.cnc_nesting_status when 'true' then 1 else 0 end +
+                case a.cnc_punching_status when 'true' then 1 else 0 end +
+                case a.bending_status when 'true' then 1 else 0 end +
+                case a.tcutting_status when 'true' then 1 else 0 end +
+                case a.finpunch_status when 'true' then 1 else 0 end +
+                case a.ca_status when 'true' then 1 else 0 end +
+                case a.ce_status when 'true' then 1 else 0 end +
+                case a.brazing_status when 'true' then 1 else 0 end +
+                case a.pp_status when 'true' then 1 else 0 end +
+                case a.dispatch_status when 'true' then 1 else 0 end) * 10,'%') as status_cent
+            FROM order_list a left join customers b on a.customer_name = b.id
+            left join lookup c on a.pipe_type = c.id
+            left join lookup d on a.expansion_type = d.id
+            left join lookup e on a.end_plate_material = e.id
+            left join lookup f on a.end_plate_modal = f.id
+            left join lookup g on a.circuit_models = g.id
+            $liveClause;")->result_array();
+
+        $newOrderList = array();
+        foreach ($orderList  as $row) {
+
+            if ($row['pbStraight'] == 'false') {
+                $row['pbStraightQty'] = 0;
+                $row['pbStraightSize'] = 0;
+                $row['pbStraightTotQty'] = 0;
+            }
+            if ($row['pbSingle'] == 'false') {
+                $row['pbSingleQty'] = 0;
+                $row['pbSingleSize'] = 0;
+                $row['pbSingleTotQty'] = 0;
+            }
+            if ($row['pbCross'] == 'false') {
+                $row['pbCrossQty'] = 0;
+                $row['pbCrossSize'] = 0;
+                $row['pbCrossTotQty'] = 0;
+            }
+            if ($row['pbOther'] == 'false') {
+                $row['pbOtherQty'] = 0;
+                $row['pbOtherSize'] = 0;
+                $row['pbOtherTotQty'] = 0;
+            }
+
+            $row["end_plate_orientation"] = $this->mm->lookupIdToValue($row["end_plate_orientation"], "oreientation");
+            $row["cover_type"] = $this->mm->lookupIdToValue($row["cover_detail"], "coverType");
+            $row["cover_detail"] = $this->mm->lookupIdToValue($row["cover_detail"], "coverDetail");
+            $row["liquid_line"] = $this->mm->lookupIdToValue($row["liquid_line"], "liquidLine");
+            $row["discharge_line"] = $this->mm->lookupIdToValue($row["discharge_line"], "dischargeLine");
+            $row["packing_type"] = $this->mm->lookupIdToValue($row["packing_type"], "packingType");
+            $row["paint"] = $this->mm->lookupIdToValue($row["paint"], "paintType");
+            $row["dispatch_mode"] = $this->mm->lookupIdToValue($row["dispatch_mode"], "dispatchMode");
+            array_push($newOrderList,  $row);
+        }
+        $ret_data['data'] = $newOrderList;
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Commitment status updated.";
+        echo json_encode($ret_data);
+    }
+
+    public function dashboardGraphData()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+
+        $pendingCount =  $this->mm->pendingSQ_graph();
+        $pendingGroupCount =  $this->mm->pendingGroupedSQ_graph();
+        $completedModelOverAll = $this->mm->completedModuleOverAllSQ_graph();
+        $completeModalWise = $this->mm->completedModelWiseSQ_graph();
+        $summaryData = $this->mm->dataSummary();
+
+        $ret_data['pendingCount'] = $pendingCount;
+        $ret_data['pendingGroupCount'] = $pendingGroupCount;
+        $ret_data['completedModelOverAll']
+            = $completedModelOverAll;
+        $ret_data['completedModelWise'] = $completeModalWise;
+        $ret_data['summaryData'] = $summaryData;
+
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Data Retrieved";
+        echo json_encode($ret_data);
+    }
+
+    public function test()
+    {
+        $data = $this->mm->completedModelWiseSQ_graph();
+        var_dump($data);
     }
 }

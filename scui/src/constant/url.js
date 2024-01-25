@@ -1,7 +1,7 @@
 //export const baseURL = "http://localhost:8080/scoil/index.php/";
-export const baseURL = "http://southerncoil.local/index.php/";
+//export const baseURL = "http://southerncoil.local/index.php/";
 //export const baseURL = 'https://scuitest.southerncoil.com/backend/index.php/';
-// export const baseURL = "https://scui.southerncoil.com/backend/index.php/";
+export const baseURL = "https://scui.southerncoil.com/backend/index.php/";
 export const loginURL = baseURL + "login/login_acc";
 export const getAccessTypeURL = baseURL + "main/access_type_list";
 export const getProfileDataURL = baseURL + "main/getProfileData";
@@ -28,8 +28,9 @@ export const setOrderSplitNew = baseURL + "main/setOrderSplitNew";
 export const setAddBrazingQuantity = baseURL + "main/setAddBrazingQuantity";
 export const setDeleteBrazingQuantity =
 	baseURL + "main/setDeleteBrazingQuantity";
-
+export const getOrderBrazingLeak = baseURL + "main/getOrderBrazingLeak";
 export const getImagesOnly = baseURL + "main/getImagesOnly";
+export const allData_excel = baseURL + "main/allData_excel";
 //save order temp
 export const getSaveOrderGeneric = baseURL + "main/getSaveOrderGeneric";
 export const deleteSaveOrderGeneric = baseURL + "main/deleteSaveOrderGeneric";
@@ -60,3 +61,4 @@ export const updateSchedulerOrderDate =
 	baseURL + "main/updateSchedulerOrderDate";
 export const updateSchedulerCommitmentStatus =
 	baseURL + "main/updateSchedulerCommitmentStatus";
+export const dashboardGraphData = baseURL + "main/dashboardGraphData";

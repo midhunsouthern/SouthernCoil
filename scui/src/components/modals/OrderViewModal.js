@@ -197,7 +197,7 @@ export default function OrderViewModal(prop) {
 				if (res_data.status_code === 200) {
 					setLookupList(res_data);
 				} else {
-					console.log(res_data.status_msg);
+					//console.log(res_data.status_msg);
 				}
 			})
 			.catch(function (response) {
@@ -301,7 +301,7 @@ export default function OrderViewModal(prop) {
 					setBrazingDetails(ret_data_cd[0].brazing_details);
 					setBrazingTestingImages(ret_data_cd[0].brazing_testing_Photo);
 				} else {
-					console.log(res_data.status_msg);
+					//console.log(res_data.status_msg);
 				}
 			})
 			.catch(function (response) {
@@ -324,7 +324,7 @@ export default function OrderViewModal(prop) {
 	}, [length, height, row, quantity, handleSqFeet, handleSize]);
 
 	useEffect(() => {
-		if (prop.orderId !== null) {
+		if (prop.orderId !== null || prop.orderId !== 0) {
 			handleGetLookup();
 			handleOrderinfo1();
 		}

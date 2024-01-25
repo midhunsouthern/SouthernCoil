@@ -361,7 +361,7 @@ export default function M3coilExpansion() {
 			flex: 1,
 		},
 		{
-			field: "dispatch_comment",
+			field: "brazing_comment",
 			headerName: "Brazing Comments",
 			editable: true,
 			minWidth: 200,

@@ -127,11 +127,6 @@ export default function M1epBending() {
 				return;
 			}
 		}
-		console.log(
-			"open status",
-			rowId,
-			orderList.findIndex((item) => item.id === rowId)
-		);
 		var editData;
 		if (name.includes("status")) {
 			editData = orderList.filter((itemA) => rowId !== itemA.id);
@@ -251,7 +246,7 @@ export default function M1epBending() {
 	const handleEpDateTime = (rowId, e) => {
 		const { name, checked } = e.target;
 		const date = new Date();
-		const data_val = checked ? moment(date).format("DD MMM YY H:mm") : "";
+		const data_val = checked ? moment(date).format("YYYY-MM-DD HH:mm:ss") : "";
 		const editData = orderList.map((item) =>
 			item.id === rowId && name ? { ...item, [name]: data_val } : item
 		);
@@ -380,7 +375,10 @@ export default function M1epBending() {
 			renderCell: (params) => {
 				return (
 					<Checkbox
-						checked={moment(params.row.ep_DateTime, "DD MMM YY H:mm").isValid()}
+						checked={moment(
+							params.row.ep_DateTime,
+							"YYYY-MM-DD HH:mm:ss"
+						).isValid()}
 						sx={{ m: 1 }}
 						name="ep_DateTime"
 						onChange={(e) => handleEpDateTime(params.row.id, e)}
@@ -445,13 +443,27 @@ export default function M1epBending() {
 							slots={{ toolbar: GridToolbar }}
 							getRowClassName={(params) => {
 								if (params.indexRelativeToCurrentPage % 2 === 0) {
-									return params.row.priority === "true"
-										? "Mui-even secon-bg"
-										: "Mui-even";
+									if (params.row.priority === "true") {
+										return "secon-bg";
+									} else if (
+										params.row.tcutting_status === "true" &&
+										params.row.finpunch_status === "true"
+									) {
+										return "partial-comp-bg";
+									} else {
+										return "Mui-even";
+									}
 								} else {
-									return params.row.priority === "true"
-										? "Mui-odd secon-bg"
-										: "Mui-odd";
+									if (params.row.priority === "true") {
+										return "secon-bg";
+									} else if (
+										params.row.tcutting_status === "true" &&
+										params.row.finpunch_status === "true"
+									) {
+										return "partial-comp-bg";
+									} else {
+										return "Mui-odd";
+									}
 								}
 							}}
 							sx={{

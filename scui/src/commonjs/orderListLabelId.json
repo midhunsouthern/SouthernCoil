@@ -245,5 +245,17 @@
     },{
         "label":"Order Status",
         "id":"order_status"
+    },{
+        "label":"Orientation",
+        "id":"end_plate_orientation"
+    },{
+        "label":"Coil Ready",
+        "id":"coil_ready_at"
+    },{
+        "label":"Est Delievery",
+        "id":"est_delivery_date"
+    },{
+        "label":"Status Percentage",
+        "id":"status_cent"
     }
 ]
