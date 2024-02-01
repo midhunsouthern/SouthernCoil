@@ -30,6 +30,7 @@ import {
 	getLookupData,
 	getOrderDataByID,
 	getCustomersDataAll,
+	imageURL
 } from "../../constant/url";
 import { AccessContext } from "../../constant/accessContext";
 import {
@@ -365,7 +366,7 @@ export default function OrderViewModal(prop) {
 						</Grid>
 
 
-					<Grid container spacing={2} columnSpacing={2} columnGap={2} className="container" style={{padding:'10px',marginTop:'1.5em'}}>
+					<Grid container spacing={2} columnSpacing={2} columnGap={2} className="container" style={{padding:'10px',marginTop:'1.5em',tableLayout:"fixed"}}>
 						<Typography variant="h5">Order Details</Typography>
 						<table border={1} cellPadding={1} cellSpacing={2} style={{ width: 'inherit' }}>
 							<thead>
@@ -389,7 +390,7 @@ export default function OrderViewModal(prop) {
 							</tbody>
 						</table>
 					</Grid>
-					<Grid container spacing={2}>
+					<Grid container spacing={2} style={{tableLayout:"fixed"}}>
 						<Grid item xs={6}>
 							<Grid container spacing={2}>
 								<Grid item xs={12}>
@@ -495,36 +496,34 @@ export default function OrderViewModal(prop) {
 														alignContent="space-between"
 													>
 														{pbStraight === "true" && (
-															<Stack direction="row" spacing={2}>
+															
 																<Typography variant="subtitle1" gutterBottom>
 																	Straight
 																</Typography>
-
-															</Stack>
 														)}
 														{pbSingle === "true" && (
-															<Stack direction="row" spacing={2}>
+															
 																<Typography variant="subtitle1" gutterBottom>
 																	Single
 																</Typography>
 
-															</Stack>
+															
 														)}
 														{pbCross === "true" && (
-															<Stack direction="row" spacing={2}>
+															
 																<Typography variant="subtitle1" gutterBottom>
 																	Cross
 																</Typography>
 
-															</Stack>
+															
 														)}
 														{pbOther === "true" && (
-															<Stack direction="row" spacing={2}>
+															
 																<Typography variant="subtitle1" gutterBottom>
 																	Other
 																</Typography>
 
-															</Stack>
+															
 														)}
 													</Stack>
 												</td>
@@ -532,7 +531,7 @@ export default function OrderViewModal(prop) {
 										</tbody>
 									</table>
 								</Grid>
-								<Grid item xs={12}>
+								<Grid item xs={12} style={{tableLayout:"fixed"}}>
 									<Typography variant="h6">Fins</Typography>
 									<table>
 										<tbody>
@@ -682,13 +681,13 @@ export default function OrderViewModal(prop) {
 													<ImageListItem key={"epphoto" + index}>
 														<img
 
-															src={'http://localhost/' + item}
-															srcSet={'http://localhost/' + item}
+															src={imageURL + item}
+															srcSet={imageURL + item}
 															alt={"EpPhoto"}
 															loading="lazy"
 														/>
 														<IconButton className="order-view-img"
-															onClick={() => handleClickOpenimg('http://localhost/' + item)}
+															onClick={() => handleClickOpenimg(imageURL + item)}
 														>
 															<PreviewIcon />
 														</IconButton>
@@ -707,8 +706,8 @@ export default function OrderViewModal(prop) {
 													<ImageListItem key={"assembly" + index}>
 														<img
 
-															src={'http://localhost/' + item}
-															srcSet={'http://localhost/' + item}
+															src={imageURL + item}
+															srcSet={imageURL + item}
 															alt={"assembly"}
 															loading="lazy"
 														/>
@@ -730,8 +729,8 @@ export default function OrderViewModal(prop) {
 												{brazingPhoto?.map((item, index) => (
 													<ImageListItem key={"brazing" + index}>
 														<img
-															src={'http://localhost/' + item}
-															srcSet={'http://localhost/' + item}
+															src={imageURL + item}
+															srcSet={imageURL + item}
 															alt={"Brazing"}
 															loading="lazy"
 														/>
@@ -756,7 +755,7 @@ export default function OrderViewModal(prop) {
 						</Grid>
 					</Grid>
 					<Grid item xs={12}>
-						<Typography variant="h4">Coil Details</Typography>
+						<Typography variant="h5">Coil Details</Typography>
 						<table>
 							<thead>
 								<tr>
@@ -832,11 +831,11 @@ export default function OrderViewModal(prop) {
 						<Grid item xs={6}>
 							<Grid container spacing={2}>
 								<Grid item xs={12}>
-								<Typography variant="h4">Brazing & Leak Testing Details</Typography>
+								<Typography variant="h5">Brazing & Leak Testing Details</Typography>
 									{
 										brazingDetails && brazingDetails.map((value, index) => (
 											<div key={index}>
-												<h3>Table {index + 1}</h3>
+												<h6>Table {index + 1}</h6>
 												<table>
 													<tbody>
 														<tr>
@@ -876,19 +875,19 @@ export default function OrderViewModal(prop) {
 									
 									<>
 										{
-											<ImageList cols={1} rowHeight={164}>
+											<ImageList cols={1} rowHeight={200}>
 												{brazingTestingImages?.map((item, index) => (
 
 													<ImageListItem key={"brazing_testing" + index}>
 														<img
 
-															src={'http://localhost/' + item}
-															srcSet={'http://localhost/' + item}
+															src={imageURL + item}
+															srcSet={imageURL + item}
 															alt={"BrazingTesting"}
 															loading="lazy"
 														/>
 														<IconButton className="order-view-img"
-															onClick={() => handleClickOpenimg('http://localhost/' + item)}
+															onClick={() => handleClickOpenimg(item)}
 														>
 															<PreviewIcon />
 														</IconButton>
@@ -923,17 +922,14 @@ export default function OrderViewModal(prop) {
 							<CloseIcon />
 						</IconButton>
 						<Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-							Sound
+							Order View Images
 						</Typography>
-						<Button autoFocus color="inherit" onClick={handleCloseImg}>
-							save
-						</Button>
 					</Toolbar>
 				</AppBar>
 				<img
-					src={dialogImg}
-					srcSet={dialogImg}
-					alt={dialogImg}
+					src={imageURL+dialogImg}
+					srcSet={imageURL+dialogImg}
+					alt={imageURL+dialogImg}
 					loading="lazy"
 				/>
 				<DialogActions>

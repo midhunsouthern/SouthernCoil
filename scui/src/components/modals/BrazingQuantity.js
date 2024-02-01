@@ -31,6 +31,7 @@ import {
 	setBrazingDetails,
 	getBrazingDetail,
 	setAddBrazingQuantity,
+	imageURL,
 } from "../../constant/url";
 import { AccessContext } from "../../constant/accessContext";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -224,7 +225,7 @@ export default function BrazingQuantity(prop) {
 			if (!newBrazingPhotosInLeak[selData['series_ref']]) {
 				newBrazingPhotosInLeak[selData['series_ref']] = [];
 			}
-			newBrazingPhotosInLeak[selData['series_ref']].push('http://localhost/uploads/' + item['drawing_base64']);
+			newBrazingPhotosInLeak[selData['series_ref']].push(imageURL+'uploads/' + item['drawing_base64']);
 		});
 		setBrazingPhotosInLeak(newBrazingPhotosInLeak); // Update the state with the new object
 		setSelData(selData);

@@ -2,7 +2,11 @@
 class AuthCodeValidator {
     public function validateCode() {
         // Access CI instance
+        
         $ci =& get_instance();
+        if($ci->router->class=='login'){
+return;
+        }
         $ci->load->model('mm');
 
         // Retrieve token from header or wherever it's stored
