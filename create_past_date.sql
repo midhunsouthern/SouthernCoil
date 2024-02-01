@@ -28,6 +28,26 @@ CREATE PROCEDURE create_past_date()
       INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -18 DAY));
       INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -19 DAY));
       INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -20 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -21 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -22 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -23 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -24 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -25 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -26 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -27 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -28 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -29 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -30 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -31 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -32 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -33 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -34 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -35 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -36 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -37 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -38 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -39 DAY));
+      INSERT INTO past_dates (past_date) VALUES (DATE_ADD(curdate(), INTERVAL -40 DAY));
 END $$
 
 call create_past_date();

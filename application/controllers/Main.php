@@ -1192,7 +1192,7 @@ class Main extends CI_Controller
         $qtyCount = $this->input->post('qtyCount');
         $this->db->select('max(series_id) as max_series_id');
         $this->db->group_by('order_id, split_id');
-        $maxSeriesId = $this->db->get_where('brazing_details', array('order_id' => $orderId))->row();
+        $maxSeriesId = $this->db->get_where('brazing_details', array('order_id' => $orderId, 'split_id' => $splitId))->row();
 
         if (isset($maxSeriesId->max_series_id)) {
             $maxSeriesId = $maxSeriesId->max_series_id;
