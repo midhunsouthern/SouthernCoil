@@ -1296,11 +1296,11 @@ class Main extends CI_Controller
         $ret = $this->db->query("SELECT a.order_id, a.split_id,a.series_ref as \"Series\", a.leak,a.A, a.B, a.D, a.E, a.F, a.G, a.H, a.K, a.L, a.N, b.lkp_value as uBend, 
         c.lkp_value as inletOutlet, d.lkp_value as headder, e.lkp_value as headderFix, f.lkp_value as distributor, g.lkp_value as distributorFix, a.completion, 
         h.brazing_status_dt as \"Brazing Completed Date\" FROM brazing_details a left join lookup b on a.uBend = b.id and b.category ='brazingLkp'
-left join lookup c on a.uBend = c.id and b.category ='brazingLkp'
-left join lookup d on a.uBend = d.id and b.category ='brazingLkp'
-left join lookup e on a.uBend = e.id and b.category ='brazingLkp'
-left join lookup f on a.uBend = f.id and b.category ='brazingLkp'
-left join lookup g on a.uBend = g.id and b.category ='brazingLkp'
+left join lookup c on a.inletOutlet = c.id and b.category ='brazingLkp'
+left join lookup d on a.headder = d.id and b.category ='brazingLkp'
+left join lookup e on a.headderFix = e.id and b.category ='brazingLkp'
+left join lookup f on a.distributor = f.id and b.category ='brazingLkp'
+left join lookup g on a.distributorFix = g.id and b.category ='brazingLkp'
 left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
 
         if ($ret->num_rows() > 0) {
