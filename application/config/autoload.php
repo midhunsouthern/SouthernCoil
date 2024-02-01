@@ -29,7 +29,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | 7. Models
 |
 */
-
 /*
 | -------------------------------------------------------------------
 |  Auto-load Packages
@@ -89,7 +88,7 @@ $autoload['drivers'] = array();
 |
 |	$autoload['helper'] = array('url', 'file');
 */
-$autoload['helper'] = array('url', 'file','form');
+$autoload['helper'] = array('url', 'file','form','utility');
 
 /*
 | -------------------------------------------------------------------
@@ -135,3 +134,4 @@ $autoload['language'] = array();
 $autoload['model'] = array('MainModal' => 'mm');
 
 $autoload['time_zone'] = date_default_timezone_set('Asia/Kolkata');
+

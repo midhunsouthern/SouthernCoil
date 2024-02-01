@@ -5,3 +5,8 @@ scui/node_modules/
 application/config/config.php
 application/config/database.php
 scui/build/
+vendor
+application/logs
+uploads
+.DS_Store
+ci_*

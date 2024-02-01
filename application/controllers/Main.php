@@ -4,6 +4,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 header('Access-Control-Allow-Origin: *');
 header("Access-Control-Allow-Methods: GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Content-Length, Accept-Encoding");
+
 class Main extends CI_Controller
 {
     /**
@@ -28,6 +30,7 @@ class Main extends CI_Controller
     {
         parent::__construct();
         $this->db->query("SET time_zone='+5:30'");
+        $this->load->helper('image');
     }
     public function index()
     {
@@ -277,115 +280,139 @@ class Main extends CI_Controller
 
         echo json_encode($ret_data);
     }
-
-    public function setOrderNew()
+    /**
+     * Create a new order
+     */
+    public function setOrderNew(){
+        try {
+            log_message('debug','Set Order New');
+            $orderId=$this->input->post('id');
+            $type=$this->input->post('type');
+            $postData=$this->mm->arrayToDataArray($_POST);
+            //Unset columns
+            unset($postData['authId']);
+            unset($postData['type']);
+            $responseOrder=$this->mm->saveOrder($postData,$orderId,$type);
+            echo json_encode($responseOrder);
+        } catch (\Throwable $th) {
+            log_message('debug',$th);
+            throw $th;
+        }
+    }
+    public function setOrderNew2()
     {
-        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
-            $ret_data['status_code'] = 101;
-            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
-            echo json_encode($ret_data);
-            return;
-        }
-
-        unset($_POST['authId']);
-        $ret_data['status_msg'] = '';
-
-        $orderId = $this->input->post('id');
-        $type = $this->input->post('type');
-        $data = $this->mm->arrayToDataArray($_POST);
-        $uq = time();
-        $epuq = 'ep' . $uq;
-        $asmuq = 'asm' . $uq;
-        $bzuq = 'bz' . $uq;
-        $ret_data = array();
-        if (is_null($orderId) || $orderId == '') {
-            // Insert data. 
-            $imgData = json_decode($data['image_data'], true)[0];
-
-            foreach ($imgData['ep'] as $row) {
-                $this->db->insert('drawing_images', array('drawing_refid' => $epuq, 'drawing_base64' => $row));
+        try { 
+           
+            if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+                $ret_data['status_code'] = 101;
+                $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+                echo json_encode($ret_data);
+                return;
             }
-            foreach ($imgData['assembly'] as $row) {
-                $this->db->insert('drawing_images', array('drawing_refid' => $asmuq, 'drawing_base64' => $row));
-            }
-            foreach ($imgData['brazing'] as $row) {
-                $this->db->insert('drawing_images', array('drawing_refid' => $bzuq, 'drawing_base64' => $row));
-            }
-
-            unset($data['image_data']);
-
-            $data['ep_photo'] = $epuq;
-            $data['assembly_Photo'] = $asmuq;
-            $data['brazing_Photo'] = $bzuq;
-
-            if ($type == 'submit') {
-                $data['order_id'] = $this->mm->createOrderId();
-                $tbl_name = 'order_list';
-                $ret_data['order_id'] = strval($data['order_id']);
-            } elseif ($type == 'save') {
-                $tbl_name = 'order_list_saved';
-                $ret_data['order_id'] = 'n/a';
-            }
-            unset($data['type']);
-            if ($this->db->insert($tbl_name, $data)) {
-                if ($tbl_name == 'order_list') {
-                    $this->mm->createBrazingQuantity($data['order_id'], $data['quantity']);
+            unset($_POST['authId']);
+            $ret_data['status_msg'] = '';
+            $orderId = $this->input->post('id');
+            $type = $this->input->post('type');
+            $data = $this->mm->arrayToDataArray($_POST);
+            $imageKeys=[
+                'ep'=>'ep',
+                'asm'=>'assembly',
+                'bz'=>'brazing'
+            ];
+            $ret_data = array();
+           
+            if (is_null($orderId) || $orderId == '') {
+                // Insert data. 
+                //$imgData = json_decode($data['image_data'], true)[0];
+                
+    
+                if ($type == 'submit') {
+                    $data['order_id'] = $this->mm->createOrderId();
+                    $tbl_name = 'order_list';
+                    $ret_data['order_id'] = strval($data['order_id']);
+                    $orderType=1;
+                } elseif ($type == 'save') {
+                    $tbl_name = 'order_list_saved';
+                    $ret_data['order_id'] = 'n/a';
+                    $orderType=0;
                 }
-                //$this->mm->updateCE_Status();
-
-                $ret_data['status_code'] = 200;
-                $ret_data['status_msg'] = 'Order Saved Successful';
-            }
-        } else if (!is_null($orderId) || $orderId <> '') {
-            // Edit data.
-            unset($data['id']);
-            unset($data['order_id']);
-            unset($data['order_date']);
-            unset($data['type']);
-
-            $imgData = json_decode($data['image_data'], true)[0];
-
-            $this->db->select('ep_photo, assembly_Photo, brazing_Photo');
-            $this->db->where('id', $orderId);
-            $photoVal = $this->db->get('order_list')->row();
-
-            $this->db->where('drawing_refid', $photoVal->ep_photo);
-            $this->db->delete('drawing_images');
-
-            $this->db->where('drawing_refid', $photoVal->assembly_Photo);
-            $this->db->delete('drawing_images');
-
-            $this->db->where('drawing_refid', $photoVal->brazing_Photo);
-            $this->db->delete('drawing_images');
-
-            foreach ($imgData['ep'] as $row) {
-                $this->db->insert('drawing_images', array('drawing_refid' => $epuq, 'drawing_base64' => $row));
-            }
-            foreach ($imgData['assembly'] as $row) {
-                $this->db->insert('drawing_images', array('drawing_refid' => $asmuq, 'drawing_base64' => $row));
-            }
-            foreach ($imgData['brazing'] as $row) {
-                $this->db->insert('drawing_images', array('drawing_refid' => $bzuq, 'drawing_base64' => $row));
-            }
-
-            unset($data['image_data']);
-
-            $data['ep_photo'] = $epuq;
-            $data['assembly_Photo'] = $asmuq;
-            $data['brazing_Photo'] = $bzuq;
-
-            $this->db->where('id', $orderId);
-            if ($this->db->update('order_list', $data)) {
-                $this->mm->updateCE_Status($orderId);
-                $ret_data['status_code'] = 200;
-                $ret_data['status_msg'] = 'Order Data Update Successful';
-            } else {
-                $ret_data['status_code'] = 201;
-                $ret_data['status_msg'] = 'Order Data Update UnSuccessful';
-            }
+                
+                unset($data['type']);
+                if ($this->db->insert($tbl_name, $data)) {
+                    if ($tbl_name == 'order_list') {
+                        $this->mm->createBrazingQuantity($data['order_id'], $data['quantity']);
+                    }
+                    $refId=$this->db->insert_id();
+                    //$this->mm->updateCE_Status();
+    //Image Iploads
+    $image_path = realpath(APPPATH . '../uploads');
+    foreach($imageKeys as $keys=>$value){
+        if(count($_POST[$value.'Photo'])>0){
+            foreach ($_POST[$value.'Photo'] as $row) {
+                 $webpData=convert_base64_to_webp($row,$image_path,$refId);
+                 $this->db->insert('drawing_images', array('drawing_refid' => $refId, 'drawing_base64' => $webpData,'order_type'=>$orderType));
+                 $data[$value.'_Photo']=$refId;
         }
-
-        echo json_encode($ret_data);
+        }
+    }
+                    $ret_data['status_code'] = 200;
+                    $ret_data['status_msg'] = 'Order Saved Successful';
+                }
+            } else if (!is_null($orderId) || $orderId <> '') {
+                // Edit data.
+                unset($data['id']);
+                unset($data['order_id']);
+                unset($data['order_date']);
+                unset($data['type']);
+    
+                $imgData = json_decode($data['image_data'], true)[0];
+    
+                $this->db->select('ep_photo, assembly_Photo, brazing_Photo');
+                $this->db->where('id', $orderId);
+                $photoVal = $this->db->get('order_list')->row();
+    
+                $this->db->where('drawing_refid', $photoVal->ep_photo);
+                $this->db->delete('drawing_images');
+    
+                $this->db->where('drawing_refid', $photoVal->assembly_Photo);
+                $this->db->delete('drawing_images');
+    
+                $this->db->where('drawing_refid', $photoVal->brazing_Photo);
+                $this->db->delete('drawing_images');
+    
+                foreach ($imgData['ep'] as $row) {
+                    $this->db->insert('drawing_images', array('drawing_refid' => $epuq, 'drawing_base64' => $row));
+                }
+                foreach ($imgData['assembly'] as $row) {
+                    $this->db->insert('drawing_images', array('drawing_refid' => $asmuq, 'drawing_base64' => $row));
+                }
+                foreach ($imgData['brazing'] as $row) {
+                    $this->db->insert('drawing_images', array('drawing_refid' => $bzuq, 'drawing_base64' => $row));
+                }
+    
+                unset($data['image_data']);
+    
+                $data['ep_photo'] = $epuq;
+                $data['assembly_Photo'] = $asmuq;
+                $data['brazing_Photo'] = $bzuq;
+    
+                $this->db->where('id', $orderId);
+                if ($this->db->update('order_list', $data)) {
+                    $this->mm->updateCE_Status($orderId);
+                    $ret_data['status_code'] = 200;
+                    $ret_data['status_msg'] = 'Order Data Update Successful';
+                } else {
+                    $ret_data['status_code'] = 201;
+                    $ret_data['status_msg'] = 'Order Data Update UnSuccessful';
+                }
+            }
+    
+            echo json_encode($ret_data);
+                } catch (\Throwable $th) {
+                    log_message('debug',print_r($th,true));
+                    echo $th;
+                }
+        
     }
 
     public function setOrderSplitNew()
@@ -713,6 +740,9 @@ class Main extends CI_Controller
 
     public function getOrderDataByID()
     {
+        try {
+            //code...
+        
         if (!$this->mm->access_code_verify($this->input->post('authId'))) {
             $ret_data['status_code'] = 101;
             $ret_data['status_msg'] = "Access Code not correct, Please login again.";
@@ -720,18 +750,84 @@ class Main extends CI_Controller
             return;
         }
         $id = $this->input->post('id');
+        log_message('debug',print_r($id,true));
+        $customerDetails=$this->db->get_where('lookup',array('category'=>'brazingLkp'))->result_array();
         $ret_data['data_orders'] = $this->db->query("SELECT ifnull( b.fname, 'Not Set') as full_customer_name, a.* FROM order_list a left join customers b on a.customer_name = b.id where a.id = '$id';")->result_array();
-
-        $this->db->select('drawing_base64');
-        $ret_data['data_orders'][0]['ep_photo'] = $this->mm->formBase64Array($this->db->get_where('drawing_images', array('drawing_refid' => $ret_data['data_orders'][0]['ep_photo']))->result_array());
-        $this->db->select('drawing_base64');
-        $ret_data['data_orders'][0]['assembly_Photo'] = $this->mm->formBase64Array($this->db->get_where('drawing_images', array('drawing_refid' => $ret_data['data_orders'][0]['assembly_Photo']))->result_array());
-        $this->db->select('drawing_base64');
-        $ret_data['data_orders'][0]['brazing_Photo'] = $this->mm->formBase64Array($this->db->get_where('drawing_images', array('drawing_refid' => $ret_data['data_orders'][0]['brazing_Photo']))->result_array());
+        $imagesList=$this->db->get_where('drawing_images', array('drawing_refid' => $id))->result_array();
+        $brazingDetails=$this->db->get_where('brazing_details',array('order_id'=>$ret_data['data_orders'][0]['order_id']))->result_array();
+        
+        if(count($brazingDetails)>0){
+            $brazingIds=[
+            'uBend',
+            'inletOutlet',
+            'headder',
+            'headderFix',
+            'distributor', 
+            'distributorFix'
+            ];
+            foreach ($brazingDetails as $brazingId => $brazingValue) {
+                foreach ($customerDetails as $customerKey => $customerValue) {
+                    foreach ($brazingIds as $key => $value) {
+                        if($customerValue['id']==$brazingValue[$value]){
+                            $brazingDetails[$brazingId][$value]=$customerValue['lkp_value'];
+                        }   
+                    }
+                }
+            }
+            log_message('debug',print_r($brazingDetails,true));
+            //$imagesResult = $this->db->get();
+            $ret_data['data_orders'][0]['brazing_details']=$brazingDetails;
+        }
+        $arr = array();
+        $indices = [];
+if(count($imagesList)>0){
+        foreach ($imagesList as $item) {
+            // Get the current draw_type
+            $drawType = $item['draw_type'];
+        
+            // Initialize the index for this draw_type if it hasn't been set yet
+            if (!isset($indices[$drawType])) {
+                $indices[$drawType] = 0;
+            }
+        
+            // Assign the item to the new array and increment the index for this draw_type
+            $arr[$drawType][$indices[$drawType]] = 'uploads/'.$item['drawing_base64'];
+            $indices[$drawType]++;
+        }
+        if(isset($arr['ep'])){
+       $ret_data['data_orders'][0]['ep_photo'] = $arr['ep'];
+        } else {
+            $ret_data['data_orders'][0]['ep_photo'] = [];
+        }
+        if(isset($arr['asm'])){
+        $ret_data['data_orders'][0]['assembly_Photo'] = $arr['asm'];
+        } else{
+            $ret_data['data_orders'][0]['assembly_Photo'] = [];    
+        }
+        if(isset($arr['bz'])){
+        $ret_data['data_orders'][0]['brazing_Photo'] = $arr['bz'];
+        }else{
+            $ret_data['data_orders'][0]['brazing_Photo'] = [];    
+        }
+        if(isset($arr['bz-t'])){
+            $ret_data['data_orders'][0]['brazing_testing_Photo'] = $arr['bz-t'];
+            }else{
+                $ret_data['data_orders'][0]['brazing_testing_Photo'] = [];    
+            }
+    } else {
+        $ret_data['data_orders'][0]['ep_photo'] = [];
+        $ret_data['data_orders'][0]['assembly_Photo'] = [];
+        $ret_data['data_orders'][0]['brazing_Photo'] = [];
+        $ret_data['data_orders'][0]['brazing_testing_Photo'] = [];   
+    }
         $ret_data['status_code'] = 200;
         $ret_data['status_msg'] = "Data retrival successful";
-
         echo json_encode($ret_data);
+}
+        catch (\Throwable $th) {
+            //throw $th;
+
+        }
     }
 
     public function getImagesOnly()
@@ -1124,8 +1220,8 @@ class Main extends CI_Controller
 
         $ret = $this->mm->getBrazingDetailsObj($orderId, $splitId);
 
-        if ($ret->num_rows() > 0) {
-            $ret_data['data'] = $ret->result_array();
+        if (count($ret) > 0) {
+            $ret_data['data'] = $ret;
             $ret_data['status_code'] = 200;
             $ret_data['status_msg'] = "Lookup data retrieved.";
         } else {
@@ -1138,6 +1234,7 @@ class Main extends CI_Controller
 
     public function setBrazingDetails()
     {
+        
         if (!$this->mm->access_code_verify($this->input->post('authId'))) {
             $ret_data['status_code'] = 101;
             $ret_data['status_msg'] = "Access Code not correct, Please login again.";
@@ -1149,7 +1246,10 @@ class Main extends CI_Controller
         $splitId = $this->input->post('splitId');
         $data = $this->input->post('data');
         $data = json_decode($data, true);
-
+        $brazingImages=json_decode($this->input->post('brazingPhoto'));
+        $array = json_decode(json_encode($brazingImages), true);
+        log_message('debug',print_r($array,true));
+        log_message('debug',print_r($data,true));
         $this->db->trans_start();
 
         $this->db->where('order_id', $orderId);
@@ -1158,8 +1258,40 @@ class Main extends CI_Controller
 
         $i = 0;
         foreach ($data as $row) {
+            unset($row['brazing_photo']);
             if ($this->db->insert('brazing_details', $row)) {
                 $i = $i + 1;
+            }
+        }
+        // Get order information
+        
+        $refId = $this->db->select('id')
+                 ->from('order_list')
+                 ->where(['order_id' => $orderId])
+                 ->get()
+                 ->row();
+        log_message('debug',print_r($refId->id,true));
+        
+        //Save Images 
+        $image_path = realpath(APPPATH . '../uploads');
+            foreach ($array as $serial_ref=>$row) {
+                // Delete Entry
+                $this->db->where('order_serial_ref',$serial_ref)->delete('drawing_images');
+                foreach($row as $key=>$imgData) {
+                    $logMessage = (preg_match('/\.webp/', $imgData) ? "Yes" : "No");
+                    log_message('debug',print_r($logMessage,true));
+                    if($logMessage=='No'){
+                        $webpData=convert_base64_to_webp($imgData,$image_path,$refId->id);
+                    } else {
+
+                        // Use parse_url() to extract the path part of the URL
+                        $path = parse_url($imgData, PHP_URL_PATH);
+
+                        // Use basename() to get the filename from the path
+                        $filename = basename($path);
+                        $webpData=$filename;
+                    }
+                $this->db->insert('drawing_images', array('drawing_refid' => $refId->id, 'drawing_base64' => $webpData,'order_type'=>'2','draw_type'=>'bz-t','order_serial_ref'=>$serial_ref));
             }
         }
         $this->db->trans_complete();
@@ -1540,7 +1672,15 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
         $ret_data['status_msg'] = "Commitment status updated.";
         echo json_encode($ret_data);
     }
-
+    public function getActiveOrders(){
+        try {
+            $this->db->select(['order_id','id']);
+            $result=$this->db->get_where('order_list',[])->result_array();
+            echo json_encode($result);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
     public function allData_excel()
     {
         if (!$this->mm->access_code_verify($this->input->post('authId'))) {
