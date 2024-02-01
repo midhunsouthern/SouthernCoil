@@ -6,6 +6,8 @@ import Mainpage from "../components/Mainpage";
 import OrderHistory from "../components/Tables/OrderHistory";
 import SideNav from "../components/Sidenav";
 import Profiles from "../components/Mainpage/MyProfile/myprofile.js";
+/**Dashboard */
+import Dashboard from "../components/Mainpage/dashboard.js";
 /**Module 1 */
 import M1cncNesting from "../components/Mainpage/m1_cncNesting";
 import M1cncPunching from "../components/Mainpage/m1_cncPunching";
@@ -57,6 +59,17 @@ const MainRoutes = {
 					<Header />
 					<SideNav />
 					<Mainpage />
+					<Footer />
+				</>
+			),
+		},
+		{
+			path: "/dashboard",
+			element: (
+				<>
+					<Header />
+					<SideNav />
+					<Dashboard />
 					<Footer />
 				</>
 			),
@@ -523,7 +536,7 @@ const MainRoutes = {
 			),
 		},
 		{
-			path: 'scheduler',
+			path: "scheduler",
 			element: (
 				<>
 					<Header />
@@ -539,8 +552,8 @@ const MainRoutes = {
 					</div>
 					<Footer />
 				</>
-			)
-		}
+			),
+		},
 	],
 };
 export default MainRoutes;

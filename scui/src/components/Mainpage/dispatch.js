@@ -365,7 +365,7 @@ export default function Dispatch() {
 							refreshPage={(request) => refreshData(request)}
 						/>
 						<div style={{ border: "1px solid grey" }}></div>
-						<NavLink to="/coilexpansion" className="toolButton">
+						<NavLink to="/paintingpacking" className="toolButton">
 							<KeyboardDoubleArrowLeftIcon style={{ color: "#BC1921" }} />
 							Prev Module
 						</NavLink>

@@ -1,31 +1,27 @@
 import { useState, useContext, useEffect, forwardRef } from "react";
 import axios from "axios";
 import moment from "moment";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AccessContext } from "../../../constant/accessContext";
-import {
-	Button,
-	Dialog,
-	Card,
-	CardContent,
-	Box,
-} from "@mui/material";
+import { Button, Dialog, Card, CardContent, Box } from "@mui/material";
 import Slide from "@mui/material/Slide";
 import OrderViewModal from "../../modals/OrderViewModal";
 import {
 	ordersToBeDispatched,
 	updateSchedulerHoliday,
 	updateSchedulerOrderDate,
-	getOrderAllLakVal, updateSchedulerCommitmentStatus,
+	getOrderAllLakVal,
+	updateSchedulerCommitmentStatus,
 } from "../../../constant/url";
 import Checkbox from "@mui/material/Checkbox";
 import NoRowsOverlay from "../../Component/NoRowOverlay";
+import statusPercentage from "../../../commonjs/StatusPercentage";
 
 const Transition = forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
@@ -62,7 +58,10 @@ export default function EnhancedTable() {
 					toast("Api Authentication failed. login again.");
 				} else if (res_data.status_code === 200) {
 					const ret_data_cd = res_data.data_orders;
-					setOrderList(ret_data_cd);
+					const newOrderlist = ret_data_cd.map((item, index) => {
+						return { ...item, status: statusPercentage(item) };
+					});
+					setOrderList(newOrderlist);
 				} else {
 					console.log("handleOrderList else", res_data.status_msg);
 				}
@@ -108,8 +107,7 @@ export default function EnhancedTable() {
 	};
 
 	const schedulerDateChangeHandler = (row, date, column) => {
-
-		date = moment(date).format("YYYY-MM-DD")
+		date = moment(date).format("YYYY-MM-DD");
 		setOrderList(
 			orderList.map((r) => ({
 				...r,
@@ -144,11 +142,11 @@ export default function EnhancedTable() {
 	};
 
 	const commitmentChangeHandler = (id, isChecked = false) => {
-
 		setOrderList(
 			orderList.map((r) => ({
 				...r,
-				'is_commitment_important': r.id === id ? (isChecked ? '1' : '0') : r['is_commitment_important'],
+				is_commitment_important:
+					r.id === id ? (isChecked ? "1" : "0") : r["is_commitment_important"],
 			}))
 		);
 
@@ -164,14 +162,13 @@ export default function EnhancedTable() {
 			headers: { "Content-Type": "multipart/form-data" },
 		})
 			.then(function (response) {
-
 				console.log(response);
 			})
 			.catch(function (response) {
 				//handle error
 				console.error(response);
 			});
-	}
+	};
 
 	const columns = [
 		{
@@ -180,13 +177,17 @@ export default function EnhancedTable() {
 			//flex: 1,
 			width: 50,
 			maxWidth: 50,
-			renderCell: (params) => <div>
-							<Checkbox
-								color="primary"
-								checked={params.row.is_commitment_important !== '0'}
-								onChange={(event, checked) => commitmentChangeHandler(params.row.id, checked)}
-							/>
-						</div>
+			renderCell: (params) => (
+				<div>
+					<Checkbox
+						color="primary"
+						checked={params.row.is_commitment_important !== "0"}
+						onChange={(event, checked) =>
+							commitmentChangeHandler(params.row.id, checked)
+						}
+					/>
+				</div>
+			),
 		},
 		{
 			field: "order_id",
@@ -249,13 +250,9 @@ export default function EnhancedTable() {
 			headerName: "Status",
 			width: 100,
 			maxWidth: 100,
-			// renderCell: (params) => {
-			//     return (
-			//         <div className="position-relative">
-			//             <StatusBar statusData={params.row} source="Table" />
-			//         </div>
-			//     );
-			// },
+			renderCell: (params) => {
+				return params.value + "%";
+			},
 			flex: 1,
 		},
 		{
@@ -267,24 +264,32 @@ export default function EnhancedTable() {
 			renderCell: (params) => {
 				if (params.row.coil_ready_at === "Ready") return "Ready";
 
-				if (params.row.is_commitment_important == '1') return params.row.coil_ready_at;
+				if (params.row.is_commitment_important == "1")
+					return params.row.coil_ready_at;
 
 				return (
 					<>
 						<DatePicker
-						value={dayjs(params.row.coil_ready_at)}
-						onChange={(newValue) => {
-
+							value={dayjs(params.row.coil_ready_at)}
+							onChange={(newValue) => {
 								schedulerDateChangeHandler(
 									params.row,
 									newValue.toString(),
 									"coil_ready_at"
-								)
-							}
-						}
-					/>
-					<small><a href="#" onClick={() => schedulerDateChangeHandler(params.row, null, "coil_ready_at")}>CLR</a></small>
-				</>
+								);
+							}}
+						/>
+						<small>
+							<a
+								href="#"
+								onClick={() =>
+									schedulerDateChangeHandler(params.row, null, "coil_ready_at")
+								}
+							>
+								CLR
+							</a>
+						</small>
+					</>
 				);
 			},
 		},
@@ -298,19 +303,30 @@ export default function EnhancedTable() {
 				return (
 					<>
 						<DatePicker
-						value={dayjs(params.row.est_delivery_date)}
-						onChange={(newValue) => {
-
-							schedulerDateChangeHandler(
-								params.row,
-								newValue.toString(),
-								"est_delivery_date"
-							)
-						}
-						}
-					/>
-					<small><a href="#" onClick={() => schedulerDateChangeHandler(params.row, null, "est_delivery_date")}>CLR</a></small>
-				</>
+							value={dayjs(params.row.est_delivery_date)}
+							onChange={(newValue) => {
+								schedulerDateChangeHandler(
+									params.row,
+									newValue.toString(),
+									"est_delivery_date"
+								);
+							}}
+						/>
+						<small>
+							<a
+								href="#"
+								onClick={() =>
+									schedulerDateChangeHandler(
+										params.row,
+										null,
+										"est_delivery_date"
+									)
+								}
+							>
+								CLR
+							</a>
+						</small>
+					</>
 				);
 			},
 		},
@@ -423,134 +439,141 @@ export default function EnhancedTable() {
 			<ToastContainer />
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
 				<div className="row">
-				<div className="col-3">
-					<Card>
-						<CardContent>
-							<Box sx={{ height: "84vh", width: "100%" }}>
-								<DataGrid
-									density="compact"
-									getRowClassName={(params) => {
-										if (params.indexRelativeToCurrentPage % 2 === 0) {
-											return params.row.is_holiday
-												? "Mui-even secon-bg"
-												: "Mui-even";
-										} else {
-											return params.row.is_holiday
-												? "Mui-odd secon-bg"
-												: "Mui-odd";
-										}
-									}}
-									loading={isLoadingDispatchList}
-									columns={dispatcherColumns}
-									rows={ordersToBeDispatchList}
-									// getRowClassName={(params) => params.row.is_holiday && "secon-bg"}
-									editMode="row"
-									slots={{ toolbar: GridToolbar, noRowsOverlay: NoRowsOverlay }}
-									sx={{
-										"--DataGrid-overlayHeight": "300px",
-										"& .MuiDataGrid-columnHeader": {
-											backgroundColor: "#943612",
-											color: "white",
-										},
-										".MuiDataGrid-row.Mui-odd ": {
-											backgroundColor: "#FFE1D6",
-										},
-										".MuiDataGrid-row.Mui-even ": {
-											backgroundColor: "#F2F2F2",
-										},
-										".MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)>.MuiDataGrid-cell":
-											{
-												overflow: "visible !important",
-												whiteSpace: "break-spaces",
-												padding: 0,
+					<div className="col-3">
+						<Card>
+							<CardContent>
+								<Box sx={{ height: "84vh", width: "100%" }}>
+									<DataGrid
+										density="compact"
+										getRowClassName={(params) => {
+											if (params.indexRelativeToCurrentPage % 2 === 0) {
+												return params.row.is_holiday
+													? "Mui-even secon-bg"
+													: "Mui-even";
+											} else {
+												return params.row.is_holiday
+													? "Mui-odd secon-bg"
+													: "Mui-odd";
+											}
+										}}
+										loading={isLoadingDispatchList}
+										columns={dispatcherColumns}
+										rows={ordersToBeDispatchList}
+										// getRowClassName={(params) => params.row.is_holiday && "secon-bg"}
+										editMode="row"
+										slots={{
+											toolbar: GridToolbar,
+											noRowsOverlay: NoRowsOverlay,
+										}}
+										sx={{
+											"--DataGrid-overlayHeight": "300px",
+											"& .MuiDataGrid-columnHeader": {
+												backgroundColor: "#943612",
+												color: "white",
+											},
+											".MuiDataGrid-row.Mui-odd ": {
+												backgroundColor: "#FFE1D6",
+											},
+											".MuiDataGrid-row.Mui-even ": {
+												backgroundColor: "#F2F2F2",
+											},
+											".MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)>.MuiDataGrid-cell":
+												{
+													overflow: "visible !important",
+													whiteSpace: "break-spaces",
+													padding: 0,
+													display: "flex",
+													justifyContent: "center",
+													fontSize: "0.95rem",
+												},
+											".MuiDataGrid-columnHeaderTitleContainer": {
 												display: "flex",
 												justifyContent: "center",
 												fontSize: "0.95rem",
 											},
-										".MuiDataGrid-columnHeaderTitleContainer": {
-											display: "flex",
-											justifyContent: "center",
-											fontSize: "0.95rem",
-										},
-										"& .MuiDataGrid-columnHeader, .MuiDataGrid-cell": {
-											border: ".5px solid white",
-										},
-										"& .MuiInputBase-input": {
-											fontSize: "0.74rem",
-											padding: "16.5px 1px ",
-										},
-									}}
-								/>
-							</Box>
-						</CardContent>
-					</Card>
-				</div>
+											"& .MuiDataGrid-columnHeader, .MuiDataGrid-cell": {
+												border: ".5px solid white",
+											},
+											"& .MuiInputBase-input": {
+												fontSize: "0.74rem",
+												padding: "16.5px 1px ",
+											},
+										}}
+									/>
+								</Box>
+							</CardContent>
+						</Card>
+					</div>
 
-				<div className="col-9">
-					<Card>
-						<CardContent>
-							<Box sx={{ height: "84vh", width: "100%" }}>
-								<DataGrid
-									slots={{ toolbar: GridToolbar, noRowsOverlay: NoRowsOverlay }}
-									loading={orderList.length === 0}
-									getRowClassName={(params) => {
+					<div className="col-9">
+						<Card>
+							<CardContent>
+								<Box sx={{ height: "84vh", width: "100%" }}>
+									<DataGrid
+										slots={{
+											toolbar: GridToolbar,
+											noRowsOverlay: NoRowsOverlay,
+										}}
+										loading={orderList.length === 0}
+										getRowClassName={(params) => {
+											if (params.row.is_commitment_important == "1") {
+												return "Mui-even secon-bg";
+											}
 
-										if (params.row.is_commitment_important == '1') { return "Mui-even secon-bg" }
-
-										if (params.indexRelativeToCurrentPage % 2 === 0) {
-											return params.row.priority === "true"
-												? "Mui-even secon-bg"
-												: "Mui-even";
-										} else {
-											return params.row.priority === "true"
-												? "Mui-odd secon-bg"
-												: "Mui-odd";
-										}
-									}}
-									sx={{
-										"--DataGrid-overlayHeight": "300px",
-										"& .MuiDataGrid-columnHeader": {
-											backgroundColor: "#943612",
-											color: "white",
-										},
-										".MuiDataGrid-row.Mui-odd ": {
-											backgroundColor: "#FFE1D6",
-										},
-										".MuiDataGrid-row.Mui-even ": {
-											backgroundColor: "#F2F2F2",
-										},
-										".MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)>.MuiDataGrid-cell":
-											{
-												overflow: "visible !important",
-												whiteSpace: "break-spaces",
-												padding: 0,
+											if (params.indexRelativeToCurrentPage % 2 === 0) {
+												return params.row.priority === "true"
+													? "Mui-even secon-bg"
+													: "Mui-even";
+											} else {
+												return params.row.priority === "true"
+													? "Mui-odd secon-bg"
+													: "Mui-odd";
+											}
+										}}
+										sx={{
+											"--DataGrid-overlayHeight": "300px",
+											"& .MuiDataGrid-columnHeader": {
+												backgroundColor: "#943612",
+												color: "white",
+											},
+											".MuiDataGrid-row.Mui-odd ": {
+												backgroundColor: "#FFE1D6",
+											},
+											".MuiDataGrid-row.Mui-even ": {
+												backgroundColor: "#F2F2F2",
+											},
+											".MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)>.MuiDataGrid-cell":
+												{
+													overflow: "visible !important",
+													whiteSpace: "break-spaces",
+													padding: 0,
+													display: "flex",
+													justifyContent: "center",
+													fontSize: "0.95rem",
+												},
+											".MuiDataGrid-columnHeaderTitleContainer": {
 												display: "flex",
 												justifyContent: "center",
 												fontSize: "0.95rem",
 											},
-										".MuiDataGrid-columnHeaderTitleContainer": {
-											display: "flex",
-											justifyContent: "center",
-											fontSize: "0.95rem",
-										},
-										"& .MuiDataGrid-columnHeader, .MuiDataGrid-cell": {
-											border: ".5px solid white",
-										},
-										"& .MuiInputBase-input": {
-											fontSize: "0.74rem",
-											padding: "16.5px 1px ",
-										},
-									}}
-									rowHeight={50}
-									columns={columns}
-									rows={orderList}
-									editMode="row"
-								/>
-							</Box>
-						</CardContent>
-					</Card>
+											"& .MuiDataGrid-columnHeader, .MuiDataGrid-cell": {
+												border: ".5px solid white",
+											},
+											"& .MuiInputBase-input": {
+												fontSize: "0.74rem",
+												padding: "16.5px 1px ",
+											},
+										}}
+										rowHeight={50}
+										columns={columns}
+										rows={orderList}
+										editMode="row"
+									/>
+								</Box>
+							</CardContent>
+						</Card>
+					</div>
 				</div>
-			</div>
 			</LocalizationProvider>
 
 			<Dialog

@@ -30,6 +30,8 @@ import { Container } from "@mui/system";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import DeleteIcon from '@mui/icons-material/Delete';
+
 import PreviewIcon from "@mui/icons-material/Preview";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
@@ -166,7 +168,28 @@ export default function CreateOrder() {
 		setDialogImg(base64);
 		setOpenImg(true);
 	};
-
+	const handleClickDeleteimg=(imgIndex,imgType)=>{
+		if(imgType==='ep'){
+			setEpPhoto(prevEpPhoto => {
+				// Create a copy of the array and then splice
+				const newEpPhoto = [...prevEpPhoto];
+				newEpPhoto.splice(imgIndex, 1);
+				return newEpPhoto;
+			});
+		} else if(imgType==='assembly'){
+			setAssemblyPhoto(prevAssemblyPhoto=>{
+				const newAssemblyPhoto=[...prevAssemblyPhoto];
+				newAssemblyPhoto.splice(imgIndex,1);
+				return newAssemblyPhoto;
+			});
+		} else{
+			setBrazingPhoto(brazePhoto=>{
+				const newBrazePhoto=[...brazePhoto];
+				newBrazePhoto.splice(imgIndex,1);
+				return newBrazePhoto;
+			});
+		}
+	};
 	const handleCloseImg = (response) => {
 		setOpenImg(false);
 	};
@@ -203,9 +226,10 @@ export default function CreateOrder() {
 		const imgData = [
 			{ ep: epPhoto, assembly: assemblyPhoto, brazing: brazingPhoto },
 		];
+		console.log(imgData);
 		const btnname = type;
 		var bodyFormData = new FormData();
-
+console.log(access);
 		bodyFormData.append("authId", access);
 		bodyFormData.append("type", btnname);
 
@@ -229,7 +253,8 @@ export default function CreateOrder() {
 		bodyFormData.append("pbSingleTotQty", pbSingleTotQty);
 		bodyFormData.append("pbCross", pbCross);
 		bodyFormData.append("pbCrossQty", pbCrossQty);
-		bodyFormData.append("pbCrossTotQty", pbCrossSize);
+		bodyFormData.append("pbCrossSize", pbCrossSize);
+		bodyFormData.append("pbCrossTotQty", pbCrossTotQty);
 		bodyFormData.append("pbOther", pbOther);
 		bodyFormData.append("pbOtherQty", pbOtherQty);
 		bodyFormData.append("pbOtherSize", pbOtherSize);
@@ -260,26 +285,41 @@ export default function CreateOrder() {
 		bodyFormData.append("dispatch_comment", dispatchComment);
 		bodyFormData.append("final_comment", finalComments);
 
-		bodyFormData.append("image_data", JSON.stringify(imgData));
-
-		await axios({
+		imgData.forEach((item, index) => {
+			if (item.ep.length > 0) {
+				item.ep.forEach((img, imgIndex) => {
+					console.log('Image Index EP',imgIndex);
+					bodyFormData.append(`epPhoto[${imgIndex}]`, img);
+				});
+			}
+			if (item.assembly.length > 0) {
+				item.assembly.forEach((img, imgIndex) => {
+					console.log('Image Index Assembly',imgIndex);
+					bodyFormData.append(`assemblyPhoto[${imgIndex}]`, img);
+				});
+			}
+			if (item.brazing.length > 0) {
+				item.brazing.forEach((img, imgIndex) => {
+					console.log('Image Index Brazing',imgIndex);
+					bodyFormData.append(`brazingPhoto[${imgIndex}]`, img);
+				});
+			}
+		  });
+		  const responseOfOrder=await axios({
 			method: "post",
 			url: setOrderNew,
-			data: bodyFormData,
-			headers: { "Content-Type": "multipart/form-data" },
-		})
-			.then(function (response) {
-				//handle success
-				const res_data = response.data;
-				if (res_data.status_code === 200) {
-					if (res_data.order_id === "n/a") {
-						toast("Order Temporaly Saved Successfully");
-					} else {
-						toast("Order Successful, Order Id: " + res_data.order_id);
-						setRetOrderId(res_data.order_id);
-						setOepenOrderStatus(true);
-					}
-					setCustomerName(0);
+			data: bodyFormData
+		});
+		const res_data=responseOfOrder.data;
+		if(responseOfOrder.status===200){
+			if (res_data.order_id === "n/a") {
+				toast("Order Temporaly Saved Successfully");
+			} else {
+				toast("Order Successful, Order Id: " + res_data.order_id);
+				setRetOrderId(res_data.order_id);
+				setOepenOrderStatus(true);
+			}
+			//setCustomerName(0);
 					setCustomerNameList([{ label: "Loading...", id: 0 }]);
 					setLength(0);
 					setHeight(0);
@@ -328,19 +368,12 @@ export default function CreateOrder() {
 					setDispatchMode([]);
 					setDispatchComments("");
 					setFinalComments("");
-					setEpPhoto([]);
-					setAssemblyPhoto([]);
-					setBrazingPhoto([]);
+					//setEpPhoto([]);
+					//setAssemblyPhoto([]);
+					//setBrazingPhoto([]);
 					retOrderId("");
 					//return data
-				} else {
-					console.log(res_data.status_msg);
-				}
-			})
-			.catch(function (response) {
-				//handle error
-				console.log(response);
-			});
+		}
 
 		setApiCompStatus({
 			...apiCompStatus,
@@ -611,12 +644,34 @@ export default function CreateOrder() {
 	}
 
 	const handleFiles = (type, files) => {
+		console.log(files.fileList.length);
 		if (type === "ep") {
-			setEpPhoto(files.base64);
+			setEpPhoto((prevImage)=>{
+				if (prevImage.length===3) {
+					alert('You cant upload more than three images');
+					return prevImage;
+				} else {
+					return [...prevImage,...files.base64]
+				}
+			});
 		} else if (type === "assembly") {
-			setAssemblyPhoto(files.base64);
+			setAssemblyPhoto((prevImage)=>{
+				if (prevImage.length===3) {
+					alert('You cant upload more than three images');
+					return prevImage;
+				} else {
+					return [...prevImage,...files.base64]
+				}
+			});
 		} else if (type === "brazing") {
-			setBrazingPhoto(files.base64);
+			setBrazingPhoto((prevImage)=>{
+				if (prevImage.length===3) {
+					alert('You cant upload more than three images');
+					return prevImage;
+				} else {
+					return [...prevImage,...files.base64]
+				}
+			});
 		}
 	};
 
@@ -1341,6 +1396,7 @@ export default function CreateOrder() {
 																							alt={"epphoto"}
 																							loading="lazy"
 																						/>
+																						<Stack direction="row" spacing={1}>
 																						<IconButton
 																							onClick={() =>
 																								handleClickOpenimg(item)
@@ -1348,17 +1404,24 @@ export default function CreateOrder() {
 																						>
 																							<PreviewIcon />
 																						</IconButton>
+																						<IconButton
+																onClick={() => handleClickDeleteimg(index,'ep')}
+															>
+																<DeleteIcon />
+															</IconButton>
+															</Stack>
 																					</ImageListItem>
 																				))}
 																			</ImageList>
 																		}
 																		<ReactFileReader
+
 																			fileTypes={[".png", ".jpg"]}
 																			base64={true}
+																			multipleFiles={true}
 																			handleFiles={(files) => {
 																				handleFiles("ep", files);
 																			}}
-																			multipleFiles={true}
 																			key={Math.random()}
 																		>
 																			<PhotoCameraIcon />
@@ -1558,6 +1621,7 @@ export default function CreateOrder() {
 																							alt={"assemblyphoto"}
 																							loading="lazy"
 																						/>
+																						<Stack direction="row" spacing={1}>
 																						<IconButton
 																							onClick={() =>
 																								handleClickOpenimg(item)
@@ -1565,6 +1629,12 @@ export default function CreateOrder() {
 																						>
 																							<PreviewIcon />
 																						</IconButton>
+																						<IconButton
+																onClick={() => handleClickDeleteimg(index,'assembly')}
+															>
+																<DeleteIcon />
+															</IconButton>
+															</Stack>
 																					</ImageListItem>
 																				))}
 																			</ImageList>
@@ -1674,6 +1744,7 @@ export default function CreateOrder() {
 																							alt={"brazing"}
 																							loading="lazy"
 																						/>
+																						<Stack direction="row" spacing={1}>
 																						<IconButton
 																							onClick={() =>
 																								handleClickOpenimg(item)
@@ -1681,6 +1752,12 @@ export default function CreateOrder() {
 																						>
 																							<PreviewIcon />
 																						</IconButton>
+																						<IconButton
+																onClick={() => handleClickDeleteimg(index,'brazing')}
+															>
+																<DeleteIcon />
+															</IconButton>
+															</Stack>
 																					</ImageListItem>
 																				))}
 																			</ImageList>

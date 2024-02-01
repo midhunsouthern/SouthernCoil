@@ -39,6 +39,21 @@ export default function StatusBar(prop) {
 		pp: prop.statusData.pp_status,
 		disp: prop.statusData.dispatch_status,
 	};
+	const statusPercentage = () => {
+		let status = 0;
+		status =
+			(statusData.cncnesting === "true" ? 10 : 0) +
+			(statusData.cncpunching === "true" ? 10 : 0) +
+			(statusData.epBending === "true" ? 10 : 0) +
+			(statusData.tcutting === "true" ? 10 : 0) +
+			(statusData.finpunching === "true" ? 10 : 0) +
+			(statusData.ca === "true" ? 10 : 0) +
+			(statusData.ce === "true" ? 10 : 0) +
+			(statusData.bnl === "true" ? 10 : 0) +
+			(statusData.pp === "true" ? 10 : 0) +
+			(statusData.disp === "true" ? 10 : 0);
+		return status;
+	};
 	return (
 		<div className="status-bar-outer">
 			<div className="status-bar">

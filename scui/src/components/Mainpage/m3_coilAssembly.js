@@ -395,7 +395,7 @@ export default function M3coilAssembly() {
 							refreshPage={(request) => refreshData(request)}
 						/>
 						<div style={{ border: "1px solid grey" }}></div>
-						<NavLink to="/tubecutting" className="toolButton">
+						<NavLink to="/finpunching" className="toolButton">
 							<KeyboardDoubleArrowLeftIcon style={{ color: "#BC1921" }} />
 							Prev Module
 						</NavLink>
