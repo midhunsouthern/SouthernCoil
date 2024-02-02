@@ -58,6 +58,7 @@ class MainModal extends CI_Model
                     $orderType=0;
                 }
                 unset($data['id']);
+                $this->db->where('id', $orderId);
                 if ($this->db->update($orderTableName, $data)) {
                     $this->updateCE_Status($orderId);
                     $this->saveImageOrder($orderId,$orderType);
@@ -116,9 +117,16 @@ class MainModal extends CI_Model
                             ->get();
                             log_message('debug',json_encode($fetchData->result_array()));
                             $resultSet=$fetchData->result_array();
+                            log_message('debug',print_r($resultSet,true));
                             if(count($resultSet)>0){
                                 foreach($resultSet as $key=>$value){
-                                    unlink($image_path.'/'.$value['drawing_base64']);
+                                    if(file_exists($image_path.'/'.$value['drawing_base64'])){ 
+                                        if(unlink($image_path.'/'.$value['drawing_base64'])){
+                                            log_message('debug','File deleted');
+                                        } else {
+                                            log_message('debug','Not Deleted');
+                                        }
+                                    }
                                 }
                             }
             $this->db->delete('drawing_images',['drawing_refid'=>$refId,'order_type'=>$orderType]);
@@ -126,7 +134,21 @@ class MainModal extends CI_Model
     foreach($imageKeys as $keys=>$value){
         if(isset($_POST[$value.'Photo'])){
             foreach ($_POST[$value.'Photo'] as $row) {
-                 $webpData=convert_base64_to_webp($row,$image_path,$refId);
+
+
+                $logMessage = (preg_match('/\.webp/', $row) ? "Yes" : "No");
+                log_message('debug',print_r($logMessage,true));
+                if($logMessage=='No'){
+                    $webpData=convert_base64_to_webp($row,$image_path,$refId);
+                } else {
+                    // Use parse_url() to extract the path part of the URL
+                    $path = parse_url($row, PHP_URL_PATH);
+                    // Use basename() to get the filename from the path
+                    $filename = basename($path);
+                    $webpData=$filename;
+                }
+
+                 
                  $this->db->insert('drawing_images', array('drawing_refid' => $refId, 'drawing_base64' => $webpData,'order_type'=>$orderType,'draw_type'=>$keys));
                  $data[$value.'_Photo']=$refId;
         }

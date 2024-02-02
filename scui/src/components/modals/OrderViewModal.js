@@ -161,7 +161,7 @@ export default function OrderViewModal(prop) {
 	};
 
 	const handleSqFeet = () => {
-		setSqFeet((length * height * row * quantity) / 144);
+		setSqFeet(((length * height * row * quantity) / 144).toFixed(2));
 	};
 
 	const handleSize = () => {
@@ -330,6 +330,9 @@ export default function OrderViewModal(prop) {
 			handleOrderinfo1();
 		}
 	}, [prop.orderId]);
+	const fixedLayout={
+		tableLayout:"fixed"
+	};
 	return (
 		<div>
 			<>
@@ -390,18 +393,18 @@ export default function OrderViewModal(prop) {
 							</tbody>
 						</table>
 					</Grid>
-					<Grid container spacing={2} style={{tableLayout:"fixed"}}>
+					<Grid container spacing={2} sx={fixedLayout}>
 						<Grid item xs={6}>
 							<Grid container spacing={2}>
 								<Grid item xs={12}>
 									<Typography variant="h6">End Plate</Typography>
-									<table>
+									<table style={{tableLayout:"fixed"}}>
 										<tbody>
 											<tr>
-												<th>
+												<th style={{textAlign:'left',paddingLeft:"10px"}}>
 													Material
 												</th>
-												<td>
+												<td style={{textAlign:'left',paddingLeft:"10px"}}>
 													{lookUpList["epMaterial"]?.map((item) => {
 														return (
 															<>
@@ -414,9 +417,9 @@ export default function OrderViewModal(prop) {
 
 												</td>
 											</tr>
-											<tr>
-												<th>Model</th>
-												<td>
+											<tr >
+												<th style={{textAlign:'left',paddingLeft:"10px"}}>Model</th>
+												<td style={{textAlign:'left',paddingLeft:"10px"}}>
 													{lookUpList["epModal"]?.map((item) => {
 														return (
 															<>
@@ -429,8 +432,8 @@ export default function OrderViewModal(prop) {
 												</td>
 											</tr>
 											<tr>
-												<th>Orientation</th>
-												<td>
+												<th style={{textAlign:'left',paddingLeft:"10px"}}>Orientation</th>
+												<td style={{textAlign:'left',paddingLeft:"10px"}}>
 													{lookUpList["oreientation"]?.map((item) => {
 														return (
 															<>
@@ -444,8 +447,8 @@ export default function OrderViewModal(prop) {
 												</td>
 											</tr>
 											<tr>
-												<th>Cover Type</th>
-												<td>
+												<th style={{textAlign:'left',paddingLeft:"10px"}}>Cover Type</th>
+												<td style={{textAlign:'left',paddingLeft:"10px"}}>
 													<Stack direction="row" spacing={3}>
 														{lookUpList["coverType"]?.map((item) => {
 															return (
@@ -474,11 +477,11 @@ export default function OrderViewModal(prop) {
 								</Grid>
 								<Grid item xs={12}>
 									<Typography variant="h6">Pipe</Typography>
-									<table border={1} cellPadding={1} cellSpacing={2}>
+									<table style={{tableLayout:"fixed"}}>
 										<tbody>
 											<tr>
-												<th>Pipe Type:</th>
-												<td>{lookUpList["pipeType"]?.map((item) => {
+												<th style={{textAlign:'left',paddingLeft:"10px"}}>Pipe Type:</th>
+												<td style={{textAlign:'left',paddingLeft:"10px"}}>{lookUpList["pipeType"]?.map((item) => {
 													return (
 														<>
 															{pipeType && pipeType.includes(item.id) ? item.lkp_value : null}
@@ -488,8 +491,8 @@ export default function OrderViewModal(prop) {
 											</tr>
 
 											<tr>
-												<th>Pipe Bend:</th>
-												<td>
+												<th style={{textAlign:'left',paddingLeft:"10px"}}>Pipe Bend:</th>
+												<td style={{textAlign:'left',paddingLeft:"10px"}}>
 													<Stack
 														direction="row"
 														spacing={10}
@@ -531,15 +534,15 @@ export default function OrderViewModal(prop) {
 										</tbody>
 									</table>
 								</Grid>
-								<Grid item xs={12} style={{tableLayout:"fixed"}}>
+								<Grid item xs={12} >
 									<Typography variant="h6">Fins</Typography>
-									<table>
+									<table style={{tableLayout:"fixed"}}>
 										<tbody>
 											<tr>
-												<th>
+												<th style={{textAlign:'left',paddingLeft:"10px"}}>
 													Fin per Inch
 												</th>
-												<td>
+												<td style={{textAlign:'left',paddingLeft:"10px"}}>
 													{finPerInch}
 												</td>
 											</tr>
@@ -548,13 +551,13 @@ export default function OrderViewModal(prop) {
 								</Grid>
 								<Grid item xs={12}>
 									<Typography variant="h6">Brazing</Typography>
-									<table>
+									<table style={{tableLayout:"fixed"}}>
 										<tbody>
 											<tr>
-												<th>
+												<th style={{textAlign:'left',paddingLeft:"10px"}}>
 													Circuit Model
 												</th>
-												<td>
+												<td style={{textAlign:'left',paddingLeft:"10px"}}>
 													{lookUpList["circuitModel"]?.map((item) => {
 														return (
 															<>
@@ -567,16 +570,16 @@ export default function OrderViewModal(prop) {
 												</td>
 											</tr>
 											<tr>
-												<th>No of circuit</th>
-												<td>
+												<th style={{textAlign:'left',paddingLeft:"10px"}}>No of circuit</th>
+												<td style={{textAlign:'left',paddingLeft:"10px"}}>
 													{noCircuit}
 												</td>
 											</tr>
 											<tr>
-												<th>
+												<th style={{textAlign:'left',paddingLeft:"10px"}}>
 													Liquid Line
 												</th>
-												<td>
+												<td style={{textAlign:'left',paddingLeft:"10px"}}>
 													{lookUpList["liquidLine"]?.map((item) => {
 														return (
 															<>
@@ -588,10 +591,10 @@ export default function OrderViewModal(prop) {
 												</td>
 											</tr>
 											<tr>
-												<th>
+												<th style={{textAlign:'left',paddingLeft:"10px"}}>
 													Discharge Line
 												</th>
-												<td>
+												<td style={{textAlign:'left',paddingLeft:"10px"}}>
 													{lookUpList["dischargeLine"]?.map((item) => {
 														return (
 															<>
@@ -609,13 +612,13 @@ export default function OrderViewModal(prop) {
 								</Grid>
 								<Grid item xs={12}>
 									<Typography variant="h6">Paint,Packing and Dispatch</Typography>
-									<table>
+									<table style={{tableLayout:"fixed"}}>
 										<tbody>
 											<tr>
-												<th>
+												<th style={{textAlign:'left',paddingLeft:"10px"}}>
 													Paint
 												</th>
-												<td>
+												<td style={{textAlign:'left',paddingLeft:"10px"}}>
 													{lookUpList["paintType"]?.map((item) => {
 														return (
 															<>
@@ -631,10 +634,10 @@ export default function OrderViewModal(prop) {
 											
 
 											<tr>
-												<th>
+												<th style={{textAlign:'left',paddingLeft:"10px"}}>
 													Packing
 												</th>
-												<td>
+												<td style={{textAlign:'left',paddingLeft:"10px"}}>
 													{lookUpList["packingType"]?.map((item) => {
 														return (
 															<>
@@ -647,10 +650,10 @@ export default function OrderViewModal(prop) {
 												</td>
 											</tr>
 											<tr>
-												<th>
+												<th style={{textAlign:'left',paddingLeft:"10px"}}>
 													Dispatch
 												</th>
-												<td>
+												<td style={{textAlign:'left',paddingLeft:"10px"}}>
 													{lookUpList["dispatchMode"]?.map((item) => {
 														return (
 															<>
@@ -671,11 +674,11 @@ export default function OrderViewModal(prop) {
 
 						</Grid>
 						<Grid item xs={6}>
-							<Grid container spacing={2} padding={10}>
+							<Grid container>
 								<Grid item xs={12}>
 									<>
 										{
-											<ImageList cols={1} rowHeight={164}>
+											<ImageList cols={1} rowHeight={200}>
 												{epPhoto?.map((item, index) => (
 
 													<ImageListItem key={"epphoto" + index}>
@@ -685,6 +688,7 @@ export default function OrderViewModal(prop) {
 															srcSet={imageURL + item}
 															alt={"EpPhoto"}
 															loading="lazy"
+															style={{maxWidth:"100%",maxHeight:"100%",verticalAlign:"middle",objectFit:"contain"}}
 														/>
 														<IconButton className="order-view-img"
 															onClick={() => handleClickOpenimg(imageURL + item)}
@@ -698,10 +702,9 @@ export default function OrderViewModal(prop) {
 									</>
 								</Grid>
 								<Grid item xs={12}>
-									
 									<>
 										{
-											<ImageList cols={1} rowHeight={164}>
+											<ImageList cols={1} rowHeight={250}>
 												{assemblyPhoto?.map((item, index) => (
 													<ImageListItem key={"assembly" + index}>
 														<img
@@ -710,6 +713,7 @@ export default function OrderViewModal(prop) {
 															srcSet={imageURL + item}
 															alt={"assembly"}
 															loading="lazy"
+															style={{maxWidth:"100%",maxHeight:"100%",verticalAlign:"middle",objectFit:"contain"}}
 														/>
 														<IconButton className="order-view-img"
 															onClick={() => handleClickOpenimg(item)}
@@ -725,7 +729,7 @@ export default function OrderViewModal(prop) {
 								<Grid item xs={12}>
 									<>
 										{
-											<ImageList cols={1} rowHeight={164}>
+											<ImageList cols={1} rowHeight={"25%"}>
 												{brazingPhoto?.map((item, index) => (
 													<ImageListItem key={"brazing" + index}>
 														<img
@@ -733,6 +737,7 @@ export default function OrderViewModal(prop) {
 															srcSet={imageURL + item}
 															alt={"Brazing"}
 															loading="lazy"
+															style={{maxWidth:"100%",maxHeight:"100%",verticalAlign:"middle",objectFit:"contain"}}
 														/>
 														<IconButton
 															onClick={() => handleClickOpenimg(item)}
@@ -756,7 +761,7 @@ export default function OrderViewModal(prop) {
 					</Grid>
 					<Grid item xs={12}>
 						<Typography variant="h5">Coil Details</Typography>
-						<table>
+						<table style={{tableLayout:"fixed"}}>
 							<thead>
 								<tr>
 									<th>Process</th>
@@ -826,81 +831,58 @@ export default function OrderViewModal(prop) {
 							<img src={logo} alt="Logo" style={{width:"50%",height:"50%"}}/>
 						</Grid>
 						</Grid>
-					<Grid container spacing={2}>
-						
-						<Grid item xs={6}>
-							<Grid container spacing={2}>
-								<Grid item xs={12}>
-								<Typography variant="h5">Brazing & Leak Testing Details</Typography>
-									{
-										brazingDetails && brazingDetails.map((value, index) => (
-											<div key={index}>
-												<h6>Table {index + 1}</h6>
-												<table>
-													<tbody>
-														<tr>
-															<th>Serial No</th>
-															<td>{value.series_ref}</td>
-															{/* More <td> elements as needed */}
-														</tr>
-														<tr>
-															<th>Leak Date</th>
-															<td>{value.create_dt}</td>
-														</tr>
-														<tr>
-															<th>Leak Details</th>
-															<td>
+						<Grid container spacing={2}>
+      {brazingDetails && brazingDetails.map((value, index) => (
+        <React.Fragment key={index}>
+          {/* Brazing & Leak Testing Details */}
+          <Grid item xs={6}>
+            <Typography variant="h5">Brazing & Leak Testing Details</Typography>
+            <div>
+              <h6>Table {index + 1}</h6>
+              <table style={{ tableLayout: "fixed" }}>
+                <tbody>
+                  <tr>
+                    <th style={{ textAlign: 'left', paddingLeft: "10px" }}>Serial No</th>
+                    <td style={{ textAlign: 'left', paddingLeft: "10px" }}>{value.series_ref}</td>
+                  </tr>
+                  <tr>
+                    <th style={{ textAlign: 'left', paddingLeft: "10px" }}>Leak Date</th>
+                    <td style={{ textAlign: 'left', paddingLeft: "10px" }}>{value.create_dt}</td>
+                  </tr>
+                  {/* Additional details */}
+                </tbody>
+              </table>
+            </div>
+          </Grid>
 
-															</td>
-														</tr>
-														<tr>
-															<th>Workman details</th>
-															<td>
-																UBend:{value.uBend},
-																Header:{value.headder},
-																Header Fix:{value.headderFix}
-															</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-										))
-									}
-								</Grid>
-							</Grid>
-						</Grid>
-						<Grid item xs={6}>
-							<Grid container spacing={2}>
-								<Grid item xs={12}>
-									
-									<>
-										{
-											<ImageList cols={1} rowHeight={200}>
-												{brazingTestingImages?.map((item, index) => (
+          {/* Corresponding Image */}
+          <Grid item xs={6}>
+            {brazingTestingImages && brazingTestingImages[index+1] && (
+              <ImageList cols={1} rowHeight={200}>
+               	{brazingTestingImages[index+1]?.map((item, index) => (
 
-													<ImageListItem key={"brazing_testing" + index}>
-														<img
+<ImageListItem key={"brazing_testing" + index}>
+	<img
 
-															src={imageURL + item}
-															srcSet={imageURL + item}
-															alt={"BrazingTesting"}
-															loading="lazy"
-														/>
-														<IconButton className="order-view-img"
-															onClick={() => handleClickOpenimg(item)}
-														>
-															<PreviewIcon />
-														</IconButton>
-													</ImageListItem>
-												))}
-											</ImageList>
-										}
-									</>
-
-								</Grid>
-							</Grid>
-						</Grid>
-					</Grid>
+		src={imageURL + item}
+		srcSet={imageURL + item}
+		alt={"BrazingTesting"}
+		loading="lazy"
+		style={{maxWidth:"100%",maxHeight:"100%",objectFit:"contain"}}
+	/>
+	<IconButton className="order-view-img"
+		onClick={() => handleClickOpenimg(imageURL+item)}
+	>
+		<PreviewIcon />
+	</IconButton>
+</ImageListItem>
+))}
+              </ImageList>
+            )}
+          </Grid>
+        </React.Fragment>
+      ))}
+    </Grid>
 				</Container>
 			</>
 			<Dialog
@@ -927,9 +909,9 @@ export default function OrderViewModal(prop) {
 					</Toolbar>
 				</AppBar>
 				<img
-					src={imageURL+dialogImg}
-					srcSet={imageURL+dialogImg}
-					alt={imageURL+dialogImg}
+					src={dialogImg}
+					srcSet={dialogImg}
+					alt={dialogImg}
 					loading="lazy"
 				/>
 				<DialogActions>

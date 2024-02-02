@@ -791,7 +791,11 @@ if(count($imagesList)>0){
             }
         
             // Assign the item to the new array and increment the index for this draw_type
+            if($drawType=='bz-t'){
+                $arr[$drawType][explode('-',$item['order_serial_ref'])[1]][$indices[$drawType]] = 'uploads/'.$item['drawing_base64'];
+            }else{
             $arr[$drawType][$indices[$drawType]] = 'uploads/'.$item['drawing_base64'];
+            }
             $indices[$drawType]++;
         }
         if(isset($arr['ep'])){
