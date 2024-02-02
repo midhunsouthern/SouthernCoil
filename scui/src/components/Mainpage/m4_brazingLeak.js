@@ -9,6 +9,7 @@ import { AccessContext } from "../../constant/accessContext";
 import { TickGif } from "../../commonjs/HilightRule";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import CloseIcon from '@mui/icons-material/Close';
 
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import {
@@ -250,7 +251,9 @@ export default function M3coilExpansion() {
 			handleOrderList(access);
 		}
 	};
-
+	const handleCloseModal = (response) => {
+		setOpenOrderView(false);
+	};
 	useEffect(() => {
 		handleGetLookup();
 		handleOrderList(access);
@@ -539,12 +542,30 @@ export default function M3coilExpansion() {
 			</Dialog>
 
 			<Dialog
+			fullWidth={true}
+			maxWidth='lg' 
 				open={openOrderView}
 				TransitionComponent={Transition}
 				keepMounted
 				onClose={() => setOpenOrderView(false)}
 				key={Math.random(1, 100)}
 			>
+				 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          View Order Details
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseModal}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+		  id="order-view-close-btn"
+        >
+          <CloseIcon />
+        </IconButton>
 				<OrderViewModal orderId={selectedRowId} key={Math.random(1, 100)} />
 			</Dialog>
 

@@ -33,6 +33,7 @@ import {
 	getOrderDataByID,
 	getCustomersDataAll_dd,
 	getLookupData,
+	imageURL,
 } from "../../constant/url";
 import { AccessContext } from "../../constant/accessContext";
 import {
@@ -1113,8 +1114,8 @@ export default function OrderEditModal(prop) {
 													{epPhoto && epPhoto?.map((item, index) => (
 														<ImageListItem key={"epphoto" + index}>
 															<img
-																src={item}
-																srcSet={item}
+																src={imageURL + item}
+																srcSet={imageURL+ item}
 																alt={"epphoto"}
 																loading="lazy"
 															/>
@@ -1285,12 +1286,11 @@ export default function OrderEditModal(prop) {
 										<>
 											{
 												<ImageList cols={3} rowHeight={164}>
-													console.log(assemblyPhoto);
 													{assemblyPhoto && assemblyPhoto?.map((item, index) => (
 														<ImageListItem key={"assembly" + index}>
 															<img
-																src={item}
-																srcSet={item}
+																src={imageURL + item}
+																srcSet={imageURL + item}
 																alt={"assembly"}
 																loading="lazy"
 															/>
@@ -1412,8 +1412,8 @@ export default function OrderEditModal(prop) {
 													{brazingPhoto && brazingPhoto?.map((item, index) => (
 														<ImageListItem key={"brazing" + index}>
 															<img
-																src={item}
-																srcSet={item}
+																src={imageURL + item}
+																srcSet={imageURL + item}
 																alt={"brazing"}
 																loading="lazy"
 															/>
@@ -1678,9 +1678,9 @@ export default function OrderEditModal(prop) {
 				aria-describedby="alert-dialog-slide-description"
 			>
 				<img
-					src={dialogImg}
-					srcSet={dialogImg}
-					alt={dialogImg}
+					src={imageURL + dialogImg}
+					srcSet={imageURL + dialogImg}
+					alt={imageURL + dialogImg}
 					loading="lazy"
 				/>
 				<DialogActions>

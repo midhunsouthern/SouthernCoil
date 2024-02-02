@@ -555,7 +555,8 @@ export default function EnhancedTable() {
 			</Dialog>
 
 			<Dialog
-			
+			fullWidth={true}
+			maxWidth='lg'
 				open={openOrderView}
 				TransitionComponent={Transition}
 				keepMounted
