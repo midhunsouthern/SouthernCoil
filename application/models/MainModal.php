@@ -58,6 +58,7 @@ class MainModal extends CI_Model
                     $orderType=0;
                 }
                 unset($data['id']);
+                $this->db->where('id', $orderId);
                 if ($this->db->update($orderTableName, $data)) {
                     $this->updateCE_Status($orderId);
                     $this->saveImageOrder($orderId,$orderType);
