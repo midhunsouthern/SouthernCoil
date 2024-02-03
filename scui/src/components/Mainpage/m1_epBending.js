@@ -25,8 +25,10 @@ import {
 	ImageList,
 	ImageListItem,
 	Box,
+	IconButton
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
+import CloseIcon from '@mui/icons-material/Close';
 
 import OrderViewModal from "../modals/OrderViewModal";
 import ModuleTools from "../modals/ModuleTools";
@@ -40,6 +42,7 @@ import {
 	setOrderGeneric,
 	getImagesOnly,
 	getOrderAllLakVal,
+	imageURL,
 } from "../../constant/url";
 import { IOSSwitch } from "../../commonjs/TableFunc";
 import CommentBoxModal from "../modals/CommentBoxModal";
@@ -67,7 +70,9 @@ export default function M1epBending() {
 		setSelectedRowId(rowId);
 		setOpenStatusCnf(true);
 	};
-
+	const handleCloseModal = (response) => {
+		setOpenOrderView(false);
+	};
 	const handleCloseStatus = (response) => {
 		if (response === "yes") {
 			handleNested(selectedRowId, {
@@ -218,9 +223,8 @@ export default function M1epBending() {
 	function handleGetImagebyId(epid, assemblyid, brazingid) {
 		var bodyFormData = new FormData();
 		bodyFormData.append("authId", access);
-		bodyFormData.append("epImg", epid);
-		bodyFormData.append("assemblyImg", assemblyid);
-		bodyFormData.append("brazingImg", brazingid);
+		bodyFormData.append("order_id", assemblyid);
+		bodyFormData.append("draw_type", 'asm');
 
 		axios({
 			method: "post",
@@ -324,7 +328,7 @@ export default function M1epBending() {
 						onClick={() => {
 							setImageBase64("");
 							setOpenImgDialog(true);
-							handleGetImagebyId("N/A", params.row.assembly_Photo, "N/A");
+							handleGetImagebyId("N/A", params.row.id, "N/A");
 						}}
 						color="info"
 						className="toolButton-grid "
@@ -538,12 +542,30 @@ export default function M1epBending() {
 			</Dialog>
 
 			<Dialog
+			fullWidth={true}
+			maxWidth={"lg"}
 				open={openOrderView}
 				TransitionComponent={Transition}
 				keepMounted
 				onClose={() => setOpenOrderView(false)}
 				key={Math.random(1, 100)}
 			>
+				 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          View Order Details
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseModal}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+		  id="order-view-close-btn"
+        >
+          <CloseIcon />
+        </IconButton>
 				<OrderViewModal orderId={selectedRowId} key={Math.random(1, 100)} />
 			</Dialog>
 
@@ -607,8 +629,8 @@ export default function M1epBending() {
 								{imageBase64.assembly_Photo?.map((item, index) => (
 									<ImageListItem key={"assembly" + index}>
 										<img
-											src={item}
-											srcSet={item}
+											src={imageURL +'/uploads/'+ item['drawing_base64']}
+											srcSet={imageURL +'/uploads/'+ item['drawing_base64']}
 											alt={"Assembly"}
 											loading="lazy"
 										/>

@@ -22,11 +22,13 @@ import {
 	CardContent,
 	Typography,
 	Stack,
+	DialogTitle
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
 
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import DownloadIcon from "@mui/icons-material/Download";
+import CloseIcon from '@mui/icons-material/Close';
 
 import StatusBar from "../modals/StatsBar";
 import OrderViewModal from "../modals/OrderViewModal";
@@ -142,7 +144,9 @@ export default function OrderHistory() {
 			});
 		setIsUpdate(false);
 	};
-
+	const handleCloseModal = (response) => {
+		setOpenOrderView(false);
+	};
 	const columns = [
 		{
 			field: "order_id",
@@ -291,6 +295,8 @@ export default function OrderHistory() {
 			</Card>
 
 			<Dialog
+			fullWidth={true}
+			maxWidth={"lg"}
 				open={openOrderEdit}
 				TransitionComponent={Transition}
 				keepMounted
@@ -312,6 +318,22 @@ export default function OrderHistory() {
 				onClose={() => setOpenOrderView(false)}
 				key={Math.random(1, 100)}
 			>
+				 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          View Order Details
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseModal}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+		  id="order-view-close-btn"
+        >
+          <CloseIcon />
+        </IconButton>
 				<OrderViewModal orderId={selectedRowId} key={Math.random(1, 100)} />
 			</Dialog>
 		</Container>

@@ -344,6 +344,9 @@ export default function OrderEditModal(prop) {
 				console.log(response);
 			});
 	};
+	const isBase64Image = (str) => {
+		return str.startsWith('data:image/');
+	  };
 	const handleSqFeet = () => {
 		setSqFeet((length * height * row * quantity) / 144);
 	};
@@ -1112,10 +1115,11 @@ export default function OrderEditModal(prop) {
 											{
 												<ImageList cols={3} rowHeight={164}>
 													{epPhoto && epPhoto?.map((item, index) => (
+														
 														<ImageListItem key={"epphoto" + index}>
 															<img
-																src={imageURL + item}
-																srcSet={imageURL+ item}
+																src={isBase64Image(item)?item:imageURL + item}
+																srcSet={isBase64Image(item)?item:imageURL+ item}
 																alt={"epphoto"}
 																loading="lazy"
 															/>
@@ -1289,8 +1293,8 @@ export default function OrderEditModal(prop) {
 													{assemblyPhoto && assemblyPhoto?.map((item, index) => (
 														<ImageListItem key={"assembly" + index}>
 															<img
-																src={imageURL + item}
-																srcSet={imageURL + item}
+																src={isBase64Image(item)?item:imageURL + item}
+																srcSet={isBase64Image(item)?item:imageURL + item}
 																alt={"assembly"}
 																loading="lazy"
 															/>
@@ -1412,8 +1416,8 @@ export default function OrderEditModal(prop) {
 													{brazingPhoto && brazingPhoto?.map((item, index) => (
 														<ImageListItem key={"brazing" + index}>
 															<img
-																src={imageURL + item}
-																srcSet={imageURL + item}
+																src={isBase64Image(item)?item:imageURL + item}
+																srcSet={isBase64Image(item)?item:imageURL + item}
 																alt={"brazing"}
 																loading="lazy"
 															/>
@@ -1678,9 +1682,9 @@ export default function OrderEditModal(prop) {
 				aria-describedby="alert-dialog-slide-description"
 			>
 				<img
-					src={imageURL + dialogImg}
-					srcSet={imageURL + dialogImg}
-					alt={imageURL + dialogImg}
+					src={isBase64Image(dialogImg)? dialogImg:imageURL + dialogImg}
+					srcSet={isBase64Image(dialogImg)? dialogImg:imageURL + dialogImg}
+					alt={isBase64Image(dialogImg)? dialogImg:imageURL + dialogImg}
 					loading="lazy"
 				/>
 				<DialogActions>

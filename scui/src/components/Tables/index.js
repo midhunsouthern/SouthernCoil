@@ -540,6 +540,8 @@ export default function EnhancedTable() {
 			</Card>
 
 			<Dialog
+			fullWidth={true}
+			maxWidth='lg'
 				open={openOrderEdit}
 				TransitionComponent={Transition}
 				keepMounted
