@@ -1831,4 +1831,7 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
         $data = $this->mm->completedModelWiseSQ_graph();
         var_dump($data);
     }
+    public function convert_sf_to_webp(){
+        return $this->im->process();
+    }
 }

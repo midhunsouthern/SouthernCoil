@@ -4,7 +4,7 @@ class AuthCodeValidator {
         // Access CI instance
         
         $ci =& get_instance();
-        if($ci->router->class=='login'){
+        if($ci->router->class=='login' || $ci->router->class=='one'){
 return;
         }
         $ci->load->model('mm');
