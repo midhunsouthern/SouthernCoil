@@ -5,7 +5,7 @@ import { Pie, Doughnut } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
-export default function PendingGroupedSqPie(props) {
+export default function PendingSqPie(props) {
 	const options = {
 		plugins: {
 			datalabels: {
@@ -34,30 +34,20 @@ export default function PendingGroupedSqPie(props) {
 			{
 				label: "# of Pending Sq Feet",
 				data: props.data,
+
 				backgroundColor: [
-					"rgba(2, 192, 250)",
-					"rgba(2, 110, 250)",
-					"rgba(43, 2, 250)",
-					"rgba(250, 250, 2)",
-					"rgba(122, 250, 2)",
-					"rgba(71, 161, 2)",
-					"rgba(250, 120, 237)",
-					"rgba(250, 2, 7)",
-					"rgba(176, 2, 250)",
-					"rgba(250, 143, 2)",
+					"rgba(108,255,255,255)",
+					"rgba(110,170,255,255)",
+					"rgba(139,109,255,255)",
+					"rgba(221,255,107,255)",
+					"rgba(110,255,172,255)",
+					"rgba(138,255,105,255)",
+					"rgba(255,193,108,255)",
+					"rgba(254,118,112,255)",
+					"rgba(255,107,199,255)",
+					"rgba(223,109,255,255)",
 				],
-				borderColor: [
-					"rgba(2, 192, 250,0.2)",
-					"rgba(2, 110, 250,0.2)",
-					"rgba(43, 2, 250,0.2)",
-					"rgba(250, 250, 2,0.2)",
-					"rgba(122, 250, 2,0.2)",
-					"rgba(71, 161, 2,0.2)",
-					"rgba(250, 120, 237,0.2)",
-					"rgba(250, 2, 7,0.2)",
-					"rgba(176, 2, 250,0.2)",
-					"rgba(250, 143, 2,0.2)",
-				],
+				borderColor: "white",
 				borderWidth: 1,
 				datalabels: {
 					anchor: "end",

@@ -44,25 +44,26 @@ class MainModal extends CI_Model
     /**
      * Save Order
      */
-    public function saveOrder($data,$orderId,$type){
+    public function saveOrder($data, $orderId, $type)
+    {
         try {
-            $ref_data=[];
-            $statusCode='';
-            $message='';
-            $orderType=1;
-            $orderTableName='order_list';
-            if($orderId!=''){
+            $ref_data = [];
+            $statusCode = '';
+            $message = '';
+            $orderType = 1;
+            $orderTableName = 'order_list';
+            if ($orderId != '') {
                 //Check Type 
-                if($type=='save'){
-                    $orderTableName='order_list_saved';
-                    $orderType=0;
+                if ($type == 'save') {
+                    $orderTableName = 'order_list_saved';
+                    $orderType = 0;
                 }
                 unset($data['id']);
                 $this->db->where('id', $orderId);
                 if ($this->db->update($orderTableName, $data)) {
                     $this->updateCE_Status($orderId);
-                    $this->saveImageOrder($orderId,$orderType);
-                    $statusCode= 200;
+                    $this->saveImageOrder($orderId, $orderType);
+                    $statusCode = 200;
                     $message = 'Order Data Update Successful';
                 } else {
                     $statusCode = 201;
@@ -73,26 +74,26 @@ class MainModal extends CI_Model
                     $data['order_id'] = $this->createOrderId();
                     $orderTableName = 'order_list';
                     $orderId = strval($data['order_id']);
-                    $orderType=1;
+                    $orderType = 1;
                 } elseif ($type == 'save') {
                     $orderTableName = 'order_list_saved';
                     $orderId = 'n/a';
-                    $orderType=0;
+                    $orderType = 0;
                 }
                 if ($this->db->insert($orderTableName, $data)) {
-                    $refId=$this->db->insert_id();
+                    $refId = $this->db->insert_id();
                     if ($orderType == 1) {
                         $this->createBrazingQuantity($data['order_id'], $data['quantity']);
                     }
-                    $this->saveImageOrder($refId,$orderType);
-                    $statusCode= 200;
+                    $this->saveImageOrder($refId, $orderType);
+                    $statusCode = 200;
                     $message = 'Order Saved Successful';
                 }
             }
             return [
-                'status_code'=>$statusCode,
-                'message'=>$message,
-                'order_id'=>$orderId
+                'status_code' => $statusCode,
+                'message' => $message,
+                'order_id' => $orderId
             ];
         } catch (\Throwable $th) {
             throw $th;
@@ -101,59 +102,60 @@ class MainModal extends CI_Model
     /**
      * Save Images against order id
      */
-    private function saveImageOrder($refId,$orderType){
+    private function saveImageOrder($refId, $orderType)
+    {
         try {
             $image_path = realpath(APPPATH . '../uploads');
-            $imageKeys=[
-                'ep'=>'ep',
-                'asm'=>'assembly',
-                'bz'=>'brazing'
+            $imageKeys = [
+                'ep' => 'ep',
+                'asm' => 'assembly',
+                'bz' => 'brazing'
             ];
-            log_message('debug','Image Order');
-            log_message('debug',$orderType);
-            $fetchData=$this->db->select('drawing_base64')
-                            ->from('drawing_images')
-                            ->where(['drawing_refid'=>$refId,'order_type'=>$orderType])
-                            ->get();
-                            log_message('debug',json_encode($fetchData->result_array()));
-                            $resultSet=$fetchData->result_array();
-                            log_message('debug',print_r($resultSet,true));
-                            if(count($resultSet)>0){
-                                foreach($resultSet as $key=>$value){
-                                    if(file_exists($image_path.'/'.$value['drawing_base64'])){ 
-                                        if(unlink($image_path.'/'.$value['drawing_base64'])){
-                                            log_message('debug','File deleted');
-                                        } else {
-                                            log_message('debug','Not Deleted');
-                                        }
-                                    }
-                                }
-                            }
-            $this->db->delete('drawing_images',['drawing_refid'=>$refId,'order_type'=>$orderType]);
-    
-    foreach($imageKeys as $keys=>$value){
-        if(isset($_POST[$value.'Photo'])){
-            foreach ($_POST[$value.'Photo'] as $row) {
-
-
-                $logMessage = (preg_match('/\.webp/', $row) ? "Yes" : "No");
-                log_message('debug',print_r($logMessage,true));
-                if($logMessage=='No'){
-                    $webpData=convert_base64_to_webp($row,$image_path,$refId);
-                } else {
-                    // Use parse_url() to extract the path part of the URL
-                    $path = parse_url($row, PHP_URL_PATH);
-                    // Use basename() to get the filename from the path
-                    $filename = basename($path);
-                    $webpData=$filename;
+            log_message('debug', 'Image Order');
+            log_message('debug', $orderType);
+            $fetchData = $this->db->select('drawing_base64')
+                ->from('drawing_images')
+                ->where(['drawing_refid' => $refId, 'order_type' => $orderType])
+                ->get();
+            log_message('debug', json_encode($fetchData->result_array()));
+            $resultSet = $fetchData->result_array();
+            log_message('debug', print_r($resultSet, true));
+            if (count($resultSet) > 0) {
+                foreach ($resultSet as $key => $value) {
+                    if (file_exists($image_path . '/' . $value['drawing_base64'])) {
+                        if (unlink($image_path . '/' . $value['drawing_base64'])) {
+                            log_message('debug', 'File deleted');
+                        } else {
+                            log_message('debug', 'Not Deleted');
+                        }
+                    }
                 }
+            }
+            $this->db->delete('drawing_images', ['drawing_refid' => $refId, 'order_type' => $orderType]);
 
-                 
-                 $this->db->insert('drawing_images', array('drawing_refid' => $refId, 'drawing_base64' => $webpData,'order_type'=>$orderType,'draw_type'=>$keys));
-                 $data[$value.'_Photo']=$refId;
-        }
-        }
-    }
+            foreach ($imageKeys as $keys => $value) {
+                if (isset($_POST[$value . 'Photo'])) {
+                    foreach ($_POST[$value . 'Photo'] as $row) {
+
+
+                        $logMessage = (preg_match('/\.webp/', $row) ? "Yes" : "No");
+                        log_message('debug', print_r($logMessage, true));
+                        if ($logMessage == 'No') {
+                            $webpData = convert_base64_to_webp($row, $image_path, $refId);
+                        } else {
+                            // Use parse_url() to extract the path part of the URL
+                            $path = parse_url($row, PHP_URL_PATH);
+                            // Use basename() to get the filename from the path
+                            $filename = basename($path);
+                            $webpData = $filename;
+                        }
+
+
+                        $this->db->insert('drawing_images', array('drawing_refid' => $refId, 'drawing_base64' => $webpData, 'order_type' => $orderType, 'draw_type' => $keys));
+                        $data[$value . '_Photo'] = $refId;
+                    }
+                }
+            }
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -302,10 +304,10 @@ class MainModal extends CI_Model
         if ($splitId !== null) {
             $this->db->where('split_id', $splitId);
         }
-        $brazingData=$this->db->get("brazing_details")->result_array();
+        $brazingData = $this->db->get("brazing_details")->result_array();
         foreach ($brazingData as $key => $value) {
-            $brazingData[$key]['brazing_photo']=$this->db->select('drawing_base64')->from('drawing_images')->where(['order_serial_ref'=>$value['series_ref']])->get()->result_array();
-            log_message('debug',print_r($value,true));
+            $brazingData[$key]['brazing_photo'] = $this->db->select('drawing_base64')->from('drawing_images')->where(['order_serial_ref' => $value['series_ref']])->get()->result_array();
+            log_message('debug', print_r($value, true));
         }
         return $brazingData;
     }
@@ -483,8 +485,7 @@ class MainModal extends CI_Model
 
         $this->db->query('call create_past_date()');
 
-        $query = "Select a.past_date as ol_date, cnc_nest_compsq,cnc_punch_compsq,bending_compsq,tcutting_compsq,finpunch_compsq,ca_compsq,ce_compsq,
-brazing_compsq, pp_compsq, dispatch_compsq
+        $query = "select * from (Select a.past_date as ol_date, IFNULL(cnc_nest_compsq, 0) as cnc_nest_compsq, IFNULL(cnc_punch_compsq, 0) as cnc_punch_compsq, IFNULL(bending_compsq, 0) as bending_compsq, IFNULL(tcutting_compsq, 0) as tcutting_compsq, IFNULL(finpunch_compsq, 0) as finpunch_compsq, IFNULL(ca_compsq, 0) as ca_compsq, IFNULL(ce_compsq, 0) as ce_compsq, IFNULL(brazing_compsq, 0) as brazing_compsq, IFNULL(pp_compsq, 0) as pp_compsq, IFNULL(dispatch_compsq, 0) as dispatch_compsq
 from past_dates a 
 left join (SELECT  count(cnc_nesting_status) as cnc_nest_count, sum(sq_feet) as cnc_nest_compsq, SUBSTRING(cnc_nesting_status_dt, 1, 10) as cnc_nest_stat_date 
 FROM `order_list` where cnc_nesting_status= 'true' group by  cnc_nest_stat_date  order by cnc_nesting_status_dt desc ) b on a.past_date = b.cnc_nest_stat_date     
@@ -506,8 +507,9 @@ left join (SELECT  count(pp_status) as pp_count, sum(sq_feet) as pp_compsq, SUBS
 FROM `order_list` where pp_status= 'true' group by  pp_stat_date  order by pp_status_dt desc ) j on a.past_date = j.pp_stat_date 
 left join (SELECT  count(dispatch_status) as dispatch_count, sum(sq_feet) as dispatch_compsq, SUBSTRING(dispatch_status_dt, 1, 10) as dispatch_stat_date 
 FROM `order_list` where dispatch_status= 'true' group by  dispatch_stat_date  order by dispatch_status_dt desc ) k on a.past_date = k.dispatch_stat_date    
-group by ol_date having cnc_nest_compsq <> 0 and cnc_punch_compsq <> 0 and bending_compsq  <> 0 and tcutting_compsq <> 0 and finpunch_compsq <> 0 and ca_compsq  <> 0 and ce_compsq <> 0 and 
-brazing_compsq <> 0 and  pp_compsq <> 0 and dispatch_compsq <> 0 order by ol_date desc limit 10 ";
+group by ol_date having ( IFNULL(cnc_nest_compsq, 0) + IFNULL(cnc_punch_compsq, 0) + IFNULL(bending_compsq, 0)  + IFNULL(tcutting_compsq, 0) + IFNULL(finpunch_compsq, 0) 
++ IFNULL(ca_compsq, 0)  + IFNULL(ce_compsq, 0) + IFNULL(brazing_compsq, 0) + IFNULL(pp_compsq, 0) + IFNULL(dispatch_compsq, 0) ) <> 0  order by ol_date desc limit 10) as deriv_tbl
+order by deriv_tbl.ol_date asc";
 
         $comp_data = $this->db->query($query)->result_array();
         foreach ($fieldName as $key => $val) {;
@@ -528,32 +530,31 @@ brazing_compsq <> 0 and  pp_compsq <> 0 and dispatch_compsq <> 0 order by ol_dat
         $label = array();
         $this->db->query('call create_past_date()');
         $query =
-            "Select a.past_date as order_dt, 
-(ifnull(cnc_nest_compsq,0)+ ifnull(cnc_punch_compsq,0) + ifnull(bending_compsq,0)+
-        ifnull(tcutting_compsq,0) + ifnull(finpunch_compsq,0) + ifnull(ca_compsq,0) + ifnull(ce_compsq,0) +
-        ifnull(brazing_compsq,0) + ifnull(pp_compsq,0) + ifnull(dispatch_compsq,0))  as over_all 
-from past_dates a 
-left join (SELECT  count(cnc_nesting_status) as cnc_nest_count, sum(sq_feet) as cnc_nest_compsq, SUBSTRING(cnc_nesting_status_dt, 1, 10) as cnc_nest_stat_date 
-FROM `order_list` where cnc_nesting_status= 'true' group by  cnc_nest_stat_date  order by cnc_nesting_status_dt desc ) b on a.past_date = b.cnc_nest_stat_date     
-left join (SELECT  count(cnc_punching_status) as cnc_punch_count, sum(sq_feet) as cnc_punch_compsq, SUBSTRING(cnc_punching_status_dt, 1, 10) as cnc_punch_stat_date 
-FROM `order_list` where cnc_punching_status= 'true' group by  cnc_punch_stat_date  order by cnc_punching_status_dt desc ) c on a.past_date = c.cnc_punch_stat_date    
-left join (SELECT  count(bending_status) as bending_count, sum(sq_feet) as bending_compsq, SUBSTRING(bending_status_dt, 1, 10) as bending_stat_date 
-FROM `order_list` where bending_status= 'true' group by  bending_stat_date  order by bending_status_dt desc ) d on a.past_date = d.bending_stat_date
-left join (SELECT  count(tcutting_status) as tcutting_count, sum(sq_feet) as tcutting_compsq, SUBSTRING(tcutting_status_dt, 1, 10) as tcutting_stat_date 
-FROM `order_list` where tcutting_status= 'true' group by  tcutting_stat_date  order by tcutting_stat_date desc ) e on a.past_date = e.tcutting_stat_date    
-left join (SELECT  count(finpunch_status) as finpunch_count, sum(sq_feet) as finpunch_compsq, SUBSTRING(finpunch_status_dt, 1, 10) as finpunch_stat_date 
-FROM `order_list` where finpunch_status= 'true' group by  finpunch_stat_date  order by finpunch_status_dt desc ) f on a.past_date = f.finpunch_stat_date  
-left join (SELECT  count(ca_status) as ca_count, sum(sq_feet) as ca_compsq, SUBSTRING(ca_status_dt, 1, 10) as ca_stat_date 
-FROM `order_list` where ca_status= 'true' group by  ca_stat_date  order by ca_status_dt desc ) g on a.past_date  = g.ca_stat_date  
-left join (SELECT  count(ce_status) as ce_count, sum(sq_feet) as ce_compsq, SUBSTRING(ce_status_dt, 1, 10) as ce_stat_date 
-FROM `order_list` where ce_status= 'true' group by  ce_stat_date  order by ce_status_dt desc ) h on a.past_date = h.ce_stat_date   
-left join (SELECT  count(brazing_status) as brazing_count, sum(sq_feet) as brazing_compsq, SUBSTRING(brazing_status_dt, 1, 10) as brazing_stat_date 
-FROM `order_list` where brazing_status= 'true' group by  brazing_stat_date  order by brazing_status_dt desc ) i on a.past_date = i.brazing_stat_date    
-left join (SELECT  count(pp_status) as pp_count, sum(sq_feet) as pp_compsq, SUBSTRING(pp_status_dt, 1, 10) as pp_stat_date 
-FROM `order_list` where pp_status= 'true' group by  pp_stat_date  order by pp_status_dt desc ) j on a.past_date = j.pp_stat_date 
-left join (SELECT  count(dispatch_status) as dispatch_count, sum(sq_feet) as dispatch_compsq, SUBSTRING(dispatch_status_dt, 1, 10) as dispatch_stat_date 
-FROM `order_list` where dispatch_status= 'true' group by  dispatch_stat_date  order by dispatch_status_dt desc ) k on a.past_date = k.dispatch_stat_date    
-group by order_dt having over_all <> 0 order by order_dt desc limit 10;";
+            "select * from (Select a.past_date as order_dt, 
+    (ifnull(cnc_nest_compsq,0)+ ifnull(cnc_punch_compsq,0) + ifnull(bending_compsq,0)+
+            ifnull(tcutting_compsq,0) + ifnull(finpunch_compsq,0) + ifnull(ca_compsq,0) + ifnull(ce_compsq,0) +
+            ifnull(brazing_compsq,0) + ifnull(pp_compsq,0) )  as over_all 
+    from past_dates a 
+    left join (SELECT  count(cnc_nesting_status) as cnc_nest_count, sum(sq_feet) as cnc_nest_compsq, SUBSTRING(cnc_nesting_status_dt, 1, 10) as cnc_nest_stat_date 
+    FROM `order_list` where cnc_nesting_status= 'true' group by  cnc_nest_stat_date  order by cnc_nesting_status_dt desc ) b on a.past_date = b.cnc_nest_stat_date     
+    left join (SELECT  count(cnc_punching_status) as cnc_punch_count, sum(sq_feet) as cnc_punch_compsq, SUBSTRING(cnc_punching_status_dt, 1, 10) as cnc_punch_stat_date 
+    FROM `order_list` where cnc_punching_status= 'true' group by  cnc_punch_stat_date  order by cnc_punching_status_dt desc ) c on a.past_date = c.cnc_punch_stat_date    
+    left join (SELECT  count(bending_status) as bending_count, sum(sq_feet) as bending_compsq, SUBSTRING(bending_status_dt, 1, 10) as bending_stat_date 
+    FROM `order_list` where bending_status= 'true' group by  bending_stat_date  order by bending_status_dt desc ) d on a.past_date = d.bending_stat_date
+    left join (SELECT  count(tcutting_status) as tcutting_count, sum(sq_feet) as tcutting_compsq, SUBSTRING(tcutting_status_dt, 1, 10) as tcutting_stat_date 
+    FROM `order_list` where tcutting_status= 'true' group by  tcutting_stat_date  order by tcutting_stat_date desc ) e on a.past_date = e.tcutting_stat_date    
+    left join (SELECT  count(finpunch_status) as finpunch_count, sum(sq_feet) as finpunch_compsq, SUBSTRING(finpunch_status_dt, 1, 10) as finpunch_stat_date 
+    FROM `order_list` where finpunch_status= 'true' group by  finpunch_stat_date  order by finpunch_status_dt desc ) f on a.past_date = f.finpunch_stat_date  
+    left join (SELECT  count(ca_status) as ca_count, sum(sq_feet) as ca_compsq, SUBSTRING(ca_status_dt, 1, 10) as ca_stat_date 
+    FROM `order_list` where ca_status= 'true' group by  ca_stat_date  order by ca_status_dt desc ) g on a.past_date  = g.ca_stat_date  
+    left join (SELECT  count(ce_status) as ce_count, sum(sq_feet) as ce_compsq, SUBSTRING(ce_status_dt, 1, 10) as ce_stat_date 
+    FROM `order_list` where ce_status= 'true' group by  ce_stat_date  order by ce_status_dt desc ) h on a.past_date = h.ce_stat_date   
+    left join (SELECT  count(brazing_status) as brazing_count, sum(sq_feet) as brazing_compsq, SUBSTRING(brazing_status_dt, 1, 10) as brazing_stat_date 
+    FROM `order_list` where brazing_status= 'true' group by  brazing_stat_date  order by brazing_status_dt desc ) i on a.past_date = i.brazing_stat_date    
+    left join (SELECT  count(pp_status) as pp_count, sum(sq_feet) as pp_compsq, SUBSTRING(pp_status_dt, 1, 10) as pp_stat_date 
+    FROM `order_list` where pp_status= 'true' group by  pp_stat_date  order by pp_status_dt desc ) j on a.past_date = j.pp_stat_date 
+    having over_all <> 0 order by order_dt desc limit 10) as deriv_tbl
+order by deriv_tbl.order_dt asc";
 
         $comp_data = $this->db->query($query)->result_array();
         foreach ($comp_data as $row) {
@@ -622,7 +623,7 @@ where  dispatch_status <> 'true' and order_status = 1 and hold <> 'true' GROUP b
         $total_work = $data['completed_work'] + $data['pending_work'];
         $data['completed_work_cent'] = round(($data['completed_work'] / $total_work) * 100);
         $data['pending_work_cent'] = round(($data['pending_work'] / $total_work) * 100);
-        $data['pending_man_hours'] = round($data['pending_work'] / 5400, 1); //(average ourput 600 * no of modules 9)
+        $data['pending_man_hours'] = round($data['pending_work'], 1); //(average ourput 600 * no of modules 9)
         return $data;
     }
 }

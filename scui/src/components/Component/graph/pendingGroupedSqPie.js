@@ -1,10 +1,10 @@
 import React from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Pie } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function PendingSqPie(props) {
+export default function PendingGroupedSqPie(props) {
 	const data = {
 		labels: props.label,
 		datasets: [
@@ -12,24 +12,16 @@ export default function PendingSqPie(props) {
 				label: "# of Pending Sq Feet",
 				data: props.data,
 				backgroundColor: [
-					"rgba(255, 99, 132, 0.2)",
-					"rgba(54, 162, 235, 0.2)",
-					"rgba(255, 206, 86, 0.2)",
-					"rgba(75, 192, 192, 0.2)",
-					"rgba(153, 102, 255, 0.2)",
-					"rgba(255, 159, 64, 0.2)",
+					"rgba(139,109,255,255)",
+					"rgba(221,255,107,255)",
+					"rgba(138,255,105,255)",
+					"rgba(254,118,112,255)",
+					"rgba(223,109,255,255)",
 				],
-				borderColor: [
-					"rgba(255, 99, 132, 1)",
-					"rgba(54, 162, 235, 1)",
-					"rgba(255, 206, 86, 1)",
-					"rgba(75, 192, 192, 1)",
-					"rgba(153, 102, 255, 1)",
-					"rgba(255, 159, 64, 1)",
-				],
+				borderColor: "white",
 				borderWidth: 1,
 			},
 		],
 	};
-	return <Pie key={"pengroupPie" + 1000} data={data} />;
+	return <Doughnut key={"pengroupPie" + 1000} data={data} />;
 }

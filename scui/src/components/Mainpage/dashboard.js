@@ -7,7 +7,7 @@ import { dashboardGraphData } from "../../constant/url";
 import { AccessContext } from "../../constant/accessContext";
 
 import PendingSqPie from "../Component/graph/pendingSqPie";
-import PendingGroupedSqPie from "../Component/graph/pendingSqPie";
+import PendingGroupedSqPie from "../Component/graph/pendingGroupedSqPie";
 import LastModuleWiseLine from "../Component/graph/lastModuleWiseLine";
 import LastModuleOverAllLine from "../Component/graph/lastModuleOverAllLine";
 
@@ -67,7 +67,7 @@ export default function Dashboard() {
 			parseInt(dataArray.brazing_compsq),
 			parseInt(dataArray.ca_compsq),
 			parseInt(dataArray.ce_compsq),
-			parseInt(dataArray.dispatch_compsq),
+			// parseInt(dataArray.dispatch_compsq),
 			parseInt(dataArray.finpunch_compsq),
 			parseInt(dataArray.pp_compsq),
 			parseInt(dataArray.tcutting_compsq),
@@ -84,16 +84,23 @@ export default function Dashboard() {
 		return sum;
 	};
 
+	const rowTotalAverage = (dataArray) => {
+		return Math.round(rowTotal(dataArray) / 9);
+	};
+
 	const colTotal = (dataArray, colName) => {
 		// create a variable for the sum and initialize it
+		const noOfArray = 9;
 		let sum = 0;
 		let idx = 0;
 		// calculate sum using forEach() method
 		dataArray.forEach((row, index) => {
-			idx = index + 1;
-			sum = sum + parseInt(row[colName]);
+			if (idx < noOfArray) {
+				idx = index + 1;
+				sum = sum + parseInt(row[colName]);
+			}
 		});
-		return sum / idx;
+		return Math.round(sum / idx);
 	};
 
 	const handlePendingSqCount = (authID) => {
@@ -235,11 +242,11 @@ export default function Dashboard() {
 			headerName: "Paint & Packing",
 			flex: 1,
 		},
-		{
-			field: "dispatch_compsq",
-			headerName: "Dispatch",
-			flex: 1,
-		},
+		// {
+		// 	field: "dispatch_compsq",
+		// 	headerName: "Dispatch",
+		// 	flex: 1,
+		// },
 		{
 			field: "CustomField",
 			headerName: "Total",
@@ -248,6 +255,14 @@ export default function Dashboard() {
 			},
 			flex: 1,
 		},
+		// {
+		// 	field: "CustomField2",
+		// 	headerName: "Average",
+		// 	valueGetter: (params) => {
+		// 		return rowTotalAverage(params.row);
+		// 	},
+		// 	flex: 1,
+		// },
 	];
 
 	React.useEffect(function () {
@@ -335,7 +350,38 @@ export default function Dashboard() {
 									</tr>
 									<tr>
 										<td>Pending as per man hours</td>
-										<td>{summaryData.pending_man_hours}</td>
+										<td>
+											{(
+												summaryData.pending_man_hours /
+												(colTotal(
+													lastModuleWiseSQLine.allData,
+													"cnc_nest_compsq"
+												) +
+													colTotal(
+														lastModuleWiseSQLine.allData,
+														"cnc_punch_compsq"
+													) +
+													colTotal(
+														lastModuleWiseSQLine.allData,
+														"bending_compsq"
+													) +
+													colTotal(
+														lastModuleWiseSQLine.allData,
+														"tcutting_compsq"
+													) +
+													colTotal(
+														lastModuleWiseSQLine.allData,
+														"finpunch_compsq"
+													) +
+													colTotal(lastModuleWiseSQLine.allData, "ca_compsq") +
+													colTotal(lastModuleWiseSQLine.allData, "ce_compsq") +
+													colTotal(
+														lastModuleWiseSQLine.allData,
+														"brazing_compsq"
+													) +
+													colTotal(lastModuleWiseSQLine.allData, "pp_compsq"))
+											).toFixed(2)}
+										</td>
 									</tr>
 								</tbody>
 							</table>
@@ -395,7 +441,24 @@ export default function Dashboard() {
 									</td>
 									<td>{colTotal(lastModuleWiseSQLine.allData, "pp_compsq")}</td>
 									<td>
-										{colTotal(lastModuleWiseSQLine.allData, "dispatch_compsq")}
+										{colTotal(lastModuleWiseSQLine.allData, "cnc_nest_compsq") +
+											colTotal(
+												lastModuleWiseSQLine.allData,
+												"cnc_punch_compsq"
+											) +
+											colTotal(lastModuleWiseSQLine.allData, "bending_compsq") +
+											colTotal(
+												lastModuleWiseSQLine.allData,
+												"tcutting_compsq"
+											) +
+											colTotal(
+												lastModuleWiseSQLine.allData,
+												"finpunch_compsq"
+											) +
+											colTotal(lastModuleWiseSQLine.allData, "ca_compsq") +
+											colTotal(lastModuleWiseSQLine.allData, "ce_compsq") +
+											colTotal(lastModuleWiseSQLine.allData, "brazing_compsq") +
+											colTotal(lastModuleWiseSQLine.allData, "pp_compsq")}
 									</td>
 								</tr>
 							</tbody>
