@@ -29,6 +29,7 @@ import {
 	IconButton,
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
+import CloseIcon from '@mui/icons-material/Close';
 
 import OrderViewModal from "../modals/OrderViewModal";
 import ModuleTools from "../modals/ModuleTools";
@@ -43,6 +44,7 @@ import {
 	setOrderGeneric,
 	getImagesOnly,
 	getOrderAllLakVal,
+	imageURL,
 } from "../../constant/url";
 import { IOSSwitch } from "../../commonjs/TableFunc";
 import CommentBoxModal from "../modals/CommentBoxModal";
@@ -185,7 +187,9 @@ export default function M3coilAssembly() {
 				console.log(response);
 			});
 	};
-
+	const handleCloseModal = (response) => {
+		setOpenOrderView(false);
+	};
 	function handleGetLookup() {
 		var bodyFormData = new FormData();
 		bodyFormData.append("authId", access);
@@ -214,9 +218,9 @@ export default function M3coilAssembly() {
 	function handleGetImagebyId(epid, assemblyid, brazingid) {
 		var bodyFormData = new FormData();
 		bodyFormData.append("authId", access);
-		bodyFormData.append("epImg", epid);
-		bodyFormData.append("assemblyImg", assemblyid);
-		bodyFormData.append("brazingImg", brazingid);
+		bodyFormData.append("draw_type", 'asm');
+
+		bodyFormData.append("order_id", assemblyid);
 
 		axios({
 			method: "post",
@@ -303,7 +307,7 @@ export default function M3coilAssembly() {
 						onClick={() => {
 							setImageBase64("Opening Image");
 							setOpenImgDialog(true);
-							handleGetImagebyId("N/a", params.row.assembly_Photo, "N/a");
+							handleGetImagebyId("N/a", params.row.id, "N/a");
 						}}
 					>
 						{params.value}
@@ -488,12 +492,30 @@ export default function M3coilAssembly() {
 			</Dialog>
 
 			<Dialog
+			fullWidth={true}
+			maxWidth={"lg"}
 				open={openOrderView}
 				TransitionComponent={Transition}
 				keepMounted
 				onClose={() => setOpenOrderView(false)}
 				key={Math.random(1, 100)}
 			>
+				 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          View Order Details
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseModal}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+		  id="order-view-close-btn"
+        >
+          <CloseIcon />
+        </IconButton>
 				<OrderViewModal orderId={selectedRowId} key={Math.random(1, 100)} />
 			</Dialog>
 
@@ -536,8 +558,8 @@ export default function M3coilAssembly() {
 										<div className="col">
 											<img
 												className="fluid-img"
-												src={item}
-												srcSet={item}
+												src={imageURL +'/uploads/'+ item['drawing_base64']}
+												srcSet={imageURL +'/uploads/'+ item['drawing_base64']}
 												alt={"Assembly"}
 												loading="lazy"
 											/>
@@ -560,8 +582,8 @@ export default function M3coilAssembly() {
 									<ImageListItem key={"assembly" + index}>
 										<img
 											className="img-fluid"
-											src={item}
-											srcSet={item}
+											src={imageURL +'/uploads/'+ item['drawing_base64']}
+											srcSet={imageURL +'/uploads/'+ item['drawing_base64']}
 											alt={"Assembly"}
 											loading="lazy"
 										/>
@@ -581,8 +603,8 @@ export default function M3coilAssembly() {
 								{imageBase64.brazing_Photo?.map((item, index) => (
 									<ImageListItem key={"brazing" + index}>
 										<img
-											src={item}
-											srcSet={item}
+											src={imageURL +'/uploads/'+ item['drawing_base64']}
+											srcSet={imageURL +'/uploads/'+ item['drawing_base64']}
 											alt={"Assembly"}
 											loading="lazy"
 										/>

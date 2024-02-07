@@ -131,7 +131,7 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array('MainModal' => 'mm');
+$autoload['model'] = array('MainModal' => 'mm','ImageConversionModal'=>'im');
 
 $autoload['time_zone'] = date_default_timezone_set('Asia/Kolkata');
 

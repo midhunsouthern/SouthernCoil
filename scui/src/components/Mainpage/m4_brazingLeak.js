@@ -9,7 +9,6 @@ import { AccessContext } from "../../constant/accessContext";
 import { TickGif } from "../../commonjs/HilightRule";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import CloseIcon from '@mui/icons-material/Close';
 
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import {
@@ -30,6 +29,7 @@ import {
 	IconButton,
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
+import CloseIcon from '@mui/icons-material/Close';
 
 import OrderViewModal from "../modals/OrderViewModal";
 import ModuleTools from "../modals/ModuleTools";
@@ -46,6 +46,7 @@ import {
 	setOrderGeneric,
 	getImagesOnly,
 	getOrderAllLakVal,
+	imageURL,
 } from "../../constant/url";
 import { IOSSwitch } from "../../commonjs/TableFunc";
 import CommentBoxModal from "../modals/CommentBoxModal";
@@ -221,9 +222,8 @@ export default function M3coilExpansion() {
 	function handleGetImagebyId(epid, assemblyid, brazingid) {
 		var bodyFormData = new FormData();
 		bodyFormData.append("authId", access);
-		bodyFormData.append("epImg", epid);
-		bodyFormData.append("assemblyImg", assemblyid);
-		bodyFormData.append("brazingImg", brazingid);
+		bodyFormData.append("draw_type",'bz');
+		bodyFormData.append("order_id", brazingid);
 
 		axios({
 			method: "post",
@@ -245,14 +245,13 @@ export default function M3coilExpansion() {
 				console.log(response);
 			});
 	}
-
+	const handleCloseModal = (response) => {
+		setOpenOrderView(false);
+	};
 	const refreshData = (request) => {
 		if (request) {
 			handleOrderList(access);
 		}
-	};
-	const handleCloseModal = (response) => {
-		setOpenOrderView(false);
 	};
 	useEffect(() => {
 		handleGetLookup();
@@ -304,7 +303,7 @@ export default function M3coilExpansion() {
 							console.log("testing data");
 							setImageBase64("");
 							setOpenImgDialog(true);
-							handleGetImagebyId("N/a", "N/a", params.row.brazing_Photo);
+							handleGetImagebyId("N/a", "N/a", params.row.id);
 						}}
 						className="toolButton-grid bg-light"
 					>
@@ -610,8 +609,8 @@ export default function M3coilExpansion() {
 												height: "700px",
 												width: "700px",
 											}}
-											src={item}
-											srcSet={item}
+											src={imageURL +'/uploads/'+ item['drawing_base64']}
+											srcSet={imageURL +'/uploads/'+ item['drawing_base64']}
 											alt={"Assembly"}
 											loading="lazy"
 										/>
@@ -632,8 +631,8 @@ export default function M3coilExpansion() {
 								{imageBase64.assembly_Photo?.map((item, index) => (
 									<ImageListItem key={"assembly" + index}>
 										<img
-											src={item}
-											srcSet={item}
+											src={imageURL +'/uploads/'+ item['drawing_base64']}
+											srcSet={imageURL +'/uploads/'+ item['drawing_base64']}
 											alt={"Assembly"}
 											loading="lazy"
 										/>
@@ -653,8 +652,8 @@ export default function M3coilExpansion() {
 								{imageBase64.brazing_Photo?.map((item, index) => (
 									<ImageListItem key={"brazing" + index}>
 										<img
-											src={item}
-											srcSet={item}
+											src={imageURL +'/uploads/'+ item['drawing_base64']}
+											srcSet={imageURL +'/uploads/'+ item['drawing_base64']}
 											alt={"Assembly"}
 											loading="lazy"
 										/>
