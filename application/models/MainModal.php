@@ -58,6 +58,7 @@ class MainModal extends CI_Model
                     $orderType=0;
                 }
                 unset($data['id']);
+                $this->db->where('id', $orderId);
                 if ($this->db->update($orderTableName, $data)) {
                     $this->updateCE_Status($orderId);
                     $this->saveImageOrder($orderId,$orderType);
@@ -108,30 +109,48 @@ class MainModal extends CI_Model
                 'asm'=>'assembly',
                 'bz'=>'brazing'
             ];
-            log_message('debug','Image Order');
-            log_message('debug',$orderType);
-            $fetchData=$this->db->select('drawing_base64')
+            $existingImagesId=[];
+            $fetchData=$this->db->select('drawing_base64,draw_type,id')
                             ->from('drawing_images')
                             ->where(['drawing_refid'=>$refId,'order_type'=>$orderType])
                             ->get();
-                            log_message('debug',json_encode($fetchData->result_array()));
+                            //log_message('debug',json_encode($fetchData->result_array()));
                             $resultSet=$fetchData->result_array();
                             if(count($resultSet)>0){
                                 foreach($resultSet as $key=>$value){
-                                    unlink($image_path.'/'.$value['drawing_base64']);
+                                    $existingImagesId[$value['draw_type']][$value['id']]=$value['drawing_base64'];
                                 }
                             }
-            $this->db->delete('drawing_images',['drawing_refid'=>$refId,'order_type'=>$orderType]);
-    
-    foreach($imageKeys as $keys=>$value){
-        if(isset($_POST[$value.'Photo'])){
-            foreach ($_POST[$value.'Photo'] as $row) {
-                 $webpData=convert_base64_to_webp($row,$image_path,$refId);
-                 $this->db->insert('drawing_images', array('drawing_refid' => $refId, 'drawing_base64' => $webpData,'order_type'=>$orderType,'draw_type'=>$keys));
-                 $data[$value.'_Photo']=$refId;
-        }
-        }
-    }
+                            log_message('debug',print_r($existingImagesId,true));
+                            foreach ($imageKeys as $index => $value) {
+                                if(isset($_POST[$value.'Photo'])){
+                                    foreach ($_POST[$value.'Photo'] as $row) {
+                                        $logMessage = (preg_match('/\.webp/', $row) ? "Yes" : "No");
+                                        if(count($existingImagesId)>0){
+                                           foreach($existingImagesId[$index] as $exKey=>$exValue){
+                                            log_message('debug',print_r($exValue,true));
+                                                if('uploads/'.$exValue==$row){
+                                                    unset($existingImagesId[$index][$exKey]);
+                                                }
+                                            }
+                                        }
+                                        if($logMessage=='No') {
+                                            $webpData=convert_base64_to_webp($row,$image_path,$refId);
+                                            $this->db->insert('drawing_images', array('drawing_refid' => $refId, 'drawing_base64' => $webpData,'order_type'=>$orderType,'draw_type'=>$index));
+                                        }
+                                 }
+                                }
+                            }
+                            // Delete Images
+                            log_message('debug',print_r($existingImagesId,true));
+                            foreach ($imageKeys as $index => $value) {
+                                if(count($existingImagesId[$index])>0){
+                            foreach ($existingImagesId[$index] as $exDelKey =>$exDelValue) {
+                                $this->db->delete('drawing_images',['id'=>$exDelKey]);
+                             }
+                        }
+                    }
+        
         } catch (\Throwable $th) {
             throw $th;
         }

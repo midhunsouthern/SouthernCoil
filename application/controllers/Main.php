@@ -791,7 +791,11 @@ if(count($imagesList)>0){
             }
         
             // Assign the item to the new array and increment the index for this draw_type
+            if($drawType=='bz-t'){
+                $arr[$drawType][explode('-',$item['order_serial_ref'])[1]][$indices[$drawType]] = 'uploads/'.$item['drawing_base64'];
+            }else{
             $arr[$drawType][$indices[$drawType]] = 'uploads/'.$item['drawing_base64'];
+            }
             $indices[$drawType]++;
         }
         if(isset($arr['ep'])){
@@ -838,17 +842,20 @@ if(count($imagesList)>0){
             echo json_encode($ret_data);
             return;
         }
-        $epId = $this->input->post('epImg');
-        $assemblyId = $this->input->post('assemblyImg');
-        $brazingId = $this->input->post('brazingImg');
-
+        $orderId = $this->input->post('order_id');
+        $drawType = $this->input->post('draw_type');
+        
+        if($drawType=='ep')
+{
         $this->db->select('drawing_base64');
-        $ret_data['data_orders']['ep_photo'] = $this->mm->formBase64Array($this->db->get_where('drawing_images', array('drawing_refid' => $epId))->result_array());
+        $ret_data['data_orders']['ep_photo'] =$this->db->get_where('drawing_images', array('draw_type' => $drawType,'drawing_refid'=>$orderId))->result_array();
+}else if($drawType=='asm'){
         $this->db->select('drawing_base64');
-        $ret_data['data_orders']['assembly_Photo'] = $this->mm->formBase64Array($this->db->get_where('drawing_images', array('drawing_refid' => $assemblyId))->result_array());
+        $ret_data['data_orders']['assembly_Photo'] = $this->db->get_where('drawing_images', array('draw_type' => $drawType,'drawing_refid'=>$orderId))->result_array();
+}else if($drawType=='bz'){
         $this->db->select('drawing_base64');
-        $ret_data['data_orders']['brazing_Photo'] = $this->mm->formBase64Array($this->db->get_where('drawing_images', array('drawing_refid' => $brazingId))->result_array());
-
+        $ret_data['data_orders']['brazing_Photo'] = $this->db->get_where('drawing_images', array('draw_type' => $drawType,'drawing_refid'=>$orderId))->result_array();
+}
         $ret_data['status_code'] = 200;
         $ret_data['status_msg'] = "Data retrival successful";
 
@@ -1823,5 +1830,8 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
     {
         $data = $this->mm->completedModelWiseSQ_graph();
         var_dump($data);
+    }
+    public function convert_sf_to_webp(){
+        return $this->im->process();
     }
 }
