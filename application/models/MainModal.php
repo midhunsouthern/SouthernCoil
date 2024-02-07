@@ -143,12 +143,14 @@ class MainModal extends CI_Model
                             }
                             // Delete Images
                             log_message('debug',print_r($existingImagesId,true));
+                            if(count($existingImagesId)>0){
                             foreach ($imageKeys as $index => $value) {
                                 if(count($existingImagesId[$index])>0){
                             foreach ($existingImagesId[$index] as $exDelKey =>$exDelValue) {
                                 $this->db->delete('drawing_images',['id'=>$exDelKey]);
                              }
                         }
+                    }
                     }
         
         } catch (\Throwable $th) {
