@@ -318,7 +318,37 @@ export default function OrderViewModal(prop) {
 		orderRowID=orderId.id;
 		handleOrderinfo1();
 	};
-
+	const getThickValue=(finPerInch)=>{
+		const mapper = {
+			T: "0.15mm Thick",
+			H: "0.13mm Thick",
+			B: "0.12mm Thick Hydrophilic blue Aluminum",
+			PP: "Not Applicable"
+			// Add more mappings as needed
+		};
+		if(finPerInch.includes('-')){
+			finPerInch=finPerInch.split("-")[0].trim().toUpperCase();
+		}
+		if(typeof finPerInch==='string'){
+			finPerInch=finPerInch.toUpperCase();
+		}
+		if (mapper[finPerInch]) {
+			return mapper[finPerInch];
+		} else {
+			// If value is not found in mapper, return a default value
+			return "0.12mm Thick"; // You can set your default value here
+		}
+	};
+	const formatDateIst=(date)=>{
+		if(date!=''){
+			console.log(date);
+			let newDate=new Date(date);
+			let month=newDate.getMonth()+1;
+			month=(month<10)?'0'+month:month;
+			return newDate.getDate()+'-'+ month +'-'+newDate.getFullYear();
+		}
+		return '';
+	};
 	useEffect(() => {
 		handleSqFeet();
 		handleSize();
@@ -546,6 +576,14 @@ export default function OrderViewModal(prop) {
 													{finPerInch}
 												</td>
 											</tr>
+											<tr>
+												<th style={{textAlign:'left',paddingLeft:"10px"}}>
+													Fin Thickness
+												</th>
+												<td style={{textAlign:'left',paddingLeft:"10px"}}>
+													{getThickValue(finPerInch)}
+												</td>
+											</tr>
 										</tbody>
 									</table>
 								</Grid>
@@ -771,54 +809,109 @@ export default function OrderViewModal(prop) {
 							</thead>
 							<tbody>
 								{
-									cncNestingStatus && (
+									 (
 										<tr>
 											<th>Nesting No</th>
-											<td>{cncNestingDate}</td>
-											<td>{cncNestingPgm}</td>
+											<td>{formatDateIst(cncNestingDate)}</td>
+											<td rowSpan={3}>{cncNestingPgm}</td>
 										</tr>
 									)
 								}
 								{
-									cncPunchingStatus && (
+									(
 										<tr>
 											<th>Punching</th>
-											<td>{cncPunchingDate}</td>
-											<td>{cncNestingPgm}</td>
+											<td>{formatDateIst(cncPunchingDate)}</td>
 										</tr>
 									)
 								}
 								{
-									bendingStatus && (
+									(
 										<tr>
-											<th>Bending</th>
-											<td>{bendingDate}</td>
-											<td>{cncNestingPgm}</td>
+											<th>Bending & Tray</th>
+											<td>{formatDateIst(bendingDate)}</td>
+											
 										</tr>
 									)
 								}
 								{
-									tCuttingStatus && (
+									 (
 										<tr>
-											<th>Tray</th>
-											<td>{tCuttingDate}</td>
-											<td>{cncNestingPgm}</td>
+											<th>Pipe Cutting</th>
+											<td>{formatDateIst(tCuttingDate)}</td>
+											<td>{tCuttingRollNo}</td>
 										</tr>
 									)
 								}
 								{
-									brazingExpansion && (
+									 (
+										<tr>
+											<th>Pipe Bending</th>
+											<td>{formatDateIst(tCuttingDate)}</td>
+											<td>{tCuttingRollNo}</td>
+										</tr>
+									)
+								}
+								{
+									 (
+										<tr>
+											<th>Fins Punching</th>
+											<td>{formatDateIst(finPunchDate)}</td>
+											<td>{tCuttingRollNo}</td>
+										</tr>
+									)
+								}
+								{
+									 (
+										<tr>
+											<th>Assembly</th>
+											<td>{formatDateIst(caStatusDate)}</td>
+											<td>{tCuttingRollNo}</td>
+										</tr>
+									)
+								}
+								{
+									 (
 										<tr>
 											<th>Expansion</th>
-											<td>{brazingDate}</td>
-											<td>{brazingComments}</td>
+											<td>{formatDateIst(brazingDate)}</td>
+											<td></td>
 										</tr>
 									)
 								}
 								{
-									caStatus && (
+									 (
 										<tr>
-
+											<th>Brazing & Leak Testing</th>
+											<td>{formatDateIst(brazingDate)}</td>
+											<td> {brazingComments}</td>
+										</tr>
+									)
+								}
+								{
+									 (
+										<tr>
+											<th>Painting</th>
+											<td>{formatDateIst(tCuttingDate)}</td>
+											<td>{tCuttingRollNo}</td>
+										</tr>
+									)
+								}
+								{
+									 (
+										<tr>
+											<th>Packing</th>
+											<td>{formatDateIst(ppStatusDate)}</td>
+											<td>{tCuttingRollNo}</td>
+										</tr>
+									)
+								}
+								{
+									 (
+										<tr>
+											<th>Dispatch</th>
+											<td>{formatDateIst(dispatchDate)}</td>
+											<td>{tCuttingRollNo}</td>
 										</tr>
 									)
 								}
@@ -847,7 +940,7 @@ export default function OrderViewModal(prop) {
                   </tr>
                   <tr>
                     <th style={{ textAlign: 'left', paddingLeft: "10px" }}>Leak Date</th>
-                    <td style={{ textAlign: 'left', paddingLeft: "10px" }}>{value.create_dt}</td>
+                    <td style={{ textAlign: 'left', paddingLeft: "10px" }}>{value.completion}</td>
                   </tr>
                   {/* Additional details */}
                 </tbody>
