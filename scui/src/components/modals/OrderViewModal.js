@@ -924,12 +924,15 @@ export default function OrderViewModal(prop) {
 							<img src={logo} alt="Logo" style={{width:"50%",height:"50%"}}/>
 						</Grid>
 						</Grid>
-						<Grid container spacing={2}>
+						<Grid container>
+						<Grid item xs={12}>
+    <Typography variant="h5" style={{ marginBottom: 10 }}>Brazing & Leak Testing Details</Typography>
+  </Grid>
       {brazingDetails && brazingDetails.map((value, index) => (
         <React.Fragment key={index}>
           {/* Brazing & Leak Testing Details */}
           <Grid item xs={6}>
-            <Typography variant="h5">Brazing & Leak Testing Details</Typography>
+            
             <div>
               <h6>Table {index + 1}</h6>
               <table style={{ tableLayout: "fixed" }}>

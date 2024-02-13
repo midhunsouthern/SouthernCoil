@@ -237,9 +237,11 @@ export default function M1cncNesting() {
 	function handleGetImagebyId(epid, assemblyid, brazingid) {
 		var bodyFormData = new FormData();
 		bodyFormData.append("authId", access);
-		bodyFormData.append("epImg", epid);
+		bodyFormData.append("order_id", epid);
 		bodyFormData.append("assemblyImg", assemblyid);
 		bodyFormData.append("brazingImg", brazingid);
+		bodyFormData.append("draw_type", 'ep');
+
 
 		axios({
 			method: "post",
