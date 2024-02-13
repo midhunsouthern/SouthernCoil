@@ -149,8 +149,6 @@ class MainModal extends CI_Model
                             $filename = basename($path);
                             $webpData = $filename;
                         }
-
-
                         $this->db->insert('drawing_images', array('drawing_refid' => $refId, 'drawing_base64' => $webpData, 'order_type' => $orderType, 'draw_type' => $keys));
                         $data[$value . '_Photo'] = $refId;
                     }
@@ -276,6 +274,7 @@ class MainModal extends CI_Model
         $data = array_merge($parentData, $childData);
         $i = 0;
         foreach ($data as $row) {
+            unset($row['brazing_photo']);
             if ($this->db->insert('brazing_details', $row)) {
                 $i = $i + 1;
             }

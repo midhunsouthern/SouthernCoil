@@ -11,11 +11,11 @@ import {
 	Typography,
 	AppBar,
 	Toolbar,
-	Box
+	Box,
 } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
-import Grid from '@mui/material/Grid';
-import PrintIcon from '@mui/icons-material/Print';
+import CloseIcon from "@mui/icons-material/Close";
+import Grid from "@mui/material/Grid";
+import PrintIcon from "@mui/icons-material/Print";
 
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
@@ -30,7 +30,7 @@ import {
 	getLookupData,
 	getOrderDataByID,
 	getCustomersDataAll,
-	imageURL
+	imageURL,
 } from "../../constant/url";
 import { AccessContext } from "../../constant/accessContext";
 import {
@@ -46,8 +46,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PreviewIcon from "@mui/icons-material/Preview";
 import Slide from "@mui/material/Slide";
-import '../../Table.css';
-import logo from '../../assets/img/sc-straight.jpeg';
+import "../../Table.css";
+import logo from "../../assets/img/sc-straight.jpeg";
 import AutoCompleteOrder from "../Component/AutoCompleteOrder";
 const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction="up" ref={ref} {...props} />;
@@ -120,36 +120,35 @@ export default function OrderViewModal(prop) {
 	/**
 	 * Coil Detail States
 	 */
-	const [cncNestingStatus,setCncNestingStatus]=useState([]);
-	const [cncNestingDate,setCncNestingDate]=useState([]);
-	const [cncNestingPgm,setCncNestingPgm]=useState([]);
-	const [cncPunchingStatus,setCncPunchingStatus]=useState([]);
-	const [cncPunchingDate,setCncPunchingDate]=useState([]);
-	const [bendingStatus,setBendingStatus]=useState([]);
-	const [bendingDate,setBendingDate]=useState([]);
-	const [tCuttingStatus,setTCuttingStatus]=useState([]);
-	const [tCuttingRollNo,setTCuttingRollNo]=useState([]);
-	const [tCuttingDate,setTCuttingDate]=useState([]);
-	const [finPunchStatus,setFinPunchStatus]=useState([]);
-	const [finPunchDate,setFinPunchDate]=useState([]);
-	const [brazingExpansion,setBrazingExpansion]=useState([]);
-	const [brazingStatus,setBrazingStatus]=useState([]);
-	const [brazingDate,setBrazingDate]=useState([]);
-	const [caStatus,setCaStatus]=useState([]);
-	const [caStatusDate,setCaStatusDate]=useState([]);
-	const [ceStatus,setCeStatus]=useState([]);
-	const [ceStatusDate,setCeStatusDate]=useState([]);
-	const [ppStatus,setPpStatus]=useState([]);
-	const [ppStatusDate,setPpStatusDate]=useState([]);
-	const [dispatchStatus,setDispatchStatus]=useState([]);
-	const [dispatchDate,setDispatchDate]=useState([]);
-
+	const [cncNestingStatus, setCncNestingStatus] = useState([]);
+	const [cncNestingDate, setCncNestingDate] = useState([]);
+	const [cncNestingPgm, setCncNestingPgm] = useState([]);
+	const [cncPunchingStatus, setCncPunchingStatus] = useState([]);
+	const [cncPunchingDate, setCncPunchingDate] = useState([]);
+	const [bendingStatus, setBendingStatus] = useState([]);
+	const [bendingDate, setBendingDate] = useState([]);
+	const [tCuttingStatus, setTCuttingStatus] = useState([]);
+	const [tCuttingRollNo, setTCuttingRollNo] = useState([]);
+	const [tCuttingDate, setTCuttingDate] = useState([]);
+	const [finPunchStatus, setFinPunchStatus] = useState([]);
+	const [finPunchDate, setFinPunchDate] = useState([]);
+	const [brazingExpansion, setBrazingExpansion] = useState([]);
+	const [brazingStatus, setBrazingStatus] = useState([]);
+	const [brazingDate, setBrazingDate] = useState([]);
+	const [caStatus, setCaStatus] = useState([]);
+	const [caStatusDate, setCaStatusDate] = useState([]);
+	const [ceStatus, setCeStatus] = useState([]);
+	const [ceStatusDate, setCeStatusDate] = useState([]);
+	const [ppStatus, setPpStatus] = useState([]);
+	const [ppStatusDate, setPpStatusDate] = useState([]);
+	const [dispatchStatus, setDispatchStatus] = useState([]);
+	const [dispatchDate, setDispatchDate] = useState([]);
 
 	const [isUpdate, setIsUpdate] = useState(false);
-	const [brazingDetails,setBrazingDetails]=useState([]);
+	const [brazingDetails, setBrazingDetails] = useState([]);
 	const [openImg, setOpenImg] = useState(false);
 	const [dialogImg, setDialogImg] = useState("");
-	const [brazingTestingImages,setBrazingTestingImages]=useState([]);
+	const [brazingTestingImages, setBrazingTestingImages] = useState([]);
 
 	const handleClickOpenimg = (base64) => {
 		setDialogImg(base64);
@@ -314,8 +313,8 @@ export default function OrderViewModal(prop) {
 	function printPage() {
 		window.print();
 	}
-	const handleSearchOrderId=(orderId)=>{
-		orderRowID=orderId.id;
+	const handleSearchOrderId = (orderId) => {
+		orderRowID = orderId.id;
 		handleOrderinfo1();
 	};
 
@@ -330,51 +329,91 @@ export default function OrderViewModal(prop) {
 			handleOrderinfo1();
 		}
 	}, [prop.orderId]);
-	const fixedLayout={
-		tableLayout:"fixed"
+	const fixedLayout = {
+		tableLayout: "fixed",
 	};
 	return (
 		<div>
 			<>
-			
 				<Container key={"orderView"} id="orderView">
 					<Grid container spacing={3}>
-						<Grid item xs={12} style={{display:"flex",justifyContent:"center"}}>
-						<AutoCompleteOrder access={access} onSearchOrderId={handleSearchOrderId}/>
+						<Grid
+							item
+							xs={12}
+							style={{ display: "flex", justifyContent: "center" }}
+						>
+							<AutoCompleteOrder
+								access={access}
+								onSearchOrderId={handleSearchOrderId}
+							/>
 						</Grid>
 					</Grid>
 					<Grid container spacing={4} id="print-ignore">
 						<Grid item xs={6}>
-							<img src={logo} alt="Logo" style={{ width: '50%', height: 'auto' }} />
+							<img
+								src={logo}
+								alt="Logo"
+								style={{ width: "50%", height: "auto" }}
+							/>
 						</Grid>
-						<Grid item xs={6} style={{display:'flex',justifyContent:"flex-end",alignItems:"center"}}>
-							<Box >
-							<Button 
-								style={{ backgroundColor: "#C5552C", color: "white" }}
-								onClick={() => {
-									printPage();
-								}}
-								variant="contained"
-								startIcon={<PrintIcon />}
-							>
-								Print
-							</Button>
+						<Grid
+							item
+							xs={6}
+							style={{
+								display: "flex",
+								justifyContent: "flex-end",
+								alignItems: "center",
+							}}
+						>
+							<Box>
+								<Button
+									style={{ backgroundColor: "#C5552C", color: "white" }}
+									onClick={() => {
+										printPage();
+									}}
+									variant="contained"
+									startIcon={<PrintIcon />}
+								>
+									Print
+								</Button>
 							</Box>
 						</Grid>
 					</Grid>
 					<Grid container spacing={2} columnGap={2} className="print-header">
-						<Grid item xs={12} style={{display:"flex",justifyContent:"center"}}>
-							<img src={logo} alt="Logo" style={{width:"50%",height:"50%"}}/>
+						<Grid
+							item
+							xs={12}
+							style={{ display: "flex", justifyContent: "center" }}
+						>
+							<img
+								src={logo}
+								alt="Logo"
+								style={{ width: "50%", height: "50%" }}
+							/>
 						</Grid>
-						</Grid>
+					</Grid>
 
-
-					<Grid container spacing={2} columnSpacing={2} columnGap={2} className="container" style={{padding:'10px',marginTop:'1.5em',tableLayout:"fixed"}}>
+					<Grid
+						container
+						spacing={2}
+						columnSpacing={2}
+						columnGap={2}
+						className="container"
+						style={{
+							padding: "10px",
+							marginTop: "1.5em",
+							tableLayout: "fixed",
+						}}
+					>
 						<Typography variant="h5">Order Details</Typography>
-						<table border={1} cellPadding={1} cellSpacing={2} style={{ width: 'inherit' }}>
+						<table
+							border={1}
+							cellPadding={1}
+							cellSpacing={2}
+							style={{ width: "inherit" }}
+						>
 							<thead>
-
-							<tr>
+								<tr>
 									<th>Order No</th>
 									<th>Date</th>
 									<th>Customer</th>
@@ -398,32 +437,18 @@ export default function OrderViewModal(prop) {
 							<Grid container spacing={2}>
 								<Grid item xs={12}>
 									<Typography variant="h6">End Plate</Typography>
-									<table style={{tableLayout:"fixed"}}>
+									<table style={{ tableLayout: "fixed" }}>
 										<tbody>
 											<tr>
-												<th style={{textAlign:'left',paddingLeft:"10px"}}>
+												<th style={{ textAlign: "left", paddingLeft: "10px" }}>
 													Material
 												</th>
-												<td style={{textAlign:'left',paddingLeft:"10px"}}>
+												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
 													{lookUpList["epMaterial"]?.map((item) => {
 														return (
 															<>
-																{endPlateMaterial && endPlateMaterial.includes(item.id)
-																	? item.lkp_value
-																	: ""}
-															</>
-														);
-													})}
-
-												</td>
-											</tr>
-											<tr >
-												<th style={{textAlign:'left',paddingLeft:"10px"}}>Model</th>
-												<td style={{textAlign:'left',paddingLeft:"10px"}}>
-													{lookUpList["epModal"]?.map((item) => {
-														return (
-															<>
-																{endPlateModel && endPlateModel.includes(item.id)
+																{endPlateMaterial &&
+																endPlateMaterial.includes(item.id)
 																	? item.lkp_value
 																	: ""}
 															</>
@@ -432,12 +457,32 @@ export default function OrderViewModal(prop) {
 												</td>
 											</tr>
 											<tr>
-												<th style={{textAlign:'left',paddingLeft:"10px"}}>Orientation</th>
-												<td style={{textAlign:'left',paddingLeft:"10px"}}>
+												<th style={{ textAlign: "left", paddingLeft: "10px" }}>
+													Model
+												</th>
+												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
+													{lookUpList["epModal"]?.map((item) => {
+														return (
+															<>
+																{endPlateModel &&
+																endPlateModel.includes(item.id)
+																	? item.lkp_value
+																	: ""}
+															</>
+														);
+													})}
+												</td>
+											</tr>
+											<tr>
+												<th style={{ textAlign: "left", paddingLeft: "10px" }}>
+													Orientation
+												</th>
+												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
 													{lookUpList["oreientation"]?.map((item) => {
 														return (
 															<>
-																{endPlateOrientation && endPlateOrientation.includes(item.id)
+																{endPlateOrientation &&
+																endPlateOrientation.includes(item.id)
 																	? item.lkp_value
 																	: ""}
 																<br />
@@ -447,8 +492,10 @@ export default function OrderViewModal(prop) {
 												</td>
 											</tr>
 											<tr>
-												<th style={{textAlign:'left',paddingLeft:"10px"}}>Cover Type</th>
-												<td style={{textAlign:'left',paddingLeft:"10px"}}>
+												<th style={{ textAlign: "left", paddingLeft: "10px" }}>
+													Cover Type
+												</th>
+												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
 													<Stack direction="row" spacing={3}>
 														{lookUpList["coverType"]?.map((item) => {
 															return (
@@ -456,8 +503,9 @@ export default function OrderViewModal(prop) {
 																	{item.lkp_value},
 																	{lookUpList["coverDetail"]?.map((itemd) => {
 																		if (
-																			coverDetail !== undefined && itemd.lkp_id === item.id &&
-																			coverDetail.indexOf(itemd.id) !== -1
+																			coverDetail !== undefined &&
+																			itemd.lkp_id === item.id &&
+																			coverDetail?.indexOf(itemd.id) !== -1
 																		) {
 																			return (
 																				<>
@@ -477,56 +525,54 @@ export default function OrderViewModal(prop) {
 								</Grid>
 								<Grid item xs={12}>
 									<Typography variant="h6">Pipe</Typography>
-									<table style={{tableLayout:"fixed"}}>
+									<table style={{ tableLayout: "fixed" }}>
 										<tbody>
 											<tr>
-												<th style={{textAlign:'left',paddingLeft:"10px"}}>Pipe Type:</th>
-												<td style={{textAlign:'left',paddingLeft:"10px"}}>{lookUpList["pipeType"]?.map((item) => {
-													return (
-														<>
-															{pipeType && pipeType.includes(item.id) ? item.lkp_value : null}
-														</>
-													);
-												})}</td>
+												<th style={{ textAlign: "left", paddingLeft: "10px" }}>
+													Pipe Type:
+												</th>
+												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
+													{lookUpList["pipeType"]?.map((item) => {
+														return (
+															<>
+																{pipeType && pipeType.includes(item.id)
+																	? item.lkp_value
+																	: null}
+															</>
+														);
+													})}
+												</td>
 											</tr>
 
 											<tr>
-												<th style={{textAlign:'left',paddingLeft:"10px"}}>Pipe Bend:</th>
-												<td style={{textAlign:'left',paddingLeft:"10px"}}>
+												<th style={{ textAlign: "left", paddingLeft: "10px" }}>
+													Pipe Bend:
+												</th>
+												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
 													<Stack
 														direction="row"
 														spacing={10}
 														alignContent="space-between"
 													>
 														{pbStraight === "true" && (
-															
-																<Typography variant="subtitle1" gutterBottom>
-																	Straight
-																</Typography>
+															<Typography variant="subtitle1" gutterBottom>
+																Straight
+															</Typography>
 														)}
 														{pbSingle === "true" && (
-															
-																<Typography variant="subtitle1" gutterBottom>
-																	Single
-																</Typography>
-
-															
+															<Typography variant="subtitle1" gutterBottom>
+																Single
+															</Typography>
 														)}
 														{pbCross === "true" && (
-															
-																<Typography variant="subtitle1" gutterBottom>
-																	Cross
-																</Typography>
-
-															
+															<Typography variant="subtitle1" gutterBottom>
+																Cross
+															</Typography>
 														)}
 														{pbOther === "true" && (
-															
-																<Typography variant="subtitle1" gutterBottom>
-																	Other
-																</Typography>
-
-															
+															<Typography variant="subtitle1" gutterBottom>
+																Other
+															</Typography>
 														)}
 													</Stack>
 												</td>
@@ -534,15 +580,15 @@ export default function OrderViewModal(prop) {
 										</tbody>
 									</table>
 								</Grid>
-								<Grid item xs={12} >
+								<Grid item xs={12}>
 									<Typography variant="h6">Fins</Typography>
-									<table style={{tableLayout:"fixed"}}>
+									<table style={{ tableLayout: "fixed" }}>
 										<tbody>
 											<tr>
-												<th style={{textAlign:'left',paddingLeft:"10px"}}>
+												<th style={{ textAlign: "left", paddingLeft: "10px" }}>
 													Fin per Inch
 												</th>
-												<td style={{textAlign:'left',paddingLeft:"10px"}}>
+												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
 													{finPerInch}
 												</td>
 											</tr>
@@ -551,17 +597,18 @@ export default function OrderViewModal(prop) {
 								</Grid>
 								<Grid item xs={12}>
 									<Typography variant="h6">Brazing</Typography>
-									<table style={{tableLayout:"fixed"}}>
+									<table style={{ tableLayout: "fixed" }}>
 										<tbody>
 											<tr>
-												<th style={{textAlign:'left',paddingLeft:"10px"}}>
+												<th style={{ textAlign: "left", paddingLeft: "10px" }}>
 													Circuit Model
 												</th>
-												<td style={{textAlign:'left',paddingLeft:"10px"}}>
+												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
 													{lookUpList["circuitModel"]?.map((item) => {
 														return (
 															<>
-																{circuitModels && circuitModels.indexOf(item.id) !== -1
+																{circuitModels &&
+																circuitModels.indexOf(item.id) !== -1
 																	? item.lkp_value
 																	: ""}
 															</>
@@ -570,20 +617,23 @@ export default function OrderViewModal(prop) {
 												</td>
 											</tr>
 											<tr>
-												<th style={{textAlign:'left',paddingLeft:"10px"}}>No of circuit</th>
-												<td style={{textAlign:'left',paddingLeft:"10px"}}>
+												<th style={{ textAlign: "left", paddingLeft: "10px" }}>
+													No of circuit
+												</th>
+												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
 													{noCircuit}
 												</td>
 											</tr>
 											<tr>
-												<th style={{textAlign:'left',paddingLeft:"10px"}}>
+												<th style={{ textAlign: "left", paddingLeft: "10px" }}>
 													Liquid Line
 												</th>
-												<td style={{textAlign:'left',paddingLeft:"10px"}}>
+												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
 													{lookUpList["liquidLine"]?.map((item) => {
 														return (
 															<>
-																{liquidLine && liquidLine.indexOf(item.id) !== -1 &&
+																{liquidLine &&
+																	liquidLine.indexOf(item.id) !== -1 &&
 																	item.lkp_value}
 															</>
 														);
@@ -591,14 +641,15 @@ export default function OrderViewModal(prop) {
 												</td>
 											</tr>
 											<tr>
-												<th style={{textAlign:'left',paddingLeft:"10px"}}>
+												<th style={{ textAlign: "left", paddingLeft: "10px" }}>
 													Discharge Line
 												</th>
-												<td style={{textAlign:'left',paddingLeft:"10px"}}>
+												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
 													{lookUpList["dischargeLine"]?.map((item) => {
 														return (
 															<>
-																{dischargeLine && dischargeLine.indexOf(item.id) !== -1
+																{dischargeLine &&
+																dischargeLine.indexOf(item.id) !== -1
 																	? item.lkp_value
 																	: ""}
 															</>
@@ -606,19 +657,20 @@ export default function OrderViewModal(prop) {
 													})}
 												</td>
 											</tr>
-
 										</tbody>
 									</table>
 								</Grid>
 								<Grid item xs={12}>
-									<Typography variant="h6">Paint,Packing and Dispatch</Typography>
-									<table style={{tableLayout:"fixed"}}>
+									<Typography variant="h6">
+										Paint,Packing and Dispatch
+									</Typography>
+									<table style={{ tableLayout: "fixed" }}>
 										<tbody>
 											<tr>
-												<th style={{textAlign:'left',paddingLeft:"10px"}}>
+												<th style={{ textAlign: "left", paddingLeft: "10px" }}>
 													Paint
 												</th>
-												<td style={{textAlign:'left',paddingLeft:"10px"}}>
+												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
 													{lookUpList["paintType"]?.map((item) => {
 														return (
 															<>
@@ -631,13 +683,11 @@ export default function OrderViewModal(prop) {
 												</td>
 											</tr>
 
-											
-
 											<tr>
-												<th style={{textAlign:'left',paddingLeft:"10px"}}>
+												<th style={{ textAlign: "left", paddingLeft: "10px" }}>
 													Packing
 												</th>
-												<td style={{textAlign:'left',paddingLeft:"10px"}}>
+												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
 													{lookUpList["packingType"]?.map((item) => {
 														return (
 															<>
@@ -650,10 +700,10 @@ export default function OrderViewModal(prop) {
 												</td>
 											</tr>
 											<tr>
-												<th style={{textAlign:'left',paddingLeft:"10px"}}>
+												<th style={{ textAlign: "left", paddingLeft: "10px" }}>
 													Dispatch
 												</th>
-												<td style={{textAlign:'left',paddingLeft:"10px"}}>
+												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
 													{lookUpList["dispatchMode"]?.map((item) => {
 														return (
 															<>
@@ -669,9 +719,6 @@ export default function OrderViewModal(prop) {
 									</table>
 								</Grid>
 							</Grid>
-
-						
-
 						</Grid>
 						<Grid item xs={6}>
 							<Grid container>
@@ -680,18 +727,24 @@ export default function OrderViewModal(prop) {
 										{
 											<ImageList cols={1} rowHeight={200}>
 												{epPhoto?.map((item, index) => (
-
 													<ImageListItem key={"epphoto" + index}>
 														<img
-
 															src={imageURL + item}
 															srcSet={imageURL + item}
 															alt={"EpPhoto"}
 															loading="lazy"
-															style={{maxWidth:"100%",maxHeight:"100%",verticalAlign:"middle",objectFit:"contain"}}
+															style={{
+																maxWidth: "100%",
+																maxHeight: "100%",
+																verticalAlign: "middle",
+																objectFit: "contain",
+															}}
 														/>
-														<IconButton className="order-view-img"
-															onClick={() => handleClickOpenimg(imageURL + item)}
+														<IconButton
+															className="order-view-img"
+															onClick={() =>
+																handleClickOpenimg(imageURL + item)
+															}
 														>
 															<PreviewIcon />
 														</IconButton>
@@ -708,14 +761,19 @@ export default function OrderViewModal(prop) {
 												{assemblyPhoto?.map((item, index) => (
 													<ImageListItem key={"assembly" + index}>
 														<img
-
 															src={imageURL + item}
 															srcSet={imageURL + item}
 															alt={"assembly"}
 															loading="lazy"
-															style={{maxWidth:"100%",maxHeight:"100%",verticalAlign:"middle",objectFit:"contain"}}
+															style={{
+																maxWidth: "100%",
+																maxHeight: "100%",
+																verticalAlign: "middle",
+																objectFit: "contain",
+															}}
 														/>
-														<IconButton className="order-view-img"
+														<IconButton
+															className="order-view-img"
 															onClick={() => handleClickOpenimg(item)}
 														>
 															<PreviewIcon />
@@ -737,7 +795,12 @@ export default function OrderViewModal(prop) {
 															srcSet={imageURL + item}
 															alt={"Brazing"}
 															loading="lazy"
-															style={{maxWidth:"100%",maxHeight:"100%",verticalAlign:"middle",objectFit:"contain"}}
+															style={{
+																maxWidth: "100%",
+																maxHeight: "100%",
+																verticalAlign: "middle",
+																objectFit: "contain",
+															}}
 														/>
 														<IconButton
 															onClick={() => handleClickOpenimg(item)}
@@ -755,13 +818,21 @@ export default function OrderViewModal(prop) {
 					</Grid>
 					<div className="print-page-break"></div>
 					<Grid container spacing={2} columnGap={2} className="print-header">
-						<Grid item xs={12} style={{display:"flex",justifyContent:"center"}}>
-							<img src={logo} alt="Logo" style={{width:"50%",height:"50%"}}/>
+						<Grid
+							item
+							xs={12}
+							style={{ display: "flex", justifyContent: "center" }}
+						>
+							<img
+								src={logo}
+								alt="Logo"
+								style={{ width: "50%", height: "50%" }}
+							/>
 						</Grid>
 					</Grid>
 					<Grid item xs={12}>
 						<Typography variant="h5">Coil Details</Typography>
-						<table style={{tableLayout:"fixed"}}>
+						<table style={{ tableLayout: "fixed" }}>
 							<thead>
 								<tr>
 									<th>Process</th>
@@ -770,119 +841,138 @@ export default function OrderViewModal(prop) {
 								</tr>
 							</thead>
 							<tbody>
-								{
-									cncNestingStatus && (
-										<tr>
-											<th>Nesting No</th>
-											<td>{cncNestingDate}</td>
-											<td>{cncNestingPgm}</td>
-										</tr>
-									)
-								}
-								{
-									cncPunchingStatus && (
-										<tr>
-											<th>Punching</th>
-											<td>{cncPunchingDate}</td>
-											<td>{cncNestingPgm}</td>
-										</tr>
-									)
-								}
-								{
-									bendingStatus && (
-										<tr>
-											<th>Bending</th>
-											<td>{bendingDate}</td>
-											<td>{cncNestingPgm}</td>
-										</tr>
-									)
-								}
-								{
-									tCuttingStatus && (
-										<tr>
-											<th>Tray</th>
-											<td>{tCuttingDate}</td>
-											<td>{cncNestingPgm}</td>
-										</tr>
-									)
-								}
-								{
-									brazingExpansion && (
-										<tr>
-											<th>Expansion</th>
-											<td>{brazingDate}</td>
-											<td>{brazingComments}</td>
-										</tr>
-									)
-								}
-								{
-									caStatus && (
-										<tr>
-
-										</tr>
-									)
-								}
+								{cncNestingStatus && (
+									<tr>
+										<th>Nesting No</th>
+										<td>{cncNestingDate}</td>
+										<td>{cncNestingPgm}</td>
+									</tr>
+								)}
+								{cncPunchingStatus && (
+									<tr>
+										<th>Punching</th>
+										<td>{cncPunchingDate}</td>
+										<td>{cncNestingPgm}</td>
+									</tr>
+								)}
+								{bendingStatus && (
+									<tr>
+										<th>Bending</th>
+										<td>{bendingDate}</td>
+										<td>{cncNestingPgm}</td>
+									</tr>
+								)}
+								{tCuttingStatus && (
+									<tr>
+										<th>Tray</th>
+										<td>{tCuttingDate}</td>
+										<td>{cncNestingPgm}</td>
+									</tr>
+								)}
+								{brazingExpansion && (
+									<tr>
+										<th>Expansion</th>
+										<td>{brazingDate}</td>
+										<td>{brazingComments}</td>
+									</tr>
+								)}
+								{caStatus && <tr></tr>}
 							</tbody>
 						</table>
 					</Grid>
 					<div className="print-page-break"></div>
 					<Grid container spacing={2} columnGap={2} className="print-header">
-						<Grid item xs={12} style={{display:"flex",justifyContent:"center"}}>
-							<img src={logo} alt="Logo" style={{width:"50%",height:"50%"}}/>
+						<Grid
+							item
+							xs={12}
+							style={{ display: "flex", justifyContent: "center" }}
+						>
+							<img
+								src={logo}
+								alt="Logo"
+								style={{ width: "50%", height: "50%" }}
+							/>
 						</Grid>
-						</Grid>
-						<Grid container spacing={2}>
-      {brazingDetails && brazingDetails.map((value, index) => (
-        <React.Fragment key={index}>
-          {/* Brazing & Leak Testing Details */}
-          <Grid item xs={6}>
-            <Typography variant="h5">Brazing & Leak Testing Details</Typography>
-            <div>
-              <h6>Table {index + 1}</h6>
-              <table style={{ tableLayout: "fixed" }}>
-                <tbody>
-                  <tr>
-                    <th style={{ textAlign: 'left', paddingLeft: "10px" }}>Serial No</th>
-                    <td style={{ textAlign: 'left', paddingLeft: "10px" }}>{value.series_ref}</td>
-                  </tr>
-                  <tr>
-                    <th style={{ textAlign: 'left', paddingLeft: "10px" }}>Leak Date</th>
-                    <td style={{ textAlign: 'left', paddingLeft: "10px" }}>{value.create_dt}</td>
-                  </tr>
-                  {/* Additional details */}
-                </tbody>
-              </table>
-            </div>
-          </Grid>
+					</Grid>
+					<Grid container spacing={2}>
+						{brazingDetails &&
+							brazingDetails.map((value, index) => (
+								<React.Fragment key={index}>
+									{/* Brazing & Leak Testing Details */}
+									<Grid item xs={6}>
+										<Typography variant="h5">
+											Brazing & Leak Testing Details
+										</Typography>
+										<div>
+											<h6>Table {index + 1}</h6>
+											<table style={{ tableLayout: "fixed" }}>
+												<tbody>
+													<tr>
+														<th
+															style={{ textAlign: "left", paddingLeft: "10px" }}
+														>
+															Serial No
+														</th>
+														<td
+															style={{ textAlign: "left", paddingLeft: "10px" }}
+														>
+															{value.series_ref}
+														</td>
+													</tr>
+													<tr>
+														<th
+															style={{ textAlign: "left", paddingLeft: "10px" }}
+														>
+															Leak Date
+														</th>
+														<td
+															style={{ textAlign: "left", paddingLeft: "10px" }}
+														>
+															{value.create_dt}
+														</td>
+													</tr>
+													{/* Additional details */}
+												</tbody>
+											</table>
+										</div>
+									</Grid>
 
-          {/* Corresponding Image */}
-          <Grid item xs={6}>
-            {brazingTestingImages && brazingTestingImages[index+1] && (
-              <ImageList cols={1} rowHeight={200}>
-               	{brazingTestingImages[index+1]?.map((item, index) => (
-
-<ImageListItem key={"brazing_testing" + index}>
-	<img
-
-		src={imageURL + item}
-		srcSet={imageURL + item}
-		alt={"BrazingTesting"}
-		loading="lazy"
-		style={{maxWidth:"100%",maxHeight:"100%",objectFit:"contain"}}
-	/>
-	<IconButton className="order-view-img"
-		onClick={() => handleClickOpenimg(imageURL+item)}
-	>
-		<PreviewIcon />
-	</IconButton>
-</ImageListItem>
-))}
-              </ImageList>
-            )}
-          </Grid>
-        </React.Fragment>
-      ))}
-    </Grid>
+									{/* Corresponding Image */}
+									<Grid item xs={6}>
+										{brazingTestingImages &&
+											brazingTestingImages[index + 1] && (
+												<ImageList cols={1} rowHeight={200}>
+													{brazingTestingImages[index + 1]?.map(
+														(item, index) => (
+															<ImageListItem key={"brazing_testing" + index}>
+																<img
+																	src={imageURL + item}
+																	srcSet={imageURL + item}
+																	alt={"BrazingTesting"}
+																	loading="lazy"
+																	style={{
+																		maxWidth: "100%",
+																		maxHeight: "100%",
+																		objectFit: "contain",
+																	}}
+																/>
+																<IconButton
+																	className="order-view-img"
+																	onClick={() =>
+																		handleClickOpenimg(imageURL + item)
+																	}
+																>
+																	<PreviewIcon />
+																</IconButton>
+															</ImageListItem>
+														)
+													)}
+												</ImageList>
+											)}
+									</Grid>
+								</React.Fragment>
+							))}
+					</Grid>
 				</Container>
 			</>
 			<Dialog
@@ -893,7 +983,7 @@ export default function OrderViewModal(prop) {
 				onClose={handleCloseImg}
 				aria-describedby="alert-dialog-slide-description"
 			>
-				<AppBar sx={{ position: 'relative' }}>
+				<AppBar sx={{ position: "relative" }}>
 					<Toolbar>
 						<IconButton
 							edge="start"

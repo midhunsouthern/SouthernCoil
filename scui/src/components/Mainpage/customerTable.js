@@ -174,11 +174,11 @@ function EnhancedTableToolbar(props) {
 			>
 				Manage Customer
 			</Typography>
-			<Tooltip title="Filter list">
+			{/* <Tooltip title="Filter list">
 				<IconButton>
 					<FilterListIcon />
 				</IconButton>
-			</Tooltip>
+			</Tooltip> */}
 		</Toolbar>
 	);
 }
@@ -330,13 +330,7 @@ export default function CustomerTable() {
 																		selected={isItemSelected}
 																	>
 																		<TableCell padding="checkbox"></TableCell>
-																		<TableCell
-																			align="center"
-																			component="th"
-																			id={labelId}
-																			scope="row"
-																			padding="none"
-																		>
+																		<TableCell align="center" id={labelId}>
 																			{row.fname}
 																		</TableCell>
 																		<TableCell align="center">
