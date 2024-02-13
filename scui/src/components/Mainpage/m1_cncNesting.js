@@ -334,7 +334,7 @@ export default function M1cncNesting() {
 						onClick={() => {
 							setImageBase64("");
 							setOpenImgDialog(true);
-							handleGetImagebyId(params.row.ep_photo, "N/A", "N/A");
+							handleGetImagebyId(params.row.id, "N/A", "N/A");
 						}}
 						color="info"
 						className="toolButton-grid "
