@@ -312,6 +312,9 @@ export default function OrderHistory() {
 			</Dialog>
 
 			<Dialog
+
+fullWidth={true}
+maxWidth={"lg"}
 				open={openOrderView}
 				TransitionComponent={Transition}
 				keepMounted
