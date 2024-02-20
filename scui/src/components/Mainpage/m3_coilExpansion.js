@@ -449,6 +449,8 @@ export default function M3coilExpansion() {
 			</Dialog>
 
 			<Dialog
+			fullWidth={true}
+			maxWidth={"lg"}
 				open={openOrderView}
 				TransitionComponent={Transition}
 				keepMounted

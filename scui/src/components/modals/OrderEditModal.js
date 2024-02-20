@@ -268,11 +268,12 @@ export default function OrderEditModal(prop) {
 			.then(function (response) {
 				//handle success
 				const res_data = response.data;
+				console.log(res_data.status_code);
 				if (res_data.status_code === 200) {
-					toast(res_data.status_msg, "success");
+					toast(res_data.message, "success");
 					//return data
 				} else {
-					toast(res_data.status_msg, "error");
+					toast(res_data.message, "error");
 				}
 			})
 			.catch(function (response) {

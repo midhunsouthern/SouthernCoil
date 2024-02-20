@@ -598,8 +598,12 @@ export default function M3coilExpansion() {
 				onClose={handleCloseImg}
 				aria-describedby="alert-dialog-slide-description"
 				fullWidth
-				style={{ padding: "5px", height: "700px", width: "700px" }}
+				maxWidth="lg"
+				style={{ padding: "5px" }}
 			>
+				<DialogActions>
+					<Button onClick={() => handleCloseImg("yes")}>Close</Button>
+				</DialogActions>
 				<Stack>
 					<>
 						{imageBase64.ep_photo?.length > 0 ? (
@@ -620,6 +624,12 @@ export default function M3coilExpansion() {
 											srcSet={imageURL + "/uploads/" + item["drawing_base64"]}
 											alt={"Assembly"}
 											loading="lazy"
+											style={{
+												maxWidth: "100%",
+												maxHeight: "100%",
+												verticalAlign: "middle",
+												objectFit: "contain",
+											}}
 										/>
 									</ImageListItem>
 								))}
@@ -655,7 +665,7 @@ export default function M3coilExpansion() {
 							""
 						)}
 						{
-							<ImageList cols={1}>
+							<ImageList cols={1} rowHeight={500}>
 								{imageBase64.brazing_Photo?.map((item, index) => (
 									<ImageListItem key={"brazing" + index}>
 										<img
@@ -663,6 +673,12 @@ export default function M3coilExpansion() {
 											srcSet={imageURL + "/uploads/" + item["drawing_base64"]}
 											alt={"Assembly"}
 											loading="lazy"
+											style={{
+												maxWidth: "100%",
+												maxHeight: "100%",
+												verticalAlign: "middle",
+												objectFit: "contain",
+											}}
 										/>
 									</ImageListItem>
 								))}
@@ -670,9 +686,6 @@ export default function M3coilExpansion() {
 						}
 					</>
 				</Stack>
-				<DialogActions>
-					<Button onClick={() => handleCloseImg("yes")}>Close</Button>
-				</DialogActions>
 			</Dialog>
 		</Box>
 	);

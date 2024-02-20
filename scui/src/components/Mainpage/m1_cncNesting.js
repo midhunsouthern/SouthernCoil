@@ -237,9 +237,11 @@ export default function M1cncNesting() {
 	function handleGetImagebyId(epid, assemblyid, brazingid) {
 		var bodyFormData = new FormData();
 		bodyFormData.append("authId", access);
-		bodyFormData.append("epImg", epid);
+		bodyFormData.append("order_id", epid);
 		bodyFormData.append("assemblyImg", assemblyid);
 		bodyFormData.append("brazingImg", brazingid);
+		bodyFormData.append("draw_type", 'ep');
+
 
 		axios({
 			method: "post",
@@ -341,7 +343,7 @@ export default function M1cncNesting() {
 						onClick={() => {
 							setImageBase64("");
 							setOpenImgDialog(true);
-							handleGetImagebyId(params.row.ep_photo, "N/A", "N/A");
+							handleGetImagebyId(params.row.id, "N/A", "N/A");
 						}}
 						color="info"
 						className="toolButton-grid "

@@ -280,13 +280,17 @@ export default function OrderViewModal(prop) {
 					setBrazingPhoto(ret_data_cd[0].brazing_Photo);
 					setCncNestingStatus(ret_data_cd[0].cnc_nesting_status);
 					setCncNestingPgm(ret_data_cd[0].cnc_nesting_pgm_no);
-					setCncNestingDate(ret_data_cd[0].cnc_nesting_status_dt);
+					setCncNestingDate(ret_data_cd[0].cnc_nested);
+					setCncNestingStatusDate(ret_data_cd[0].cnc_nesting_status_dt);
 					setCncPunchingStatus(ret_data_cd[0].cnc_punching_status);
 					setCncPunchingDate(ret_data_cd[0].cnc_punching_status_dt);
 					setBendingStatus(ret_data_cd[0].bending_status);
 					setBendingDate(ret_data_cd[0].bending_status_dt);
+					setTCuttingRollNo(ret_data_cd[0].tcutting_roll_no);
+					setTCuttingDate(ret_data_cd[0].tcutting_datetime);
 					setFinPunchStatus(ret_data_cd[0].finpunch_status);
 					setFinPunchDate(ret_data_cd[0].finpunch_status_dt);
+					setFinFoilNo(ret_data_cd[0].finpunching_foilno);
 					setBrazingStatus(ret_data_cd[0].brazing_status);
 					setBrazingDate(ret_data_cd[0].brazing_status_dt);
 					setBrazingExpansion(ret_data_cd[0].brazing_expansion);
@@ -295,6 +299,7 @@ export default function OrderViewModal(prop) {
 					setCeStatus(ret_data_cd[0].ce_status);
 					setCeStatusDate(ret_data_cd[0].ce_status_dt);
 					setPpStatus(ret_data_cd[0].pp_status);
+					setPPDate(ret_data_cd[0].pp_datetime);
 					setPpStatusDate(ret_data_cd[0].pp_status_dt);
 					setDispatchStatus(ret_data_cd[0].dispatch_status);
 					setDispatchDate(ret_data_cd[0].dispatch_status_dt);
@@ -317,7 +322,46 @@ export default function OrderViewModal(prop) {
 		orderRowID = orderId.id;
 		handleOrderinfo1();
 	};
-
+	const getThickValue = (finPerInch) => {
+		const mapper = {
+			T: "0.15mm Thick",
+			H: "0.13mm Thick",
+			B: "0.12mm Thick Hydrophilic blue Aluminum",
+			PP: "Not Applicable",
+			// Add more mappings as needed
+		};
+		if (finPerInch.includes("-")) {
+			finPerInch = finPerInch.split("-")[0].trim().toUpperCase();
+		}
+		if (typeof finPerInch === "string") {
+			finPerInch = finPerInch.toUpperCase();
+		}
+		if (mapper[finPerInch]) {
+			return mapper[finPerInch];
+		} else {
+			// If value is not found in mapper, return a default value
+			return "0.12mm Thick"; // You can set your default value here
+		}
+	};
+	const formatDateIst = (date) => {
+		console.log(date);
+		if (date != "" && date != null && date != "undefined") {
+			const time = date.split(" ")[1] ?? "";
+			let newDate = new Date(date);
+			let month = newDate.getMonth() + 1;
+			month = month < 10 ? "0" + month : month;
+			return (
+				newDate.getDate() +
+				"-" +
+				month +
+				"-" +
+				newDate.getFullYear() +
+				" " +
+				time
+			);
+		}
+		return "";
+	};
 	useEffect(() => {
 		handleSqFeet();
 		handleSize();
@@ -590,6 +634,14 @@ export default function OrderViewModal(prop) {
 												</th>
 												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
 													{finPerInch}
+												</td>
+											</tr>
+											<tr>
+												<th style={{ textAlign: "left", paddingLeft: "10px" }}>
+													Fin Thickness
+												</th>
+												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
+													{getThickValue(finPerInch)}
 												</td>
 											</tr>
 										</tbody>
