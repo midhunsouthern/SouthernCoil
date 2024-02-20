@@ -102,6 +102,7 @@ export default function OrderViewModal(prop) {
 	const [epComments, setEPComments] = useState("");
 	const [finPerInch, setFinPerInch] = useState("");
 	const [finComments, setFinComments] = useState("");
+	const [finFoilNo, setFinFoilNo] = useState("");
 	const [circuitModels, setCircuitModels] = useState([]);
 	const [noCircuit, setNoCircuit] = useState("");
 	const [liquidLine, setLiquidLine] = useState("");
@@ -281,7 +282,7 @@ export default function OrderViewModal(prop) {
 					setCncNestingStatus(ret_data_cd[0].cnc_nesting_status);
 					setCncNestingPgm(ret_data_cd[0].cnc_nesting_pgm_no);
 					setCncNestingDate(ret_data_cd[0].cnc_nested);
-					setCncNestingStatusDate(ret_data_cd[0].cnc_nesting_status_dt);
+					setCncNestingDate(ret_data_cd[0].cnc_nesting_status_dt);
 					setCncPunchingStatus(ret_data_cd[0].cnc_punching_status);
 					setCncPunchingDate(ret_data_cd[0].cnc_punching_status_dt);
 					setBendingStatus(ret_data_cd[0].bending_status);
@@ -299,7 +300,7 @@ export default function OrderViewModal(prop) {
 					setCeStatus(ret_data_cd[0].ce_status);
 					setCeStatusDate(ret_data_cd[0].ce_status_dt);
 					setPpStatus(ret_data_cd[0].pp_status);
-					setPPDate(ret_data_cd[0].pp_datetime);
+					setPpStatusDate(ret_data_cd[0].pp_datetime);
 					setPpStatusDate(ret_data_cd[0].pp_status_dt);
 					setDispatchStatus(ret_data_cd[0].dispatch_status);
 					setDispatchDate(ret_data_cd[0].dispatch_status_dt);

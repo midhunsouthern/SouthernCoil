@@ -616,10 +616,6 @@ export default function M3coilExpansion() {
 								{imageBase64.ep_photo?.map((item, index) => (
 									<ImageListItem key={"epphoto" + index}>
 										<img
-											style={{
-												height: "700px",
-												width: "700px",
-											}}
 											src={imageURL + "/uploads/" + item["drawing_base64"]}
 											srcSet={imageURL + "/uploads/" + item["drawing_base64"]}
 											alt={"Assembly"}
