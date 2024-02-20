@@ -244,7 +244,11 @@ class MainModal extends CI_Model
         inner join (select count(h.order_id) as qty, ROUND((ol.length * ol.height * ol.rows * count(h.order_id)) / 144) as sq_feet , ol.order_id, ol.split_id
         from order_list ol left join brazing_details h on ol.order_id = h.order_id and ol.split_id = h.split_id group by ol.order_id, ol.split_id) t 
         on ol.order_id = t.order_id and ol.split_id = t.split_id 
-        set ol.quantity = t.qty, ol.sq_feet = t.sq_feet 
+        set ol.quantity = t.qty, ol.sq_feet = t.sq_feet, 
+        ol.pbStraightTotQty =  t.qty * ol.pbStraightQty,
+        ol.pbSingleTotQty = t.qty * ol.pbSingleQty ,
+        ol.pbCrossTotQty = t.qty * ol.pbCrossQty,
+        ol.pbOtherTotQty = t.qty* ol.pbOtherQty
         where ol.order_id = '$orderId' and ol.split_id='$splitId';";
 
         return $this->db->query($qry);
@@ -279,7 +283,11 @@ class MainModal extends CI_Model
                 $i = $i + 1;
             }
         }
+        /**updating the parent quantity in the order_list table */
+        $this->updateOrderQuantity($orderId, '');
+        /**updating the child quantity in the order_list table */
         $this->updateOrderQuantity($orderId, $splitId);
+
         $this->db->trans_complete();
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();

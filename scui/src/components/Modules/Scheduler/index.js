@@ -9,9 +9,17 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AccessContext } from "../../../constant/accessContext";
-import { Button, Dialog, Card, CardContent, Box,DialogTitle,IconButton } from "@mui/material";
+import {
+	Button,
+	Dialog,
+	Card,
+	CardContent,
+	Box,
+	DialogTitle,
+	IconButton,
+} from "@mui/material";
 import Slide from "@mui/material/Slide";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 
 import OrderViewModal from "../../modals/OrderViewModal";
 import {
@@ -233,7 +241,7 @@ export default function EnhancedTable() {
 		{
 			field: "size",
 			headerName: "Size",
-			width: 200,
+			maxWidth: 220,
 			flex: 1,
 		},
 		{
@@ -263,7 +271,7 @@ export default function EnhancedTable() {
 			field: "coil_ready_at",
 			headerName: "Ready Date",
 			//flex: 1,
-			maxWidth: 180,
+			maxWidth: 150,
 			width: 180,
 			renderCell: (params) => {
 				if (params.row.coil_ready_at === "Ready") return "Ready";
@@ -301,7 +309,7 @@ export default function EnhancedTable() {
 			field: "est_delivery_date",
 			headerName: "CTD",
 			//flex: 1,
-			maxWidth: 180,
+			maxWidth: 150,
 			width: 180,
 			renderCell: (params) => {
 				return (
@@ -581,30 +589,30 @@ export default function EnhancedTable() {
 			</LocalizationProvider>
 
 			<Dialog
-			maxWidth={"lg"}
-			fullWidth
+				maxWidth={"lg"}
+				fullWidth
 				open={openOrderView}
 				TransitionComponent={Transition}
 				keepMounted
 				onClose={() => setOpenOrderView(false)}
 				key={Math.random(1, 100)}
 			>
-				 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          View Order Details
-        </DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseModal}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-		  id="order-view-close-btn"
-        >
-          <CloseIcon />
-        </IconButton>
+				<DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+					View Order Details
+				</DialogTitle>
+				<IconButton
+					aria-label="close"
+					onClick={handleCloseModal}
+					sx={{
+						position: "absolute",
+						right: 8,
+						top: 8,
+						color: (theme) => theme.palette.grey[500],
+					}}
+					id="order-view-close-btn"
+				>
+					<CloseIcon />
+				</IconButton>
 				<OrderViewModal orderId={selectedRowId} key={Math.random(1, 100)} />
 			</Dialog>
 		</Box>

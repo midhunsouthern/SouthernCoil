@@ -29,7 +29,7 @@ import {
 	IconButton,
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 
 import OrderViewModal from "../modals/OrderViewModal";
 import ModuleTools from "../modals/ModuleTools";
@@ -296,6 +296,13 @@ export default function M3coilExpansion() {
 			flex: 1,
 		},
 		{
+			field: "sq_feet",
+			headerName: "SQ Feet",
+			flex: 1,
+			maxWidth: 80,
+			type: "number",
+		},
+		{
 			field: "expansion_type",
 			headerName: "Expansion",
 			maxWidth: 100,
@@ -448,22 +455,22 @@ export default function M3coilExpansion() {
 				onClose={() => setOpenOrderView(false)}
 				key={Math.random(1, 100)}
 			>
-				 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          View Order Details
-        </DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseModal}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-		  id="order-view-close-btn"
-        >
-          <CloseIcon />
-        </IconButton>
+				<DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+					View Order Details
+				</DialogTitle>
+				<IconButton
+					aria-label="close"
+					onClick={handleCloseModal}
+					sx={{
+						position: "absolute",
+						right: 8,
+						top: 8,
+						color: (theme) => theme.palette.grey[500],
+					}}
+					id="order-view-close-btn"
+				>
+					<CloseIcon />
+				</IconButton>
 				<OrderViewModal orderId={selectedRowId} key={Math.random(1, 100)} />
 			</Dialog>
 
@@ -505,8 +512,8 @@ export default function M3coilExpansion() {
 								{imageBase64.ep_photo?.map((item, index) => (
 									<ImageListItem key={"epphoto" + index}>
 										<img
-											src={imageURL +'/uploads/'+ item['drawing_base64']}
-											srcSet={imageURL +'/uploads/'+ item['drawing_base64']}
+											src={imageURL + "/uploads/" + item["drawing_base64"]}
+											srcSet={imageURL + "/uploads/" + item["drawing_base64"]}
 											alt={"Assembly"}
 											loading="lazy"
 										/>
@@ -527,8 +534,8 @@ export default function M3coilExpansion() {
 								{imageBase64.assembly_Photo?.map((item, index) => (
 									<ImageListItem key={"assembly" + index}>
 										<img
-											src={imageURL +'/uploads/'+ item['drawing_base64']}
-											srcSet={imageURL +'/uploads/'+ item['drawing_base64']}
+											src={imageURL + "/uploads/" + item["drawing_base64"]}
+											srcSet={imageURL + "/uploads/" + item["drawing_base64"]}
 											alt={"Assembly"}
 											loading="lazy"
 										/>
@@ -548,8 +555,8 @@ export default function M3coilExpansion() {
 								{imageBase64.brazing_Photo?.map((item, index) => (
 									<ImageListItem key={"brazing" + index}>
 										<img
-											src={imageURL +'/uploads/'+ item['drawing_base64']}
-											srcSet={imageURL +'/uploads/'+ item['drawing_base64']}
+											src={imageURL + "/uploads/" + item["drawing_base64"]}
+											srcSet={imageURL + "/uploads/" + item["drawing_base64"]}
 											alt={"Assembly"}
 											loading="lazy"
 										/>

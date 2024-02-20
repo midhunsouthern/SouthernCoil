@@ -31,7 +31,7 @@ import {
 	MenuItem,
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 
 import OrderViewModal from "../modals/OrderViewModal";
 import ModuleTools from "../modals/ModuleTools";
@@ -299,6 +299,13 @@ export default function Dispatch() {
 			flex: 1,
 		},
 		{
+			field: "sq_feet",
+			headerName: "SQ Feet",
+			flex: 1,
+			maxWidth: 80,
+			type: "number",
+		},
+		{
 			field: "paint",
 			headerName: "Mode of Dispatch",
 			renderCell: (params) => {
@@ -459,30 +466,30 @@ export default function Dispatch() {
 			</Dialog>
 
 			<Dialog
-			fullWidth={true}
-			maxWidth={"lg"}
+				fullWidth={true}
+				maxWidth={"lg"}
 				open={openOrderView}
 				TransitionComponent={Transition}
 				keepMounted
 				onClose={() => setOpenOrderView(false)}
 				key={Math.random(1, 100)}
 			>
-				 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          View Order Details
-        </DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseModal}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-		  id="order-view-close-btn"
-        >
-          <CloseIcon />
-        </IconButton>
+				<DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+					View Order Details
+				</DialogTitle>
+				<IconButton
+					aria-label="close"
+					onClick={handleCloseModal}
+					sx={{
+						position: "absolute",
+						right: 8,
+						top: 8,
+						color: (theme) => theme.palette.grey[500],
+					}}
+					id="order-view-close-btn"
+				>
+					<CloseIcon />
+				</IconButton>
 				<OrderViewModal orderId={selectedRowId} key={Math.random(1, 100)} />
 			</Dialog>
 

@@ -26,10 +26,10 @@ import {
 	ImageListItem,
 	Box,
 	TextField,
-	IconButton
+	IconButton,
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 
 import OrderViewModal from "../modals/OrderViewModal";
 import ModuleTools from "../modals/ModuleTools";
@@ -114,6 +114,13 @@ export default function M2tubeCUtting() {
 
 	const handleNested = (rowId, e) => {
 		const { name, checked } = e.target;
+		var idx = orderList.findIndex((item) => item.id === rowId);
+		if (name === "finpunch_status") {
+			if (orderList.at(idx).finpunching_foilno.trim().length === 0) {
+				toast("Please update Foil Number Before updating status.", "warning");
+				return;
+			}
+		}
 		var editData;
 		if (name.includes("status")) {
 			editData = orderList.filter((itemA) => rowId !== itemA.id);
@@ -247,6 +254,13 @@ export default function M2tubeCUtting() {
 			headerName: "Size",
 			minWidth: 120,
 			flex: 1,
+		},
+		{
+			field: "sq_feet",
+			headerName: "SQ Feet",
+			flex: 1,
+			maxWidth: 80,
+			type: "number",
 		},
 		{
 			field: "pipe_type",
@@ -451,30 +465,30 @@ export default function M2tubeCUtting() {
 			</Dialog>
 
 			<Dialog
-			fullWidth={true}
-			maxWidth={"lg"}
+				fullWidth={true}
+				maxWidth={"lg"}
 				open={openOrderView}
 				TransitionComponent={Transition}
 				keepMounted
 				onClose={() => setOpenOrderView(false)}
 				key={Math.random(1, 100)}
 			>
-				 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          View Order Details
-        </DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseModal}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-		  id="order-view-close-btn"
-        >
-          <CloseIcon />
-        </IconButton>
+				<DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+					View Order Details
+				</DialogTitle>
+				<IconButton
+					aria-label="close"
+					onClick={handleCloseModal}
+					sx={{
+						position: "absolute",
+						right: 8,
+						top: 8,
+						color: (theme) => theme.palette.grey[500],
+					}}
+					id="order-view-close-btn"
+				>
+					<CloseIcon />
+				</IconButton>
 				<OrderViewModal orderId={selectedRowId} key={Math.random(1, 100)} />
 			</Dialog>
 

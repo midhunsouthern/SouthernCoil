@@ -423,7 +423,7 @@ export default function OrderViewModal(prop) {
 							</thead>
 							<tbody>
 								<tr>
-									<td>{orderNo + splitId}</td>
+									<td>{orderNo}</td>
 									<td>{orderDate}</td>
 									<td>{customerName}</td>
 									<td>{size}</td>

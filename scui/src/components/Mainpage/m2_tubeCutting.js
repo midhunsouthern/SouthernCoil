@@ -26,12 +26,12 @@ import {
 	ImageListItem,
 	Box,
 	TextField,
-	IconButton
+	IconButton,
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
 
 import DownloadIcon from "@mui/icons-material/Download";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 
 import OrderViewModal from "../modals/OrderViewModal";
 import ModuleTools from "../modals/ModuleTools";
@@ -117,6 +117,22 @@ export default function M2tubeCUtting() {
 
 	const handleNested = (rowId, e) => {
 		const { name, checked } = e.target;
+		var idx = orderList.findIndex((item) => item.id === rowId);
+		if (name === "tcutting_status") {
+			if (orderList.at(idx).tcutting_roll_no.trim().length === 0) {
+				toast("Please update Roll No. Before updating status.", "warning");
+				return;
+			}
+			if (
+				!moment(
+					orderList.at(idx).tcutting_datetime,
+					"YYYY-MM-DD HH:mm:ss"
+				).isValid()
+			) {
+				toast("Please check Pipe Cut Before updating status.", "warning");
+				return;
+			}
+		}
 		var editData;
 		if (name.includes("status")) {
 			editData = orderList.filter((itemA) => rowId !== itemA.id);
@@ -252,6 +268,7 @@ export default function M2tubeCUtting() {
 	const handleCloseModal = (response) => {
 		setOpenOrderView(false);
 	};
+
 	const handleRollNo = (rowId, rowValue) => {
 		if (rowValue === "undefined") {
 			return;
@@ -303,6 +320,13 @@ export default function M2tubeCUtting() {
 			headerName: "Size",
 			minWidth: 120,
 			flex: 1,
+		},
+		{
+			field: "sq_feet",
+			headerName: "SQ Feet",
+			flex: 1,
+			maxWidth: 80,
+			type: "number",
 		},
 		{
 			field: "pipe_type",
@@ -443,7 +467,7 @@ export default function M2tubeCUtting() {
 									if (params.row.priority === "true") {
 										return "secon-bg";
 									} else if (
-										params.row.tcutting_status === "true" &&
+										params.row.bending_status === "true" &&
 										params.row.finpunch_status === "true"
 									) {
 										return "partial-comp-bg";
@@ -535,30 +559,30 @@ export default function M2tubeCUtting() {
 			</Dialog>
 
 			<Dialog
-			fullWidth={true}
-			maxWidth={"lg"}
+				fullWidth={true}
+				maxWidth={"lg"}
 				open={openOrderView}
 				TransitionComponent={Transition}
 				keepMounted
 				onClose={() => setOpenOrderView(false)}
 				key={Math.random(1, 100)}
 			>
-				 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          View Order Details
-        </DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseModal}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-		  id="order-view-close-btn"
-        >
-          <CloseIcon />
-        </IconButton>
+				<DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+					View Order Details
+				</DialogTitle>
+				<IconButton
+					aria-label="close"
+					onClick={handleCloseModal}
+					sx={{
+						position: "absolute",
+						right: 8,
+						top: 8,
+						color: (theme) => theme.palette.grey[500],
+					}}
+					id="order-view-close-btn"
+				>
+					<CloseIcon />
+				</IconButton>
 				<OrderViewModal orderId={selectedRowId} key={Math.random(1, 100)} />
 			</Dialog>
 
@@ -600,8 +624,8 @@ export default function M2tubeCUtting() {
 								{imageBase64.ep_photo?.map((item, index) => (
 									<ImageListItem key={"epphoto" + index}>
 										<img
-											src={imageURL +'/uploads/'+ item['drawing_base64']}
-											srcSet={imageURL +'/uploads/'+ item['drawing_base64']}
+											src={imageURL + "/uploads/" + item["drawing_base64"]}
+											srcSet={imageURL + "/uploads/" + item["drawing_base64"]}
 											alt={"Assembly"}
 											loading="lazy"
 										/>
@@ -622,8 +646,8 @@ export default function M2tubeCUtting() {
 								{imageBase64.assembly_Photo?.map((item, index) => (
 									<ImageListItem key={"assembly" + index}>
 										<img
-											src={imageURL +'/uploads/'+ item['drawing_base64']}
-											srcSet={imageURL +'/uploads/'+ item['drawing_base64']}
+											src={imageURL + "/uploads/" + item["drawing_base64"]}
+											srcSet={imageURL + "/uploads/" + item["drawing_base64"]}
 											alt={"Assembly"}
 											loading="lazy"
 										/>
@@ -643,8 +667,8 @@ export default function M2tubeCUtting() {
 								{imageBase64.brazing_Photo?.map((item, index) => (
 									<ImageListItem key={"brazing" + index}>
 										<img
-											src={imageURL +'/uploads/'+ item['drawing_base64']}
-											srcSet={imageURL +'/uploads/'+ item['drawing_base64']}
+											src={imageURL + "/uploads/" + item["drawing_base64"]}
+											srcSet={imageURL + "/uploads/" + item["drawing_base64"]}
 											alt={"Assembly"}
 											loading="lazy"
 										/>

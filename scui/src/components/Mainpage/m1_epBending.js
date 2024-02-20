@@ -25,10 +25,10 @@ import {
 	ImageList,
 	ImageListItem,
 	Box,
-	IconButton
+	IconButton,
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 
 import OrderViewModal from "../modals/OrderViewModal";
 import ModuleTools from "../modals/ModuleTools";
@@ -117,18 +117,12 @@ export default function M1epBending() {
 
 	const handleNested = (rowId, e) => {
 		const { name, checked } = e.target;
-
 		var idx = orderList.findIndex((item) => item.id === rowId);
-		if (name === "cnc_nesting_status") {
-			if (orderList.at(idx).cnc_nesting_pgm_no.trim().length === 0) {
-				toast(
-					"Please update CNC Nesting Number Before updating status.",
-					"warning"
-				);
-				return;
-			}
-			if (orderList.at(idx).cnc_nested !== "true") {
-				toast("Please check CNC Nesting Before updating status.", "warning");
+		if (name === "bending_status") {
+			if (
+				!moment(orderList.at(idx).ep_DateTime, "YYYY-MM-DD HH:mm:ss").isValid()
+			) {
+				toast("Please check End Plate Before updating status.", "warning");
 				return;
 			}
 		}
@@ -140,8 +134,6 @@ export default function M1epBending() {
 				item.id === rowId && name ? { ...item, [name]: String(checked) } : item
 			);
 		}
-
-		console.log(editData);
 		setOrderList(editData);
 		handleGenericUpdate(rowId, name, String(checked));
 	};
@@ -224,7 +216,7 @@ export default function M1epBending() {
 		var bodyFormData = new FormData();
 		bodyFormData.append("authId", access);
 		bodyFormData.append("order_id", assemblyid);
-		bodyFormData.append("draw_type", 'asm');
+		bodyFormData.append("draw_type", "asm");
 
 		axios({
 			method: "post",
@@ -303,6 +295,13 @@ export default function M1epBending() {
 			headerName: "Size",
 			minWidth: 120,
 			flex: 1,
+		},
+		{
+			field: "sq_feet",
+			headerName: "SQ Feet",
+			flex: 1,
+			maxWidth: 80,
+			type: "number",
 		},
 		{
 			field: "end_plate_orientation",
@@ -542,30 +541,30 @@ export default function M1epBending() {
 			</Dialog>
 
 			<Dialog
-			fullWidth={true}
-			maxWidth={"lg"}
+				fullWidth={true}
+				maxWidth={"lg"}
 				open={openOrderView}
 				TransitionComponent={Transition}
 				keepMounted
 				onClose={() => setOpenOrderView(false)}
 				key={Math.random(1, 100)}
 			>
-				 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          View Order Details
-        </DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseModal}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-		  id="order-view-close-btn"
-        >
-          <CloseIcon />
-        </IconButton>
+				<DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+					View Order Details
+				</DialogTitle>
+				<IconButton
+					aria-label="close"
+					onClick={handleCloseModal}
+					sx={{
+						position: "absolute",
+						right: 8,
+						top: 8,
+						color: (theme) => theme.palette.grey[500],
+					}}
+					id="order-view-close-btn"
+				>
+					<CloseIcon />
+				</IconButton>
 				<OrderViewModal orderId={selectedRowId} key={Math.random(1, 100)} />
 			</Dialog>
 
@@ -629,8 +628,8 @@ export default function M1epBending() {
 								{imageBase64.assembly_Photo?.map((item, index) => (
 									<ImageListItem key={"assembly" + index}>
 										<img
-											src={imageURL +'/uploads/'+ item['drawing_base64']}
-											srcSet={imageURL +'/uploads/'+ item['drawing_base64']}
+											src={imageURL + "/uploads/" + item["drawing_base64"]}
+											srcSet={imageURL + "/uploads/" + item["drawing_base64"]}
 											alt={"Assembly"}
 											loading="lazy"
 										/>
