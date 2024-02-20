@@ -331,7 +331,7 @@ export default function OrderViewModal(prop) {
 			PP: "Not Applicable",
 			// Add more mappings as needed
 		};
-		if (finPerInch.includes("-")) {
+		if (finPerInch?.includes("-")) {
 			finPerInch = finPerInch.split("-")[0].trim().toUpperCase();
 		}
 		if (typeof finPerInch === "string") {
