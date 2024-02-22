@@ -740,9 +740,7 @@ class Main extends CI_Controller
 
     public function getOrderDataByID()
     {
-        try {
-            //code...
-        
+        try {        
         if (!$this->mm->access_code_verify($this->input->post('authId'))) {
             $ret_data['status_code'] = 101;
             $ret_data['status_msg'] = "Access Code not correct, Please login again.";
@@ -792,6 +790,9 @@ if(count($imagesList)>0){
         
             // Assign the item to the new array and increment the index for this draw_type
             if($drawType=='bz-t'){
+                if(!isset($arr[$drawType][explode('-',$item['order_serial_ref'])[1]])){
+                    $indices[$drawType] = 0;
+                }
                 $arr[$drawType][explode('-',$item['order_serial_ref'])[1]][$indices[$drawType]] = 'uploads/'.$item['drawing_base64'];
             }else{
             $arr[$drawType][$indices[$drawType]] = 'uploads/'.$item['drawing_base64'];
