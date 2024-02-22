@@ -1682,7 +1682,8 @@ left join order_list h on a.order_id=h.order_id and a.split_id = h.split_id");
     }
     public function getActiveOrders(){
         try {
-            $this->db->select(['order_id','id']);
+            $this->db->select('CASE WHEN split_id IS NOT NULL AND split_id <> "" THEN CONCAT(order_id, ".", split_id) ELSE order_id END AS order_id');
+            $this->db->select('id');
             $result=$this->db->get_where('order_list',[])->result_array();
             echo json_encode($result);
         } catch (\Throwable $th) {
