@@ -219,13 +219,19 @@ export default function BrazingQuantity(prop) {
 	// };
 
 	const handleSeriesSel = (seriedId) => {
+		console.log('Handle Series',seriedId);
+		console.log(brazingPhotosInLeak);
+		setBrazingPhotosInLeak('');
 		const selData = brazingQtyData.filter((item) => item.id === seriedId)[0];
 		const newBrazingPhotosInLeak = { ...brazingPhotosInLeak }; // Create a copy of the state
 		selData['brazing_photo'].forEach((item, index) => {
 			if (!newBrazingPhotosInLeak[selData['series_ref']]) {
 				newBrazingPhotosInLeak[selData['series_ref']] = [];
 			}
-			newBrazingPhotosInLeak[selData['series_ref']].push(imageURL+'uploads/' + item['drawing_base64']);
+			const imagePath=imageURL+'uploads/' + item['drawing_base64'];
+			if(newBrazingPhotosInLeak[selData['series_ref']].indexOf(imagePath)==-1){
+			newBrazingPhotosInLeak[selData['series_ref']].push(imagePath);
+			}
 		});
 		setBrazingPhotosInLeak(newBrazingPhotosInLeak); // Update the state with the new object
 		setSelData(selData);
