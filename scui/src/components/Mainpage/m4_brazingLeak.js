@@ -33,7 +33,6 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import OrderViewModal from "../modals/OrderViewModal";
 import ModuleTools from "../modals/ModuleTools";
-import BracingLeakModal from "../modals/BracingLeakModal";
 import BrazingQuantity from "../modals/BrazingQuantity";
 import {
 	handlePipeQty,
@@ -131,6 +130,10 @@ export default function M3coilExpansion() {
 		if (name === "brazing_status") {
 			if (orderList.at(idx).ce_status.trim().length === 0) {
 				toast("Complete expansion before proceeding", "warning");
+				return;
+			}
+			if (orderList.at(idx).quantity !== orderList.at(idx).brazing_completed) {
+				toast("Complete leak testing for all quantities", "warning");
 				return;
 			} else {
 				editData = orderList.filter((itemA) => rowId !== itemA.id);
@@ -392,7 +395,7 @@ export default function M3coilExpansion() {
 						color="info"
 						className="toolButton-grid "
 					>
-						{params.row.order_id}
+						{params.row.brazing_completed + "/" + params.row.quantity}
 					</Button>
 				);
 			},
@@ -538,7 +541,10 @@ export default function M3coilExpansion() {
 				open={OpenBrazing}
 				TransitionComponent={Transition}
 				keepMounted
-				onClose={() => setOpenBrazing(false)}
+				onClose={() => {
+					setOpenBrazing(false);
+					handleOrderList(access);
+				}}
 				key={Math.random(1, 100)}
 			>
 				<BrazingQuantity

@@ -443,7 +443,7 @@ class Main extends CI_Controller
         $ret_clause = $this->mm->retQueryClause($pageType);
 
         $ret_data['data_orders'] = $this->db->query("SELECT a.id, CONCAT(a.order_id,a.split_id) as 'order_id',a.order_id as unsplit_order_id,  a.split_id, a.order_date, 
-        ifnull( b.fname, 'Not Set') as full_customer_name, a.customer_name, a.length, a.height, a.rows,  count(h.order_id) as quantity , a.quantity as raw_quantity, 
+        ifnull( b.fname, 'Not Set') as full_customer_name, a.customer_name, a.length, a.height, a.rows,  count(h.order_id) as quantity , a.quantity as raw_quantity, count(bd.order_id) as brazing_completed,
         CONCAT(a.length, ' x ', a.height, ' x ', a.rows,'R - ', count(h.order_id)) as size,
             ROUND((a.length * a.height * a.rows *  count(h.order_id)) / 144)  as sq_feet, c.lkp_value as pipe_type, d.lkp_value as expansion_type, 
             a.pbStraight,a.pbStraightQty, a.pbStraightSize, a.pbStraightTotQty, a.pbSingle, a.pbSingleQty, a.pbSingleSize, a.pbSingleTotQty, a.pbCross, a.pbCrossQty, a.pbCrossSize, 
@@ -489,6 +489,7 @@ class Main extends CI_Controller
                       left join lookup f on a.end_plate_modal = f.id
                       left join lookup g on a.circuit_models = g.id 
                       left join brazing_details h on a.order_id = h.order_id and a.split_id = h.split_id
+                      left join brazing_details bd on a.order_id = bd.order_id and a.split_id = bd.split_id and h.series_id = bd.series_id and bd.leak in ('noLeak','leakFound','notRecord')
                        " . $ret_clause['where_clause'] . " group by h.order_id, h.split_id " . $ret_clause['order_by'] . ";")->result_array();
 
 
