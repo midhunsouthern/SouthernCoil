@@ -991,7 +991,7 @@ export default function OrderViewModal(prop) {
 
 									{/* Corresponding Image */}
 									<Grid item xs={6}>
-										{brazingTestingImages &&
+										{/* {brazingTestingImages &&
 											brazingTestingImages[index + 1] && (
 												<ImageList cols={1} rowHeight={200}>
 													{brazingTestingImages[index + 1]?.map(
@@ -1020,7 +1020,7 @@ export default function OrderViewModal(prop) {
 														)
 													)}
 												</ImageList>
-											)}
+											)} */}
 									</Grid>
 								</React.Fragment>
 							))}
