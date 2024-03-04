@@ -240,8 +240,7 @@ export default function M1cncNesting() {
 		bodyFormData.append("order_id", epid);
 		bodyFormData.append("assemblyImg", assemblyid);
 		bodyFormData.append("brazingImg", brazingid);
-		bodyFormData.append("draw_type", 'ep');
-
+		bodyFormData.append("draw_type", "ep");
 
 		axios({
 			method: "post",
@@ -435,7 +434,7 @@ export default function M1cncNesting() {
 	];
 
 	return (
-		<Box>
+		<Box style={{ marginTop: "105px", width: "100%" }}>
 			<ToastContainer />
 			<TickGif show={animeShow} />
 			<Card>

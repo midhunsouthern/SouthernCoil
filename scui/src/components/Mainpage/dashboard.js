@@ -294,7 +294,7 @@ export default function Dashboard() {
 		]
 	);
 	return (
-		<div className="container">
+		<div className="container" style={{ marginTop: "105px", width: "100%" }}>
 			<div className="row">
 				<div className="col-4 ">
 					<div className="card" style={{ height: "100%" }}>

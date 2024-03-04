@@ -30,7 +30,7 @@ import { Container } from "@mui/system";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import PreviewIcon from "@mui/icons-material/Preview";
 import FormControl from "@mui/material/FormControl";
@@ -168,24 +168,24 @@ export default function CreateOrder() {
 		setDialogImg(base64);
 		setOpenImg(true);
 	};
-	const handleClickDeleteimg=(imgIndex,imgType)=>{
-		if(imgType==='ep'){
-			setEpPhoto(prevEpPhoto => {
+	const handleClickDeleteimg = (imgIndex, imgType) => {
+		if (imgType === "ep") {
+			setEpPhoto((prevEpPhoto) => {
 				// Create a copy of the array and then splice
 				const newEpPhoto = [...prevEpPhoto];
 				newEpPhoto.splice(imgIndex, 1);
 				return newEpPhoto;
 			});
-		} else if(imgType==='assembly'){
-			setAssemblyPhoto(prevAssemblyPhoto=>{
-				const newAssemblyPhoto=[...prevAssemblyPhoto];
-				newAssemblyPhoto.splice(imgIndex,1);
+		} else if (imgType === "assembly") {
+			setAssemblyPhoto((prevAssemblyPhoto) => {
+				const newAssemblyPhoto = [...prevAssemblyPhoto];
+				newAssemblyPhoto.splice(imgIndex, 1);
 				return newAssemblyPhoto;
 			});
-		} else{
-			setBrazingPhoto(brazePhoto=>{
-				const newBrazePhoto=[...brazePhoto];
-				newBrazePhoto.splice(imgIndex,1);
+		} else {
+			setBrazingPhoto((brazePhoto) => {
+				const newBrazePhoto = [...brazePhoto];
+				newBrazePhoto.splice(imgIndex, 1);
 				return newBrazePhoto;
 			});
 		}
@@ -229,7 +229,7 @@ export default function CreateOrder() {
 		console.log(imgData);
 		const btnname = type;
 		var bodyFormData = new FormData();
-console.log(access);
+		console.log(access);
 		bodyFormData.append("authId", access);
 		bodyFormData.append("type", btnname);
 
@@ -288,30 +288,30 @@ console.log(access);
 		imgData.forEach((item, index) => {
 			if (item.ep.length > 0) {
 				item.ep.forEach((img, imgIndex) => {
-					console.log('Image Index EP',imgIndex);
+					console.log("Image Index EP", imgIndex);
 					bodyFormData.append(`epPhoto[${imgIndex}]`, img);
 				});
 			}
 			if (item.assembly.length > 0) {
 				item.assembly.forEach((img, imgIndex) => {
-					console.log('Image Index Assembly',imgIndex);
+					console.log("Image Index Assembly", imgIndex);
 					bodyFormData.append(`assemblyPhoto[${imgIndex}]`, img);
 				});
 			}
 			if (item.brazing.length > 0) {
 				item.brazing.forEach((img, imgIndex) => {
-					console.log('Image Index Brazing',imgIndex);
+					console.log("Image Index Brazing", imgIndex);
 					bodyFormData.append(`brazingPhoto[${imgIndex}]`, img);
 				});
 			}
-		  });
-		  const responseOfOrder=await axios({
+		});
+		const responseOfOrder = await axios({
 			method: "post",
 			url: setOrderNew,
-			data: bodyFormData
+			data: bodyFormData,
 		});
-		const res_data=responseOfOrder.data;
-		if(responseOfOrder.status===200){
+		const res_data = responseOfOrder.data;
+		if (responseOfOrder.status === 200) {
 			if (res_data.order_id === "n/a") {
 				toast("Order Temporaly Saved Successfully");
 			} else {
@@ -320,59 +320,59 @@ console.log(access);
 				setOepenOrderStatus(true);
 			}
 			//setCustomerName(0);
-					setCustomerNameList([{ label: "Loading...", id: 0 }]);
-					setLength(0);
-					setHeight(0);
-					setRow(0);
-					setQuantity(0);
-					setSqFeet(0);
-					setSize(0);
-					setPipeType("");
-					setExpansionType("");
-					setPBStraight(false);
-					setPBStraightQty("");
-					setPBStraightSize("");
-					setPBStraightTotQty("");
+			setCustomerNameList([{ label: "Loading...", id: 0 }]);
+			setLength(0);
+			setHeight(0);
+			setRow(0);
+			setQuantity(0);
+			setSqFeet(0);
+			setSize(0);
+			setPipeType("");
+			setExpansionType("");
+			setPBStraight(false);
+			setPBStraightQty("");
+			setPBStraightSize("");
+			setPBStraightTotQty("");
 
-					setPBSingle(false);
-					setPBSingleQty("");
-					setPBSingleSize("");
-					setPBSingleTotQty("");
+			setPBSingle(false);
+			setPBSingleQty("");
+			setPBSingleSize("");
+			setPBSingleTotQty("");
 
-					setPBCross(false);
-					setPBCrossQty("");
-					setPBCrossSize("");
-					setPBCrossTotQty("");
+			setPBCross(false);
+			setPBCrossQty("");
+			setPBCrossSize("");
+			setPBCrossTotQty("");
 
-					setPBOther(false);
-					setPBOtherQty("");
-					setPBOtherSize("");
-					setPBOtherTotQty("");
+			setPBOther(false);
+			setPBOtherQty("");
+			setPBOtherSize("");
+			setPBOtherTotQty("");
 
-					setPipeComment("");
-					setEndPlateMaterial("");
-					setEndPlateModel("");
-					setEndPlateOrientation([]);
-					setCoverType([]);
-					setCoverDetail([]);
-					setEPComments("");
-					setFinPerInch("");
-					setFinComments("");
-					setCircuitModels("");
-					setNoCircuit("");
-					setLiquidLine([]);
-					setDischargeLine([]);
-					setBrazingComments("");
-					setPaintType([]);
-					setPackingType([]);
-					setDispatchMode([]);
-					setDispatchComments("");
-					setFinalComments("");
-					//setEpPhoto([]);
-					//setAssemblyPhoto([]);
-					//setBrazingPhoto([]);
-					retOrderId("");
-					//return data
+			setPipeComment("");
+			setEndPlateMaterial("");
+			setEndPlateModel("");
+			setEndPlateOrientation([]);
+			setCoverType([]);
+			setCoverDetail([]);
+			setEPComments("");
+			setFinPerInch("");
+			setFinComments("");
+			setCircuitModels("");
+			setNoCircuit("");
+			setLiquidLine([]);
+			setDischargeLine([]);
+			setBrazingComments("");
+			setPaintType([]);
+			setPackingType([]);
+			setDispatchMode([]);
+			setDispatchComments("");
+			setFinalComments("");
+			//setEpPhoto([]);
+			//setAssemblyPhoto([]);
+			//setBrazingPhoto([]);
+			retOrderId("");
+			//return data
 		}
 
 		setApiCompStatus({
@@ -646,30 +646,30 @@ console.log(access);
 	const handleFiles = (type, files) => {
 		console.log(files.fileList.length);
 		if (type === "ep") {
-			setEpPhoto((prevImage)=>{
-				if (prevImage.length===3) {
-					alert('You cant upload more than three images');
+			setEpPhoto((prevImage) => {
+				if (prevImage.length === 3) {
+					alert("You cant upload more than three images");
 					return prevImage;
 				} else {
-					return [...prevImage,...files.base64]
+					return [...prevImage, ...files.base64];
 				}
 			});
 		} else if (type === "assembly") {
-			setAssemblyPhoto((prevImage)=>{
-				if (prevImage.length===3) {
-					alert('You cant upload more than three images');
+			setAssemblyPhoto((prevImage) => {
+				if (prevImage.length === 3) {
+					alert("You cant upload more than three images");
 					return prevImage;
 				} else {
-					return [...prevImage,...files.base64]
+					return [...prevImage, ...files.base64];
 				}
 			});
 		} else if (type === "brazing") {
-			setBrazingPhoto((prevImage)=>{
-				if (prevImage.length===3) {
-					alert('You cant upload more than three images');
+			setBrazingPhoto((prevImage) => {
+				if (prevImage.length === 3) {
+					alert("You cant upload more than three images");
 					return prevImage;
 				} else {
-					return [...prevImage,...files.base64]
+					return [...prevImage, ...files.base64];
 				}
 			});
 		}
@@ -707,7 +707,7 @@ console.log(access);
 	}, [LocState]);
 
 	return (
-		<div>
+		<div style={{ marginTop: "105px", width: "100%" }}>
 			<div className="main mt-0 pt-0">
 				<div className="content">
 					<div className="container">
@@ -1397,25 +1397,29 @@ console.log(access);
 																							loading="lazy"
 																						/>
 																						<Stack direction="row" spacing={1}>
-																						<IconButton
-																							onClick={() =>
-																								handleClickOpenimg(item)
-																							}
-																						>
-																							<PreviewIcon />
-																						</IconButton>
-																						<IconButton
-																onClick={() => handleClickDeleteimg(index,'ep')}
-															>
-																<DeleteIcon />
-															</IconButton>
-															</Stack>
+																							<IconButton
+																								onClick={() =>
+																									handleClickOpenimg(item)
+																								}
+																							>
+																								<PreviewIcon />
+																							</IconButton>
+																							<IconButton
+																								onClick={() =>
+																									handleClickDeleteimg(
+																										index,
+																										"ep"
+																									)
+																								}
+																							>
+																								<DeleteIcon />
+																							</IconButton>
+																						</Stack>
 																					</ImageListItem>
 																				))}
 																			</ImageList>
 																		}
 																		<ReactFileReader
-
 																			fileTypes={[".png", ".jpg"]}
 																			base64={true}
 																			multipleFiles={true}
@@ -1622,19 +1626,24 @@ console.log(access);
 																							loading="lazy"
 																						/>
 																						<Stack direction="row" spacing={1}>
-																						<IconButton
-																							onClick={() =>
-																								handleClickOpenimg(item)
-																							}
-																						>
-																							<PreviewIcon />
-																						</IconButton>
-																						<IconButton
-																onClick={() => handleClickDeleteimg(index,'assembly')}
-															>
-																<DeleteIcon />
-															</IconButton>
-															</Stack>
+																							<IconButton
+																								onClick={() =>
+																									handleClickOpenimg(item)
+																								}
+																							>
+																								<PreviewIcon />
+																							</IconButton>
+																							<IconButton
+																								onClick={() =>
+																									handleClickDeleteimg(
+																										index,
+																										"assembly"
+																									)
+																								}
+																							>
+																								<DeleteIcon />
+																							</IconButton>
+																						</Stack>
 																					</ImageListItem>
 																				))}
 																			</ImageList>
@@ -1745,19 +1754,24 @@ console.log(access);
 																							loading="lazy"
 																						/>
 																						<Stack direction="row" spacing={1}>
-																						<IconButton
-																							onClick={() =>
-																								handleClickOpenimg(item)
-																							}
-																						>
-																							<PreviewIcon />
-																						</IconButton>
-																						<IconButton
-																onClick={() => handleClickDeleteimg(index,'brazing')}
-															>
-																<DeleteIcon />
-															</IconButton>
-															</Stack>
+																							<IconButton
+																								onClick={() =>
+																									handleClickOpenimg(item)
+																								}
+																							>
+																								<PreviewIcon />
+																							</IconButton>
+																							<IconButton
+																								onClick={() =>
+																									handleClickDeleteimg(
+																										index,
+																										"brazing"
+																									)
+																								}
+																							>
+																								<DeleteIcon />
+																							</IconButton>
+																						</Stack>
 																					</ImageListItem>
 																				))}
 																			</ImageList>

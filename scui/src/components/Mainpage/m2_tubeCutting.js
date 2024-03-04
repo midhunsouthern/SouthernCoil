@@ -430,7 +430,7 @@ export default function M2tubeCUtting() {
 	];
 
 	return (
-		<Box>
+		<Box style={{ marginTop: "105px", width: "100%" }}>
 			<ToastContainer />
 			<TickGif show={animeShow} />
 			<Card>

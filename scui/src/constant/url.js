@@ -63,6 +63,9 @@ export const updateSchedulerCommitmentStatus =
 	baseURL + "main/updateSchedulerCommitmentStatus";
 export const dashboardGraphData = baseURL + "main/dashboardGraphData";
 
+/**Access  */
+export const pageList = baseURL + "main/pageList";
+export const setAccessSetup = baseURL + "main/setAccessSetup";
 /**image url */
 export const imageURL = baseURL_noIndex;
 export const getActiveOrderIds = baseURL + "main/getActiveOrders";

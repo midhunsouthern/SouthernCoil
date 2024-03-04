@@ -284,7 +284,7 @@ export default function CustomerTable() {
 		}
 	}, [isUpdated]);
 	return (
-		<div>
+		<div style={{ marginTop: "105px", width: "100%" }}>
 			<main className="main pt-0">
 				<div className="content">
 					<ToastContainer />

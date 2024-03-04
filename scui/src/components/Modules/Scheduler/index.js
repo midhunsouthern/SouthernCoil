@@ -447,7 +447,7 @@ export default function EnhancedTable() {
 	}, []);
 
 	return (
-		<Box>
+		<Box style={{ marginTop: "105px" }}>
 			<ToastContainer />
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
 				<div className="row">

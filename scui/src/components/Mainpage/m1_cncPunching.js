@@ -30,7 +30,10 @@ import Slide from "@mui/material/Slide";
 import CloseIcon from "@mui/icons-material/Close";
 
 import OrderViewModal from "../modals/OrderViewModal";
-import { handleFindCoverDetailLookup_arr } from "../../commonjs/CommonFun";
+import {
+	handleFindCoverDetailLookup_arr,
+	handleFindLookup_arr,
+} from "../../commonjs/CommonFun";
 
 import {
 	getLookupData,
@@ -279,6 +282,19 @@ export default function M1cncPunching() {
 			type: "number",
 		},
 		{
+			field: "end_plate_orientation",
+			headerName: "LH/RH",
+			valueGetter: (params) => {
+				return handleFindLookup_arr(
+					lookUpList,
+					"oreientation",
+					params.row.end_plate_orientation
+				);
+			},
+			maxWidth: 70,
+			flex: 1,
+		},
+		{
 			field: "end_plate_modal",
 			headerName: "EP Model",
 			minWidth: 150,
@@ -361,7 +377,7 @@ export default function M1cncPunching() {
 	];
 
 	return (
-		<Box>
+		<Box style={{ marginTop: "105px", width: "100%" }}>
 			<ToastContainer />
 			<TickGif show={animeShow} />
 			<Card>

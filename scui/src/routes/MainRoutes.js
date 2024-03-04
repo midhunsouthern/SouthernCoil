@@ -34,7 +34,7 @@ import CustomerTable from "../components/Mainpage/customerTable";
 import CreateOrder from "../components/Mainpage/createOrder";
 import Login from "../components/Auth/login";
 import Signup from "../components/Auth/signup";
-import CreateAccessTypes from "../components/Mainpage/createAccessTypes";
+import CreateAccessTypes from "../components/Mainpage/createAccessTypes.js";
 import CreateUser from "../components/Mainpage/createUser";
 import LookupEntry from "../components/Mainpage/lookupEntry";
 import M1cncProgramMaster from "../components/Mainpage/m1_cncprogrammaster";
@@ -42,6 +42,7 @@ import M1epBending from "../components/Mainpage/m1_epBending";
 
 /**Module 6 */
 import Scheduler from "../components/Modules/Scheduler/index";
+import ModuleAccess from "../components/Mainpage/ModuleAccess.js";
 
 const MainRoutes = {
 	path: "",
@@ -164,7 +165,10 @@ const MainRoutes = {
 			element: (
 				<>
 					<Header />
-					<div className="container-fluid">
+					<div
+						className="container-fluid"
+						style={{ marginTop: "105px", width: "100%" }}
+					>
 						<div className="row">
 							<div className="col-1">
 								<SideNav />
@@ -183,7 +187,10 @@ const MainRoutes = {
 			element: (
 				<>
 					<Header />
-					<div className="container-fluid">
+					<div
+						className="container-fluid"
+						style={{ marginTop: "105px", width: "100%" }}
+					>
 						<div className="row">
 							<div className="col-1">
 								<SideNav />
@@ -547,6 +554,25 @@ const MainRoutes = {
 							</div>
 							<div className="col-11">
 								<Scheduler />
+							</div>
+						</div>
+					</div>
+					<Footer />
+				</>
+			),
+		},
+		{
+			path: "moduleAccess",
+			element: (
+				<>
+					<Header />
+					<div className="container-fluid">
+						<div className="row">
+							<div className="col-1">
+								<SideNav />
+							</div>
+							<div className="col-11">
+								<ModuleAccess />
 							</div>
 						</div>
 					</div>

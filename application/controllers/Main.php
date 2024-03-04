@@ -893,7 +893,7 @@ class Main extends CI_Controller
 
         echo json_encode($ret_data);
     }
-
+    /**need to delete */
     function getAccessNameList()
     {
         if (!$this->mm->access_code_verify($this->input->post('authId'))) {
@@ -1001,7 +1001,7 @@ class Main extends CI_Controller
 
         echo json_encode($ret_data);
     }
-
+    /**end need to delete */
     public function setLookupData()
     {
         if (!$this->mm->access_code_verify($this->input->post('authId'))) {
@@ -1713,6 +1713,48 @@ left join customers cu on h.customer_name = cu.id");
         $ret_data['status_msg'] = "Data Retrieved";
         echo json_encode($ret_data);
     }
+
+    //module Access
+
+    public function pageList()
+    {
+        $groupaccessname = $this->input->post('accessName');
+        if ($groupaccessname <> '') {
+            $data = $this->db->query("SELECT a.id, a.page_mod_name, a.page_name, b.access_type FROM tbl_access_pagesname a 
+    left join tbl_access_module b on a.page_mod_name = b.page_name where access_name ='$groupaccessname';")->result_array();
+        } else {
+            $data = $this->db->query("SELECT a.id, a.page_mod_name, a.page_name, 'deny' as access_type FROM tbl_access_pagesname a ")->result_array();
+        }
+
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Data Retrieved";
+        $ret_data['pageData'] = $data;
+        echo json_encode($ret_data);
+    }
+
+    public function setAccessSetup()
+    {
+
+        $data = $this->mm->arrayToDataArray($_POST);
+        $accessName = $data['accessName'];
+        $accessList = json_decode($data['pageListData'], true);
+        var_dump($accessList);
+        unset($data['authId']);
+        unset($data['accessName']);
+
+        $acc_exist = $this->db->get_where('tbl_access_module', array('access_name' => $accessName));
+        if ($acc_exist->num_rows() > 0) {
+            $this->db->delete('tbl_access_module', array('access_name' => $accessName));
+        }
+        foreach ($accessList as $row) {
+            $this->db->insert('tbl_access_module', array('access_name' => $accessName, 'page_name' => $row['page_name'], 'access_type' => $row['access_type']));
+        }
+
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Data Updated";
+        echo json_encode($ret_data);
+    }
+
 
     public function test()
     {

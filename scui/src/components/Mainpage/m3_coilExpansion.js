@@ -336,7 +336,7 @@ export default function M3coilExpansion() {
 	];
 
 	return (
-		<Box>
+		<Box style={{ marginTop: "105px", width: "100%" }}>
 			<ToastContainer />
 			<TickGif show={animeShow} />
 			<Card>
@@ -449,8 +449,8 @@ export default function M3coilExpansion() {
 			</Dialog>
 
 			<Dialog
-			fullWidth={true}
-			maxWidth={"lg"}
+				fullWidth={true}
+				maxWidth={"lg"}
 				open={openOrderView}
 				TransitionComponent={Transition}
 				keepMounted

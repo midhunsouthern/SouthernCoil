@@ -19,7 +19,7 @@ import wip from "../../assets/img/appIcons/br-wip.png";
 import { NavLink } from "react-router-dom";
 const Mainpage = () => {
 	return (
-		<div className="homebg">
+		<div className="homebg" style={{ marginTop: "105px", width: "100%" }}>
 			<div className="container">
 				<div className="col">
 					<Card className="p-4">

@@ -210,6 +210,7 @@ export default function OrderEditModal(prop) {
 		bodyFormData.append("pbSingleTotQty", pbSingleTotQty);
 		bodyFormData.append("pbCross", pbCross);
 		bodyFormData.append("pbCrossQty", pbCrossQty);
+		bodyFormData.append("pbCrossSize", pbCrossSize);
 		bodyFormData.append("pbCrossTotQty", pbCrossTotQty);
 		bodyFormData.append("pbOther", pbOther);
 		bodyFormData.append("pbOtherQty", pbOtherQty);
