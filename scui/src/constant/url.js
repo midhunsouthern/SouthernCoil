@@ -3,6 +3,8 @@
 export const baseURL = "https://scui.southerncoil.com/backend/index.php/";
 export const baseURL_noIndex = "https://scui.southerncoil.com/backend/";
 export const loginURL = baseURL + "login/login_acc";
+export const accessVerify = baseURL + "login/accessVerify";
+
 export const getAccessTypeURL = baseURL + "main/access_type_list";
 export const getProfileDataURL = baseURL + "main/getProfileData";
 export const setProfileDataURL = baseURL + "main/setProfileData";

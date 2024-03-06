@@ -154,7 +154,7 @@ export default function ModuleTools(props) {
 				key={"dialogBx-2"}
 			>
 				<div className="p-2">
-					{pendingSq && <LineChart chartData={chartData} key="chart1" />}
+					{<LineChart chartData={chartData} key="chart1" />}
 				</div>
 
 				<DialogActions>

@@ -611,7 +611,7 @@ class Main extends CI_Controller
 
         $order_by = "order by a.order_id asc";
 
-        $order_data = $this->db->query("SELECT a.id, a.order_id as label from order_list a  $order_by;");
+        $order_data = $this->db->query("SELECT a.id, concat(a.order_id, a.split_id) as label from order_list a  $order_by;");
 
         if ($order_data->num_rows() > 0) {
             $ret_data['data_his_id'] = $order_data->result_array();
@@ -628,8 +628,6 @@ class Main extends CI_Controller
     public function getOrderDataByID()
     {
         try {
-            //code...
-
             if (!$this->mm->access_code_verify($this->input->post('authId'))) {
                 $ret_data['status_code'] = 101;
                 $ret_data['status_msg'] = "Access Code not correct, Please login again.";
@@ -679,6 +677,9 @@ class Main extends CI_Controller
 
                     // Assign the item to the new array and increment the index for this draw_type
                     if ($drawType == 'bz-t') {
+                        if (!isset($arr[$drawType][explode('-', $item['order_serial_ref'])[1]])) {
+                            $indices[$drawType] = 0;
+                        }
                         $arr[$drawType][explode('-', $item['order_serial_ref'])[1]][$indices[$drawType]] = 'uploads/' . $item['drawing_base64'];
                     } else {
                         $arr[$drawType][$indices[$drawType]] = 'uploads/' . $item['drawing_base64'];
@@ -1198,7 +1199,7 @@ class Main extends CI_Controller
             $ret_data['status_msg'] = "Transaction not completed please try again";
         }
         $ret_data['status_code'] = 200;
-        $ret_data['status_msg'] = "$i number of details updated.";
+        $ret_data['status_msg'] = "Brazing Quantity details updated.";
         echo json_encode($ret_data);
     }
 
@@ -1716,44 +1717,44 @@ left join customers cu on h.customer_name = cu.id");
 
     //module Access
 
-    public function pageList()
-    {
-        $groupaccessname = $this->input->post('accessName');
-        if ($groupaccessname <> '') {
-            $data = $this->db->query("SELECT a.id, a.page_mod_name, a.page_name, b.access_type FROM tbl_access_pagesname a 
-    left join tbl_access_module b on a.page_mod_name = b.page_name where access_name ='$groupaccessname';")->result_array();
-        } else {
-            $data = $this->db->query("SELECT a.id, a.page_mod_name, a.page_name, 'deny' as access_type FROM tbl_access_pagesname a ")->result_array();
-        }
+    // public function pageList()
+    // {
+    //     $groupaccessname = $this->input->post('accessName');
+    //     if ($groupaccessname <> '') {
+    //         $data = $this->db->query("SELECT a.id, a.page_mod_name, a.page_name, b.access_type FROM tbl_access_pagesname a 
+    // left join tbl_access_module b on a.page_mod_name = b.page_name where access_name ='$groupaccessname';")->result_array();
+    //     } else {
+    //         $data = $this->db->query("SELECT a.id, a.page_mod_name, a.page_name, 'deny' as access_type FROM tbl_access_pagesname a ")->result_array();
+    //     }
 
-        $ret_data['status_code'] = 200;
-        $ret_data['status_msg'] = "Data Retrieved";
-        $ret_data['pageData'] = $data;
-        echo json_encode($ret_data);
-    }
+    //     $ret_data['status_code'] = 200;
+    //     $ret_data['status_msg'] = "Data Retrieved";
+    //     $ret_data['pageData'] = $data;
+    //     echo json_encode($ret_data);
+    // }
 
-    public function setAccessSetup()
-    {
+    // public function setAccessSetup()
+    // {
 
-        $data = $this->mm->arrayToDataArray($_POST);
-        $accessName = $data['accessName'];
-        $accessList = json_decode($data['pageListData'], true);
-        var_dump($accessList);
-        unset($data['authId']);
-        unset($data['accessName']);
+    //     $data = $this->mm->arrayToDataArray($_POST);
+    //     $accessName = $data['accessName'];
+    //     $accessList = json_decode($data['pageListData'], true);
+    //     var_dump($accessList);
+    //     unset($data['authId']);
+    //     unset($data['accessName']);
 
-        $acc_exist = $this->db->get_where('tbl_access_module', array('access_name' => $accessName));
-        if ($acc_exist->num_rows() > 0) {
-            $this->db->delete('tbl_access_module', array('access_name' => $accessName));
-        }
-        foreach ($accessList as $row) {
-            $this->db->insert('tbl_access_module', array('access_name' => $accessName, 'page_name' => $row['page_name'], 'access_type' => $row['access_type']));
-        }
+    //     $acc_exist = $this->db->get_where('tbl_access_module', array('access_name' => $accessName));
+    //     if ($acc_exist->num_rows() > 0) {
+    //         $this->db->delete('tbl_access_module', array('access_name' => $accessName));
+    //     }
+    //     foreach ($accessList as $row) {
+    //         $this->db->insert('tbl_access_module', array('access_name' => $accessName, 'page_name' => $row['page_name'], 'access_type' => $row['access_type']));
+    //     }
 
-        $ret_data['status_code'] = 200;
-        $ret_data['status_msg'] = "Data Updated";
-        echo json_encode($ret_data);
-    }
+    //     $ret_data['status_code'] = 200;
+    //     $ret_data['status_msg'] = "Data Updated";
+    //     echo json_encode($ret_data);
+    // }
 
 
     public function test()

@@ -219,9 +219,8 @@ export default function CreateOrder() {
 	const handleSubmit = async (type, e) => {
 		e.preventDefault();
 		setApiCompStatus({
-			...apiCompStatus,
-			sumbitLoading: true,
 			saveLoading: true,
+			sumbitLoading: true,
 		});
 		const imgData = [
 			{ ep: epPhoto, assembly: assemblyPhoto, brazing: brazingPhoto },
@@ -376,9 +375,8 @@ export default function CreateOrder() {
 		}
 
 		setApiCompStatus({
-			...apiCompStatus,
-			sumbitLoading: false,
 			saveLoading: false,
+			sumbitLoading: false,
 		});
 	};
 

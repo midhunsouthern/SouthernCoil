@@ -61,7 +61,7 @@ class MainModal extends CI_Model
                 unset($data['id']);
                 $this->db->where('id', $orderId);
                 if ($this->db->update($orderTableName, $data)) {
-                    $this->updateCE_Status($orderId);
+                    //$this->updateCE_Status($orderId);
                     $this->saveImageOrder($orderId, $orderType);
                     $statusCode = 200;
                     $message = 'Order Data Update Successful';

@@ -34,8 +34,7 @@ import {
 	imageURL,
 } from "../../constant/url";
 import { AccessContext } from "../../constant/accessContext";
-import DeleteIcon from '@mui/icons-material/Delete';
-
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function BrazingQuantity(prop) {
 	const access = useContext(AccessContext).authID;
@@ -46,7 +45,6 @@ export default function BrazingQuantity(prop) {
 	const [addQty, setAddQty] = useState(0);
 	const [brazingPhotosInLeak, setBrazingPhotosInLeak] = useState([]);
 
-
 	const [bzQtyImg, setBzQtyImg] = useState("");
 	const [bzQtyImgDialog, setBzQtyImgDialog] = useState(false);
 
@@ -54,49 +52,48 @@ export default function BrazingQuantity(prop) {
 	const [brazingQtyData, setBrazingQtyData] = useState([]);
 	const [selData, setSelData] = useState([]);
 
-	const handleFiles = (type, files,serialRef) => {
-		if (type === 'brazing') {
-		  setBrazingPhotosInLeak((prevImages) => {
-			// Ensure you have the serial reference, e.g., '123-1'
-			const serialReference = serialRef; // You can replace this with the actual reference
-	
-			// Check if the reference exists in the state
-			if (!prevImages[serialReference]) {
-			  prevImages[serialReference] = []; // Initialize the array if it doesn't exist
-			}
-	
-			// Check if the array already contains 5 images
-			if (prevImages[serialReference].length >= 5) {
-			  alert("You can't upload more than five images for this reference.");
-			  return prevImages;
-			} else {
-			  // Add the new image(s) to the array for the specified reference
-			  prevImages[serialReference].push(...files.base64);
-			  return { ...prevImages }; // Return a new object to trigger a state update
-			}
-		  });
-		  console.log(brazingPhotosInLeak);
+	const handleFiles = (type, files, serialRef) => {
+		if (type === "brazing") {
+			setBrazingPhotosInLeak((prevImages) => {
+				// Ensure you have the serial reference, e.g., '123-1'
+				const serialReference = serialRef; // You can replace this with the actual reference
+
+				// Check if the reference exists in the state
+				if (!prevImages[serialReference]) {
+					prevImages[serialReference] = []; // Initialize the array if it doesn't exist
+				}
+
+				// Check if the array already contains 5 images
+				if (prevImages[serialReference].length >= 5) {
+					alert("You can't upload more than five images for this reference.");
+					return prevImages;
+				} else {
+					// Add the new image(s) to the array for the specified reference
+					prevImages[serialReference].push(...files.base64);
+					return { ...prevImages }; // Return a new object to trigger a state update
+				}
+			});
+			console.log(brazingPhotosInLeak);
 		}
-	  };
+	};
 
 	const handleClickOpenimg = (base64) => {
 		setBzQtyImg(base64);
 		setBzQtyImgDialog(true);
 	};
-	const handleClickDeleteimg=(imgIndex,imgType)=>{
-		
+	const handleClickDeleteimg = (imgIndex, imgType) => {
 		setBrazingPhotosInLeak((brazePhoto) => {
-			const seriesRef = selData['series_ref'];
+			const seriesRef = selData["series_ref"];
 			const updatedBrazePhoto = [...brazePhoto[seriesRef]]; // Create a copy of the array
 			updatedBrazePhoto.splice(imgIndex, 1); // Remove the image at imgIndex
-		  
+
 			// Update the state with the new array
 			return {
-			  ...brazePhoto,
-			  [seriesRef]: updatedBrazePhoto,
+				...brazePhoto,
+				[seriesRef]: updatedBrazePhoto,
 			};
-		  });
-		  
+		});
+
 		console.log(brazingPhotosInLeak);
 	};
 	const handleSetBrazingData = (paramOrder, paramSplit) => {
@@ -106,8 +103,7 @@ export default function BrazingQuantity(prop) {
 		bodyFormData.append("splitId", paramSplit);
 		bodyFormData.append("data", JSON.stringify(brazingQtyData));
 		bodyFormData.append(`brazingPhoto`, JSON.stringify(brazingPhotosInLeak));
-		
-		
+
 		/**add photos */
 		axios({
 			method: "post",
@@ -219,18 +215,20 @@ export default function BrazingQuantity(prop) {
 	// };
 
 	const handleSeriesSel = (seriedId) => {
-		console.log('Handle Series',seriedId);
+		console.log("Handle Series", seriedId);
 		console.log(brazingPhotosInLeak);
-		setBrazingPhotosInLeak('');
+		setBrazingPhotosInLeak("");
 		const selData = brazingQtyData.filter((item) => item.id === seriedId)[0];
 		const newBrazingPhotosInLeak = { ...brazingPhotosInLeak }; // Create a copy of the state
-		selData['brazing_photo'].forEach((item, index) => {
-			if (!newBrazingPhotosInLeak[selData['series_ref']]) {
-				newBrazingPhotosInLeak[selData['series_ref']] = [];
+		selData["brazing_photo"].forEach((item, index) => {
+			if (!newBrazingPhotosInLeak[selData["series_ref"]]) {
+				newBrazingPhotosInLeak[selData["series_ref"]] = [];
 			}
-			const imagePath=imageURL+'uploads/' + item['drawing_base64'];
-			if(newBrazingPhotosInLeak[selData['series_ref']].indexOf(imagePath)==-1){
-			newBrazingPhotosInLeak[selData['series_ref']].push(imagePath);
+			const imagePath = imageURL + "uploads/" + item["drawing_base64"];
+			if (
+				newBrazingPhotosInLeak[selData["series_ref"]].indexOf(imagePath) == -1
+			) {
+				newBrazingPhotosInLeak[selData["series_ref"]].push(imagePath);
 			}
 		});
 		setBrazingPhotosInLeak(newBrazingPhotosInLeak); // Update the state with the new object
@@ -331,7 +329,7 @@ export default function BrazingQuantity(prop) {
 		<div className="container-fluid">
 			<div className="row">
 				<div className="col">
-					<p className="m-0">Order Id:{orderId + splitId}</p>
+					<p className="m-0">Order Id test:{orderId}</p>
 				</div>
 				{/* <div className="col-6 d-flex justify-content-right">
 					<div className="col-8">
@@ -834,49 +832,50 @@ export default function BrazingQuantity(prop) {
 				</div>
 			</div>
 			<div className="row mt-3">
-			<InputLabel>Photo upload Hair pin(Brazing)</InputLabel>
-			{brazingPhotosInLeak.length === 0 && (
-											<FormHelperText error>Select Brazing Photo</FormHelperText>
-										)}
-										<>
-											{
-												<ImageList cols={3} rowHeight={164}>
-													{brazingPhotosInLeak[selData['series_ref']]?.map((item, index) => (
-														<ImageListItem key={"brazing_in_leak" + index}>
-															<img
-																src={item}
-																srcSet={item}
-																alt={"brazing_in_leaks"}
-																loading="lazy"
-															/>
-															<Stack direction="row" spacing={1}>
-															<IconButton
-																onClick={() => handleClickOpenimg(item)}
-															>
-																<PreviewIcon />
-															</IconButton>
-															
-															<IconButton
-																onClick={() => handleClickDeleteimg(index,'brazing')}
-															>
-																<DeleteIcon />
-															</IconButton>
-															</Stack>
-														</ImageListItem>
-													))}
-												</ImageList>
-											}
-								<ReactFileReader fileTypes={[".png", ".jpg"]}
-												base64={true}
-												multipleFiles={true}
-												
-												handleFiles={(files) => {
-													handleFiles("brazing", files,selData['series_ref']);
-												}}
-												key={Math.random()}>
-<PhotoCameraIcon />
-								</ReactFileReader>
-								</>
+				<InputLabel>Photo upload Hair pin(Brazing)</InputLabel>
+				{brazingPhotosInLeak.length === 0 && (
+					<FormHelperText error>Select Brazing Photo</FormHelperText>
+				)}
+				<>
+					{
+						<ImageList cols={3} rowHeight={164}>
+							{brazingPhotosInLeak[selData["series_ref"]]?.map(
+								(item, index) => (
+									<ImageListItem key={"brazing_in_leak" + index}>
+										<img
+											src={item}
+											srcSet={item}
+											alt={"brazing_in_leaks"}
+											loading="lazy"
+										/>
+										<Stack direction="row" spacing={1}>
+											<IconButton onClick={() => handleClickOpenimg(item)}>
+												<PreviewIcon />
+											</IconButton>
+
+											<IconButton
+												onClick={() => handleClickDeleteimg(index, "brazing")}
+											>
+												<DeleteIcon />
+											</IconButton>
+										</Stack>
+									</ImageListItem>
+								)
+							)}
+						</ImageList>
+					}
+					<ReactFileReader
+						fileTypes={[".png", ".jpg"]}
+						base64={true}
+						multipleFiles={true}
+						handleFiles={(files) => {
+							handleFiles("brazing", files, selData["series_ref"]);
+						}}
+						key={Math.random()}
+					>
+						<PhotoCameraIcon />
+					</ReactFileReader>
+				</>
 			</div>
 			<div className="row d-flex justify-content-end mt-2">
 				<div className="col-2">

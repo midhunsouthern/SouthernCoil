@@ -146,11 +146,23 @@ export default function M1cncNesting() {
 			setOrderList(editData);
 			handleGenericUpdate(rowId, name, String(checked));
 			return;
+		} else if (name === "cnc_nested") {
+			var val = moment().format("YYYY-MM-DD HH:mm:ss");
+			if (checked === false) {
+				val = false;
+			}
+
+			editData = orderList.map((item) =>
+				item.id === rowId && name ? { ...item, [name]: val } : item
+			);
+			setOrderList(editData);
+			handleGenericUpdate(rowId, name, val);
+			return;
 		} else {
 			editData = orderList.map((item) =>
 				item.id === rowId && name
 					? { ...item, [name]: moment().format("YYYY-MM-DD HH:mm:ss") }
-					: item
+					: { ...item, [name]: "" }
 			);
 			setOrderList(editData);
 			handleGenericUpdate(rowId, name, moment().format("YYYY-MM-DD HH:mm:ss"));

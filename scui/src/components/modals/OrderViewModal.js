@@ -467,7 +467,7 @@ export default function OrderViewModal(prop) {
 							</thead>
 							<tbody>
 								<tr>
-									<td>{orderNo}</td>
+									<td>{orderNo + splitId}</td>
 									<td>{orderDate}</td>
 									<td>{customerName}</td>
 									<td>{size}</td>
@@ -991,7 +991,7 @@ export default function OrderViewModal(prop) {
 
 									{/* Corresponding Image */}
 									<Grid item xs={6}>
-										{/* {brazingTestingImages &&
+										{brazingTestingImages &&
 											brazingTestingImages[index + 1] && (
 												<ImageList cols={1} rowHeight={200}>
 													{brazingTestingImages[index + 1]?.map(
@@ -1020,7 +1020,7 @@ export default function OrderViewModal(prop) {
 														)
 													)}
 												</ImageList>
-											)} */}
+											)}
 									</Grid>
 								</React.Fragment>
 							))}

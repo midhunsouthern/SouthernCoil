@@ -313,8 +313,11 @@ export default function Dispatch() {
 					<Select
 						fullWidth
 						required={true}
-						label="DIspatch Model"
-						value={params.row.dispatch_mode}
+						label="Dispatch Model"
+						value={params.row.dispatch_mode
+							.replace(",", "")
+							.trim()
+							.substring(0, 2)}
 						onChange={(event) => onChangeInputText(event, params.row.id)}
 						name="dispatch_mode"
 					>
