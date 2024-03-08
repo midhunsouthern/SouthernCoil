@@ -329,7 +329,7 @@ export default function BrazingQuantity(prop) {
 		<div className="container-fluid">
 			<div className="row">
 				<div className="col">
-					<p className="m-0">Order Id test:{orderId}</p>
+					<p className="m-0">Order Id:{orderId + splitId}</p>
 				</div>
 				{/* <div className="col-6 d-flex justify-content-right">
 					<div className="col-8">
