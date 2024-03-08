@@ -1,20 +1,18 @@
 import { useState, useContext, useEffect, forwardRef } from "react";
 import axios from "axios";
 import moment from "moment";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 
 import { AccessContext } from "../../constant/accessContext";
 
 import { TickGif } from "../../commonjs/HilightRule";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import {
 	Dialog,
 	Button,
-	Container,
 	Card,
 	CardContent,
 	Typography,
@@ -309,15 +307,21 @@ export default function Dispatch() {
 			field: "paint",
 			headerName: "Mode of Dispatch",
 			renderCell: (params) => {
+				let firstDispatchMethod =
+					params.row.dispatch_mode.trim().charAt(0) === ","
+						? params.row.dispatch_mode.substr(1).split(",")[0]
+						: params.row.dispatch_mode.split(",")[0];
+				console.log(
+					"dispatch mode",
+					params.row.dispatch_mode,
+					firstDispatchMethod
+				);
 				return (
 					<Select
 						fullWidth
 						required={true}
 						label="Dispatch Model"
-						value={params.row.dispatch_mode
-							.replace(",", "")
-							.trim()
-							.substring(0, 2)}
+						value={firstDispatchMethod}
 						onChange={(event) => onChangeInputText(event, params.row.id)}
 						name="dispatch_mode"
 					>
