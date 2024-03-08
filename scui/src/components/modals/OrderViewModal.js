@@ -102,7 +102,6 @@ export default function OrderViewModal(prop) {
 	const [epComments, setEPComments] = useState("");
 	const [finPerInch, setFinPerInch] = useState("");
 	const [finComments, setFinComments] = useState("");
-	const [finFoilNo, setFinFoilNo] = useState("");
 	const [circuitModels, setCircuitModels] = useState([]);
 	const [noCircuit, setNoCircuit] = useState("");
 	const [liquidLine, setLiquidLine] = useState("");
@@ -123,6 +122,7 @@ export default function OrderViewModal(prop) {
 	 */
 	const [cncNestingStatus, setCncNestingStatus] = useState([]);
 	const [cncNestingDate, setCncNestingDate] = useState([]);
+	const [cncNestingStatusDate, setCncNestingStatusDate] = useState([]);
 	const [cncNestingPgm, setCncNestingPgm] = useState([]);
 	const [cncPunchingStatus, setCncPunchingStatus] = useState([]);
 	const [cncPunchingDate, setCncPunchingDate] = useState([]);
@@ -133,6 +133,7 @@ export default function OrderViewModal(prop) {
 	const [tCuttingDate, setTCuttingDate] = useState([]);
 	const [finPunchStatus, setFinPunchStatus] = useState([]);
 	const [finPunchDate, setFinPunchDate] = useState([]);
+	const [finFoilNo, setFinFoilNo] = useState([]);
 	const [brazingExpansion, setBrazingExpansion] = useState([]);
 	const [brazingStatus, setBrazingStatus] = useState([]);
 	const [brazingDate, setBrazingDate] = useState([]);
@@ -141,6 +142,7 @@ export default function OrderViewModal(prop) {
 	const [ceStatus, setCeStatus] = useState([]);
 	const [ceStatusDate, setCeStatusDate] = useState([]);
 	const [ppStatus, setPpStatus] = useState([]);
+	const [ppDate, setPPDate] = useState([]);
 	const [ppStatusDate, setPpStatusDate] = useState([]);
 	const [dispatchStatus, setDispatchStatus] = useState([]);
 	const [dispatchDate, setDispatchDate] = useState([]);
@@ -282,7 +284,7 @@ export default function OrderViewModal(prop) {
 					setCncNestingStatus(ret_data_cd[0].cnc_nesting_status);
 					setCncNestingPgm(ret_data_cd[0].cnc_nesting_pgm_no);
 					setCncNestingDate(ret_data_cd[0].cnc_nested);
-					setCncNestingDate(ret_data_cd[0].cnc_nesting_status_dt);
+					setCncNestingStatusDate(ret_data_cd[0].cnc_nesting_status_dt);
 					setCncPunchingStatus(ret_data_cd[0].cnc_punching_status);
 					setCncPunchingDate(ret_data_cd[0].cnc_punching_status_dt);
 					setBendingStatus(ret_data_cd[0].bending_status);
@@ -300,7 +302,7 @@ export default function OrderViewModal(prop) {
 					setCeStatus(ret_data_cd[0].ce_status);
 					setCeStatusDate(ret_data_cd[0].ce_status_dt);
 					setPpStatus(ret_data_cd[0].pp_status);
-					setPpStatusDate(ret_data_cd[0].pp_datetime);
+					setPPDate(ret_data_cd[0].pp_datetime);
 					setPpStatusDate(ret_data_cd[0].pp_status_dt);
 					setDispatchStatus(ret_data_cd[0].dispatch_status);
 					setDispatchDate(ret_data_cd[0].dispatch_status_dt);
@@ -331,7 +333,7 @@ export default function OrderViewModal(prop) {
 			PP: "Not Applicable",
 			// Add more mappings as needed
 		};
-		if (finPerInch?.includes("-")) {
+		if (finPerInch.includes("-")) {
 			finPerInch = finPerInch.split("-")[0].trim().toUpperCase();
 		}
 		if (typeof finPerInch === "string") {
@@ -345,6 +347,7 @@ export default function OrderViewModal(prop) {
 		}
 	};
 	const formatDateIst = (date) => {
+		console.log(date);
 		if (date != "" && date != null && date != "undefined") {
 			const time = date.split(" ")[1] ?? "";
 			let newDate = new Date(date);
@@ -549,7 +552,7 @@ export default function OrderViewModal(prop) {
 																		if (
 																			coverDetail !== undefined &&
 																			itemd.lkp_id === item.id &&
-																			coverDetail?.indexOf(itemd.id) !== -1
+																			coverDetail.indexOf(itemd.id) !== -1
 																		) {
 																			return (
 																				<>
@@ -893,42 +896,261 @@ export default function OrderViewModal(prop) {
 								</tr>
 							</thead>
 							<tbody>
-								{cncNestingStatus && (
+								{
 									<tr>
-										<th>Nesting No</th>
-										<td>{cncNestingDate}</td>
-										<td>{cncNestingPgm}</td>
+										<th style={{ textAlign: "left" }}>CNC Nesting</th>
+										<td>
+											{formatDateIst(cncNestingDate)} {cncNestingDate}
+										</td>
 									</tr>
-								)}
-								{cncPunchingStatus && (
+								}
+
+								{
 									<tr>
-										<th>Punching</th>
-										<td>{cncPunchingDate}</td>
-										<td>{cncNestingPgm}</td>
+										<th style={{ textAlign: "left" }}>CNC Program Created</th>
+										<td>{formatDateIst(cncNestingStatusDate)}</td>
+										<td
+											style={{
+												display: "flex",
+												flexDirection: "column",
+												alignItems: "flex-start",
+												border: "0",
+											}}
+										>
+											Program Number-{cncNestingPgm}
+										</td>
 									</tr>
-								)}
-								{bendingStatus && (
+								}
+
+								{
 									<tr>
-										<th>Bending</th>
-										<td>{bendingDate}</td>
-										<td>{cncNestingPgm}</td>
+										<th style={{ textAlign: "left" }}>
+											CNC end plate punching
+										</th>
+										<td>{formatDateIst(cncPunchingDate)}</td>
 									</tr>
-								)}
-								{tCuttingStatus && (
+								}
+
+								{
 									<tr>
-										<th>Tray</th>
-										<td>{tCuttingDate}</td>
-										<td>{cncNestingPgm}</td>
+										<th style={{ textAlign: "left" }}>End plate bending</th>
+										<td>{formatDateIst(bendingDate)}</td>
 									</tr>
-								)}
-								{brazingExpansion && (
+								}
+
+								{
 									<tr>
-										<th>Expansion</th>
-										<td>{brazingDate}</td>
-										<td>{brazingComments}</td>
+										<th style={{ textAlign: "left" }}>
+											Tray/Fan Cover Bending
+										</th>
+										<td>{formatDateIst(bendingDate)}</td>
+										<td
+											style={{
+												display: "flex",
+												flexDirection: "column",
+												alignItems: "flex-start",
+												border: "0",
+											}}
+										>
+											{epComments}
+										</td>
 									</tr>
-								)}
-								{caStatus && <tr></tr>}
+								}
+								{
+									<tr>
+										<th style={{ textAlign: "left" }}>Copper tube Cutting</th>
+										<td>{formatDateIst(tCuttingDate)}</td>
+										<td
+											style={{
+												display: "flex",
+												flexDirection: "column",
+												alignItems: "flex-start",
+												border: "0",
+											}}
+										>
+											<span>Roll Number: {tCuttingRollNo}</span>
+											<span>
+												Pipe Straight-{pbStraightQty} mm {pbStraightSize}
+											</span>
+											<span>
+												Pipe Cross-{pbCrossQty} mm {pbCrossSize}
+											</span>
+											<span>
+												Pipe Single-{pbSingleQty} mm {pbSingleSize}
+											</span>
+											<span>
+												Pipe Others-{pbOtherQty} mm {pbOtherSize}
+											</span>
+										</td>
+									</tr>
+								}
+								{
+									<tr>
+										<th style={{ textAlign: "left" }}>Copper tube Bending</th>
+										<td>{formatDateIst(bendingDate)}</td>
+										<td
+											style={{
+												display: "flex",
+												flexDirection: "column",
+												alignItems: "flex-start",
+												border: "0",
+											}}
+										>
+											Comments-{pipeComment}
+										</td>
+									</tr>
+								}
+								{
+									<tr>
+										<th style={{ textAlign: "left" }}>Fins Punching</th>
+										<td>{formatDateIst(finPunchDate)}</td>
+										<td
+											style={{
+												display: "flex",
+												flexDirection: "column",
+												alignItems: "flex-start",
+												border: "0",
+											}}
+										>
+											<span>
+												Foil Number:{finFoilNo ? finFoilNo : " No Roll no"}
+											</span>
+										</td>
+									</tr>
+								}
+								{
+									<tr>
+										<th style={{ textAlign: "left" }}>Coil Assembly</th>
+										<td>{formatDateIst(caStatusDate)}</td>
+										<td
+											style={{
+												display: "flex",
+												flexDirection: "column",
+												alignItems: "flex-start",
+												border: "0",
+											}}
+										>
+											<span>Comments-{finComments}</span>
+										</td>
+									</tr>
+								}
+								{
+									<tr>
+										<th style={{ textAlign: "left" }}>Coil Expansion</th>
+										<td>{formatDateIst(brazingExpansion)}</td>
+										<td
+											style={{
+												display: "flex",
+												flexDirection: "column",
+												alignItems: "flex-start",
+												border: "0",
+											}}
+										>
+											<span>
+												Expansion Type:{" "}
+												{lookUpList["expansionType"]?.map((item) => {
+													return (
+														<>
+															{expansionType && expansionType.includes(item.id)
+																? item.lkp_value
+																: ""}
+														</>
+													);
+												})}
+											</span>
+										</td>
+									</tr>
+								}
+								{
+									<tr>
+										<th style={{ textAlign: "left" }}>
+											Coil Brazing & Leak Testing
+										</th>
+										<td>{formatDateIst(brazingDate)}</td>
+										<td
+											style={{
+												display: "flex",
+												flexDirection: "column",
+												alignItems: "flex-start",
+												border: "0",
+											}}
+										>
+											{" "}
+											{brazingComments}
+										</td>
+									</tr>
+								}
+
+								{
+									<tr>
+										<th style={{ textAlign: "left" }}>Painting</th>
+										<td>{formatDateIst(ppDate)}</td>
+										<td
+											style={{
+												display: "flex",
+												flexDirection: "column",
+												alignItems: "flex-start",
+												border: "0",
+											}}
+										>
+											<span>
+												Painting Type:{" "}
+												{lookUpList["paintType"]?.map((item) => {
+													return (
+														<>
+															{paintType && paintType.includes(item.id)
+																? item.lkp_value
+																: ""}
+														</>
+													);
+												})}
+											</span>
+										</td>
+									</tr>
+								}
+								{
+									<tr>
+										<th style={{ textAlign: "left" }}>Packing</th>
+										<td>{formatDateIst(ppStatusDate)}</td>
+										<td
+											style={{
+												display: "flex",
+												flexDirection: "column",
+												alignItems: "flex-start",
+												border: "0",
+											}}
+										>
+											<span>
+												Packing Type:{" "}
+												{lookUpList["packingType"]?.map((item) => {
+													return (
+														<>
+															{packingType && packingType.includes(item.id)
+																? item.lkp_value
+																: ""}
+														</>
+													);
+												})}
+											</span>
+										</td>
+									</tr>
+								}
+								{
+									<tr>
+										<th style={{ textAlign: "left" }}>Dispatch</th>
+										<td>{formatDateIst(dispatchDate)}</td>
+										<td
+											style={{
+												display: "flex",
+												flexDirection: "column",
+												alignItems: "flex-start",
+												border: "0",
+											}}
+										>
+											{dispatchComment}
+										</td>
+									</tr>
+								}
 							</tbody>
 						</table>
 					</Grid>
@@ -946,15 +1168,17 @@ export default function OrderViewModal(prop) {
 							/>
 						</Grid>
 					</Grid>
-					<Grid container spacing={2}>
+					<Grid container>
+						<Grid item xs={12}>
+							<Typography variant="h5" style={{ marginBottom: 10 }}>
+								Brazing & Leak Testing Details
+							</Typography>
+						</Grid>
 						{brazingDetails &&
 							brazingDetails.map((value, index) => (
 								<React.Fragment key={index}>
 									{/* Brazing & Leak Testing Details */}
 									<Grid item xs={6}>
-										<Typography variant="h5">
-											Brazing & Leak Testing Details
-										</Typography>
 										<div>
 											<h6>Table {index + 1}</h6>
 											<table style={{ tableLayout: "fixed" }}>
@@ -980,7 +1204,7 @@ export default function OrderViewModal(prop) {
 														<td
 															style={{ textAlign: "left", paddingLeft: "10px" }}
 														>
-															{value.create_dt}
+															{value.completion}
 														</td>
 													</tr>
 													{/* Additional details */}
