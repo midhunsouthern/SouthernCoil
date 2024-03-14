@@ -32,7 +32,6 @@ export default function CreateAccessTypes() {
 	const [accessName, setAccessName] = useState(null);
 	const [accessNameList, setAccessNameList] = useState(null);
 	const [moduleList, setModuleList] = useState([]);
-	const [renderModule, setRender] = useState([]);
 
 	const handleGetExistingModuleAccess = (selectedAccessName) => {
 		var bodyFormData = new FormData();
@@ -62,6 +61,7 @@ export default function CreateAccessTypes() {
 				console.log(response);
 			});
 	};
+
 	const handleSetModuleList = () => {
 		var bodyFormData = new FormData();
 		bodyFormData.append("authId", access);
@@ -145,14 +145,16 @@ export default function CreateAccessTypes() {
 				console.log(response);
 			});
 	};
+
 	const handleModuleAccessType = (rowId, rwd) => {
+		console.log(rowId, rwd);
 		let mList = moduleList;
 		//Find index of specific object using findIndex method.
 		let objIndex = mList.findIndex((obj) => obj.id === rowId);
 		//Update object's name property.
 		mList[objIndex].access_rw = rwd;
 		setModuleList(mList);
-		ModuleComponent(mList);
+		ModuleComponent();
 	};
 
 	const handleSelectAccessType = (value) => {
@@ -161,33 +163,39 @@ export default function CreateAccessTypes() {
 	};
 
 	const ModuleComponent = () => {
+		console.log(
+			"ModuleComponent",
+			moduleList,
+
+			moduleList?.map((row) => {
+				return row.access_rw === "0";
+			})
+		);
 		return (
 			<TableContainer component={Paper}>
 				<Table fullWidth aria-label="simple table">
 					<TableHead>
 						<TableRow>
-							<TableCell>Module Name</TableCell>
-							<TableCell align="left">Description</TableCell>
-							<TableCell align="left">Read/Write | Deny</TableCell>
+							<TableCell align="left">Module Description</TableCell>
+							<TableCell align="left">Prev Access Type</TableCell>
+							<TableCell align="left">New Grant | Deny</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{moduleList?.map((row) => (
 							<TableRow key={row.id}>
-								<TableCell component="th" scope="row">
-									{row.module_name}
-								</TableCell>
 								<TableCell align="left">{row.module_des}</TableCell>
+								<TableCell align="left">
+									{row.access_rw === "1" ? "Granted" : "Denied"}
+								</TableCell>
 								<TableCell>
 									<RadioGroup name="use-radio-group" defaultValue="1" row>
 										<Radio
-											checked={row.access_rw === "1"}
 											value={"1"}
 											name={row.module_name}
 											onChange={() => handleModuleAccessType(row.id, "1")}
 										/>
 										<Radio
-											checked={row.access_rw === "0"}
 											value={"0"}
 											name={row.module_name}
 											onChange={() => handleModuleAccessType(row.id, "0")}

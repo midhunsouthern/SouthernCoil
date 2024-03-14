@@ -500,9 +500,9 @@ export default function OrderEditModal(prop) {
 	useEffect(() => {
 		handleSqFeet();
 		handleSize();
-		setPBStraightQty((height * row) / 2);
-		setPBSingleQty(height * row);
-		setPBCrossQty((height * row) / 2);
+		// setPBStraightQty((height * row) / 2);
+		// setPBSingleQty(height * row);
+		// setPBCrossQty((height * row) / 2);
 	}, [length, height, row, quantity]);
 
 	useEffect(() => {

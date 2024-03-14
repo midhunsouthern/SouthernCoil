@@ -133,7 +133,6 @@ export default function CreateUser() {
 					toast("Api Aithentication failed. login again.");
 				} else if (res_data.status_code === 200) {
 					const ret_data_at = response.data.access_data;
-					console.log(ret_data_at);
 					setAccessTypeList(ret_data_at);
 				} else {
 					console.log(res_data.status_msg);

@@ -639,7 +639,7 @@ class Main extends CI_Controller
             $customerDetails = $this->db->get_where('lookup', array('category' => 'brazingLkp'))->result_array();
             $ret_data['data_orders'] = $this->db->query("SELECT ifnull( b.fname, 'Not Set') as full_customer_name, a.* FROM order_list a left join customers b on a.customer_name = b.id where a.id = '$id';")->result_array();
             $imagesList = $this->db->get_where('drawing_images', array('drawing_refid' => $id))->result_array();
-            $brazingDetails = $this->db->get_where('brazing_details', array('order_id' => $ret_data['data_orders'][0]['order_id']))->result_array();
+            $brazingDetails = $this->db->get_where('brazing_details', array('order_id' => $ret_data['data_orders'][0]['order_id'], 'split_id' => $ret_data['data_orders'][0]['split_id']))->result_array();
 
             if (count($brazingDetails) > 0) {
                 $brazingIds = [
@@ -1319,8 +1319,10 @@ class Main extends CI_Controller
             echo json_encode($ret_data);
             return;
         }
-        $ret = $this->db->query("SELECT a.order_id, a.split_id,a.series_ref as \"Series\", cu.fname, a.leak,a.A, a.B, a.D, a.E, a.F, a.G, a.H, a.K, a.L, a.N, (a.A + a.B + a.D + a.E + a.F + a.G + a.H + a.K + a.L + a.N)  as \"Total Leak Count\", b.lkp_value as uBend, 
-        c.lkp_value as inletOutlet, d.lkp_value as headder, e.lkp_value as headderFix, f.lkp_value as distributor, g.lkp_value as distributorFix, a.completion, 
+        $ret = $this->db->query("SELECT a.order_id, a.split_id,a.series_ref as \"Series\", cu.fname as \"Customer Name\", 
+        CONCAT(h.length, ' x ', h.height, ' x ', h.rows,'R - ', h.quantity) as size, a.leak,a.A, a.B, a.D, a.E, a.F, a.G, a.H, a.K, a.L, a.N, 
+        (a.A + a.B + a.D + a.E + a.F + a.G + a.H + a.K + a.L + a.N)  as \"Total Leak Count\", b.lkp_value as \"U Bend\", c.lkp_value as \"L Bend\", 
+        d.lkp_value as Header, e.lkp_value as \"Header Fix\", f.lkp_value as Distributor, g.lkp_value as \"Distributor Fix\", a.completion, 
         h.brazing_status_dt as \"Brazing Completed Date\" FROM brazing_details a left join lookup b on a.uBend = b.id and b.category ='brazingLkp'
 left join lookup c on a.inletOutlet = c.id and b.category ='brazingLkp'
 left join lookup d on a.headder = d.id and b.category ='brazingLkp'
