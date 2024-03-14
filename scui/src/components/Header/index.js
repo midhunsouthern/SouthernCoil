@@ -35,6 +35,7 @@ import { AccessContext } from "../../constant/accessContext";
 
 const Header = () => {
 	const access = useContext(AccessContext);
+	const accessModuleList = useContext(AccessContext).accessModuleList;
 	const resolvePath = useResolvedPath().pathname;
 	const [greetings, setGreetings] = useState("");
 	const navigate = useNavigate();
@@ -65,252 +66,303 @@ const Header = () => {
 				<div className="content">
 					<div className="nav-horizontal">
 						<ul className="navbar-horizontal ">
-							<li
-								className={`top-menu-Item ${
-									getActivePage("/cncnesting") ? "top-menu-Item-active" : ""
-								}`}
-							>
-								<NavLink
-									className="inactive-tm top-menu-link"
-									exact
-									activeClassName="active-tm"
-									to="/cncnesting"
+							{accessModuleList.filter(
+								(x) => x.module_name === "M1cncNesting"
+							)[0].access_rw === "1" && (
+								<li
+									className={`top-menu-Item ${
+										getActivePage("/cncnesting") ? "top-menu-Item-active" : ""
+									}`}
 								>
-									<Tooltip title="CNC Nesting" placement="left-end">
+									<NavLink
+										className="inactive-tm top-menu-link"
+										exact
+										activeClassName="active-tm"
+										to="/cncnesting"
+									>
+										<Tooltip title="CNC Nesting" placement="left-end">
+											<img
+												src={
+													getActivePage("/cncnesting") ? nesting_cl : Nesting
+												}
+												height={45}
+												width={45}
+												alt="modules"
+											/>
+										</Tooltip>
+									</NavLink>
+								</li>
+							)}
+							{accessModuleList.filter(
+								(x) => x.module_name === "M1cncPunching"
+							)[0].access_rw === "1" && (
+								<li
+									className={`top-menu-Item ${
+										getActivePage("/cncpunching") ? "top-menu-Item-active" : ""
+									}`}
+								>
+									<NavLink
+										className="inactive-tm top-menu-link"
+										exact
+										activeClassName="active-tm"
+										to="/cncpunching"
+									>
+										<Tooltip title="CNC Puching" placement="left-end">
+											<img
+												src={
+													getActivePage("/cncpunching") ? punch_cl : Punching
+												}
+												height={35}
+												width={35}
+												alt="modules"
+											/>
+										</Tooltip>
+									</NavLink>
+								</li>
+							)}
+							{accessModuleList.filter(
+								(x) => x.module_name === "M1epBending"
+							)[0].access_rw === "1" && (
+								<li
+									className={`top-menu-Item ${
+										getActivePage("/epBending") ? "top-menu-Item-active" : ""
+									}`}
+								>
+									<NavLink
+										className="inactive-tm top-menu-link"
+										exact
+										activeClassName="active-tm"
+										to="/epBending"
+									>
+										<Tooltip title="End Plate Bending" placement="left-end">
+											<img
+												src={getActivePage("/epBending") ? ep_bend_cl : Bending}
+												height={45}
+												width={45}
+												alt="modules"
+											/>
+										</Tooltip>
+									</NavLink>
+								</li>
+							)}
+							{accessModuleList.filter(
+								(x) => x.module_name === "M2tubeCutting"
+							)[0].access_rw === "1" && (
+								<li
+									className={`top-menu-Item ${
+										getActivePage("/tubecutting") ? "top-menu-Item-active" : ""
+									}`}
+								>
+									<NavLink
+										className="inactive-tm top-menu-link"
+										exact
+										activeClassName="active-tm"
+										to="/tubecutting"
+									>
+										<Tooltip title="Tube Cutting" placement="left-end">
+											<img
+												src={getActivePage("/tubecutting") ? tc_cl : Tube}
+												height={45}
+												width={45}
+												alt="modules"
+											/>
+										</Tooltip>
+									</NavLink>
+								</li>
+							)}
+							{accessModuleList.filter(
+								(x) => x.module_name === "M3finsPunching"
+							)[0].access_rw === "1" && (
+								<li
+									className={`top-menu-Item ${
+										getActivePage("/finpunching") ? "top-menu-Item-active" : ""
+									}`}
+								>
+									<NavLink
+										className="inactive-tm top-menu-link"
+										exact
+										activeClassName="active-tm"
+										to="/finpunching"
+									>
+										<Tooltip title="Fin Punching" placement="left-end">
+											<img
+												src={getActivePage("/finpunching") ? fin_cl : Fins}
+												height={45}
+												width={45}
+												alt="modules"
+											/>
+										</Tooltip>
+									</NavLink>
+								</li>
+							)}
+							{accessModuleList.filter(
+								(x) => x.module_name === "M3coilAssembly"
+							)[0].access_rw === "1" && (
+								<li
+									className={`top-menu-Item ${
+										getActivePage("/coilassembly") ? "top-menu-Item-active" : ""
+									}`}
+								>
+									<NavLink
+										className="inactive-tm top-menu-link"
+										exact
+										activeClassName="active-tm"
+										to="/coilassembly"
+									>
+										<Tooltip title="Coil Assembly" placement="left-end">
+											<img
+												src={getActivePage("/coilassembly") ? ca_cl : Assembly}
+												height={45}
+												width={45}
+												alt="modules"
+											/>
+										</Tooltip>
+									</NavLink>
+								</li>
+							)}
+							{accessModuleList.filter(
+								(x) => x.module_name === "M3coilExpansion"
+							)[0].access_rw === "1" && (
+								<li
+									className={`top-menu-Item ${
+										getActivePage("/coilexpansion")
+											? "top-menu-Item-active"
+											: ""
+									}`}
+								>
+									<NavLink
+										className="inactive-tm top-menu-link"
+										exact
+										activeClassName="active-tm"
+										to="/coilexpansion"
+									>
+										<Tooltip title="Coil Expansion" placement="left-end">
+											<img
+												src={getActivePage("/coilexpansion") ? ce_cl : CEx}
+												height={45}
+												width={45}
+												alt="modules"
+											/>
+										</Tooltip>
+									</NavLink>
+								</li>
+							)}
+							{accessModuleList.filter(
+								(x) => x.module_name === "M4brazingLeak"
+							)[0].access_rw === "1" && (
+								<li
+									className={`top-menu-Item ${
+										getActivePage("/brazing") ? "top-menu-Item-active" : ""
+									}`}
+								>
+									<NavLink
+										className="inactive-tm top-menu-link"
+										exact
+										activeClassName="active-tm"
+										to="/brazing"
+									>
+										<Tooltip title="Brazing and Testing" placement="left-end">
+											<img
+												src={getActivePage("/brazing") ? brazing_cl : Brazing}
+												height={45}
+												width={45}
+												alt="modules"
+											/>
+										</Tooltip>
+									</NavLink>
+								</li>
+							)}
+							{accessModuleList.filter(
+								(x) => x.module_name === "M4paintPacking"
+							)[0].access_rw === "1" && (
+								<li
+									className={`top-menu-Item ${
+										getActivePage("/paintingpacking")
+											? "top-menu-Item-active"
+											: ""
+									}`}
+								>
+									<NavLink
+										className="inactive-tm top-menu-link"
+										exact
+										activeClassName="active-tm"
+										to="/paintingpacking"
+									>
+										<Tooltip title="Painting" placement="left-end">
+											<img
+												src={
+													getActivePage("/paintingpacking")
+														? paint_cl
+														: Painting
+												}
+												height={45}
+												width={45}
+												alt="modules"
+											/>
+										</Tooltip>
+									</NavLink>
+								</li>
+							)}
+							{accessModuleList.filter((x) => x.module_name === "Dispatch")[0]
+								.access_rw === "1" && (
+								<li
+									className={`top-menu-Item ${
+										getActivePage("/dispatch") ? "top-menu-Item-active" : ""
+									}`}
+								>
+									<NavLink
+										className="inactive-tm top-menu-link"
+										exact
+										activeClassName="active-tm"
+										to="/dispatch"
+									>
+										<Tooltip title="Dispatch" placement="left-end">
+											<img
+												src={getActivePage("/dispatch") ? disp_cl : Disp}
+												height={45}
+												width={45}
+												alt="modules"
+											/>
+										</Tooltip>
+									</NavLink>
+								</li>
+							)}
+							{
+								<li
+									className={`top-menu-Item ${
+										getActivePage("/myprofile") ? "top-menu-Item-active" : ""
+									}`}
+								>
+									<NavLink
+										className="inactive-tm top-menu-link"
+										exact
+										activeClassName="active-tm"
+										to="/myprofile"
+									>
 										<img
-											src={getActivePage("/cncnesting") ? nesting_cl : Nesting}
-											height={45}
-											width={45}
-											alt="modules"
+											src={user}
+											style={{
+												width: "50px",
+												height: "50px",
+												borderRadius: "15px",
+											}}
+											alt="user"
 										/>
-									</Tooltip>
-								</NavLink>
-							</li>
-							<li
-								className={`top-menu-Item ${
-									getActivePage("/cncpunching") ? "top-menu-Item-active" : ""
-								}`}
-							>
-								<NavLink
-									className="inactive-tm top-menu-link"
-									exact
-									activeClassName="active-tm"
-									to="/cncpunching"
-								>
-									<Tooltip title="CNC Puching" placement="left-end">
-										<img
-											src={getActivePage("/cncpunching") ? punch_cl : Punching}
-											height={35}
-											width={35}
-											alt="modules"
-										/>
-									</Tooltip>
-								</NavLink>
-							</li>
-							<li
-								className={`top-menu-Item ${
-									getActivePage("/epBending") ? "top-menu-Item-active" : ""
-								}`}
-							>
-								<NavLink
-									className="inactive-tm top-menu-link"
-									exact
-									activeClassName="active-tm"
-									to="/epBending"
-								>
-									<Tooltip title="End Plate Bending" placement="left-end">
-										<img
-											src={getActivePage("/epBending") ? ep_bend_cl : Bending}
-											height={45}
-											width={45}
-											alt="modules"
-										/>
-									</Tooltip>
-								</NavLink>
-							</li>
-							<li
-								className={`top-menu-Item ${
-									getActivePage("/tubecutting") ? "top-menu-Item-active" : ""
-								}`}
-							>
-								<NavLink
-									className="inactive-tm top-menu-link"
-									exact
-									activeClassName="active-tm"
-									to="/tubecutting"
-								>
-									<Tooltip title="Tube Cutting" placement="left-end">
-										<img
-											src={getActivePage("/tubecutting") ? tc_cl : Tube}
-											height={45}
-											width={45}
-											alt="modules"
-										/>
-									</Tooltip>
-								</NavLink>
-							</li>
-							<li
-								className={`top-menu-Item ${
-									getActivePage("/finpunching") ? "top-menu-Item-active" : ""
-								}`}
-							>
-								<NavLink
-									className="inactive-tm top-menu-link"
-									exact
-									activeClassName="active-tm"
-									to="/finpunching"
-								>
-									<Tooltip title="Fin Punching" placement="left-end">
-										<img
-											src={getActivePage("/finpunching") ? fin_cl : Fins}
-											height={45}
-											width={45}
-											alt="modules"
-										/>
-									</Tooltip>
-								</NavLink>
-							</li>
-							<li
-								className={`top-menu-Item ${
-									getActivePage("/coilassembly") ? "top-menu-Item-active" : ""
-								}`}
-							>
-								<NavLink
-									className="inactive-tm top-menu-link"
-									exact
-									activeClassName="active-tm"
-									to="/coilassembly"
-								>
-									<Tooltip title="Coil Assembly" placement="left-end">
-										<img
-											src={getActivePage("/coilassembly") ? ca_cl : Assembly}
-											height={45}
-											width={45}
-											alt="modules"
-										/>
-									</Tooltip>
-								</NavLink>
-							</li>
-							<li
-								className={`top-menu-Item ${
-									getActivePage("/coilexpansion") ? "top-menu-Item-active" : ""
-								}`}
-							>
-								<NavLink
-									className="inactive-tm top-menu-link"
-									exact
-									activeClassName="active-tm"
-									to="/coilexpansion"
-								>
-									<Tooltip title="Coil Expansion" placement="left-end">
-										<img
-											src={getActivePage("/coilexpansion") ? ce_cl : CEx}
-											height={45}
-											width={45}
-											alt="modules"
-										/>
-									</Tooltip>
-								</NavLink>
-							</li>
-							<li
-								className={`top-menu-Item ${
-									getActivePage("/brazing") ? "top-menu-Item-active" : ""
-								}`}
-							>
-								<NavLink
-									className="inactive-tm top-menu-link"
-									exact
-									activeClassName="active-tm"
-									to="/brazing"
-								>
-									<Tooltip title="Brazing and Testing" placement="left-end">
-										<img
-											src={getActivePage("/brazing") ? brazing_cl : Brazing}
-											height={45}
-											width={45}
-											alt="modules"
-										/>
-									</Tooltip>
-								</NavLink>
-							</li>
-							<li
-								className={`top-menu-Item ${
-									getActivePage("/paintingpacking")
-										? "top-menu-Item-active"
-										: ""
-								}`}
-							>
-								<NavLink
-									className="inactive-tm top-menu-link"
-									exact
-									activeClassName="active-tm"
-									to="/paintingpacking"
-								>
-									<Tooltip title="Painting" placement="left-end">
-										<img
-											src={
-												getActivePage("/paintingpacking") ? paint_cl : Painting
-											}
-											height={45}
-											width={45}
-											alt="modules"
-										/>
-									</Tooltip>
-								</NavLink>
-							</li>
-							<li
-								className={`top-menu-Item ${
-									getActivePage("/dispatch") ? "top-menu-Item-active" : ""
-								}`}
-							>
-								<NavLink
-									className="inactive-tm top-menu-link"
-									exact
-									activeClassName="active-tm"
-									to="/dispatch"
-								>
-									<Tooltip title="Dispatch" placement="left-end">
-										<img
-											src={getActivePage("/dispatch") ? disp_cl : Disp}
-											height={45}
-											width={45}
-											alt="modules"
-										/>
-									</Tooltip>
-								</NavLink>
-							</li>
-							<li
-								className={`top-menu-Item ${
-									getActivePage("/myprofile") ? "top-menu-Item-active" : ""
-								}`}
-							>
-								<NavLink
-									className="inactive-tm top-menu-link"
-									exact
-									activeClassName="active-tm"
-									to="/myprofile"
-								>
-									<img
-										src={user}
-										style={{
-											width: "50px",
-											height: "50px",
-											borderRadius: "15px",
-										}}
-										alt="user"
-									/>
-								</NavLink>
-							</li>
-							<li className={`top-menu-Item top-menu-link`}>
-								<IconButton
-									onClick={handleLogout}
-									className="btn btn-primary top-menu-link"
-									variant="contained"
-									style={{ backgroundColor: "#943612", color: "white" }}
-								>
-									<PowerSettingsNewIcon />
-								</IconButton>
-							</li>
+									</NavLink>
+								</li>
+							}
+							{
+								<li className={`top-menu-Item top-menu-link`}>
+									<IconButton
+										onClick={handleLogout}
+										className="btn btn-primary top-menu-link"
+										variant="contained"
+										style={{ backgroundColor: "#943612", color: "white" }}
+									>
+										<PowerSettingsNewIcon />
+									</IconButton>
+								</li>
+							}
 						</ul>
 					</div>
 				</div>

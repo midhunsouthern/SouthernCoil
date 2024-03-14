@@ -55,6 +55,7 @@ class Login extends CI_Controller
             $ret = $this->db->update('access_profile', array('access_code' => $acc_code));
 
             if ($this->mm->update_access_time($acc_code) && ($ret)) {
+                $ret_data['accessModuleList'] = $this->db->query("SELECT a.module_name, a.access_rw  FROM module_access a inner join access_profile b on a.access_type = b.access_type where b.access_code ='$acc_code';")->result_array();
                 $ret_data['access_code'] = $acc_code;
                 $ret_data['status_code'] = 200;
                 $ret_data['status_msg'] = 'Login Successful';

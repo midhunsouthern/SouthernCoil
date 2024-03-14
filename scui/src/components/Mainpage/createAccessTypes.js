@@ -1,10 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AccessContext } from "../../constant/accessContext";
 import {
-	FormControl,
-	Select,
-	MenuItem,
-	InputLabel,
 	TextField,
 	Autocomplete,
 	Radio,
@@ -152,10 +148,11 @@ export default function CreateAccessTypes() {
 	const handleModuleAccessType = (rowId, rwd) => {
 		let mList = moduleList;
 		//Find index of specific object using findIndex method.
-		let objIndex = mList.findIndex((obj) => obj.id == rowId);
+		let objIndex = mList.findIndex((obj) => obj.id === rowId);
 		//Update object's name property.
 		mList[objIndex].access_rw = rwd;
 		setModuleList(mList);
+		ModuleComponent(mList);
 	};
 
 	const handleSelectAccessType = (value) => {
@@ -164,7 +161,6 @@ export default function CreateAccessTypes() {
 	};
 
 	const ModuleComponent = () => {
-		const list = moduleList;
 		return (
 			<TableContainer component={Paper}>
 				<Table fullWidth aria-label="simple table">
@@ -172,11 +168,11 @@ export default function CreateAccessTypes() {
 						<TableRow>
 							<TableCell>Module Name</TableCell>
 							<TableCell align="left">Description</TableCell>
-							<TableCell align="left">Read Write Deny</TableCell>
+							<TableCell align="left">Read/Write | Deny</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{list.map((row) => (
+						{moduleList?.map((row) => (
 							<TableRow key={row.id}>
 								<TableCell component="th" scope="row">
 									{row.module_name}
@@ -187,17 +183,14 @@ export default function CreateAccessTypes() {
 										<Radio
 											checked={row.access_rw === "1"}
 											value={"1"}
-											onChange={() => handleModuleAccessType(row.id, 1)}
-										/>
-										<Radio
-											checked={row.access_rw === "2"}
-											value={"2"}
-											onChange={() => handleModuleAccessType(row.id, 2)}
+											name={row.module_name}
+											onChange={() => handleModuleAccessType(row.id, "1")}
 										/>
 										<Radio
 											checked={row.access_rw === "0"}
 											value={"0"}
-											onChange={() => handleModuleAccessType(row.id, 0)}
+											name={row.module_name}
+											onChange={() => handleModuleAccessType(row.id, "0")}
 										/>
 									</RadioGroup>
 								</TableCell>
@@ -212,7 +205,7 @@ export default function CreateAccessTypes() {
 	useEffect(() => {
 		handleGetAccessNameList(access);
 		handleGetModuleList(access);
-	}, []);
+	}, [access]);
 	useEffect(() => {
 		ModuleComponent();
 	}, [moduleList]);
@@ -255,6 +248,9 @@ export default function CreateAccessTypes() {
 																</div>
 																<div className="col">
 																	<TextField
+																		InputLabelProps={{
+																			shrink: accessName?.length > 0,
+																		}}
 																		id="outlined-basic"
 																		label="Access Types New"
 																		variant="outlined"

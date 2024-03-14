@@ -11,6 +11,7 @@ import {
 	Input,
 	MenuItem,
 	InputLabel,
+	Autocomplete,
 	Table,
 	TextField,
 	TableHead,
@@ -25,12 +26,11 @@ import { Container } from "@mui/system";
 import axios from "axios";
 import {
 	getProfileDataURL,
+	getAccessNameList,
 	setNewProfileData,
 	getUsersData,
 } from "../../constant/url";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CreateRoundedIcon from "@mui/icons-material/CreateRounded";
-import { Form, json } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -48,12 +48,8 @@ export default function CreateUser() {
 	const [accessTypeList, setAccessTypeList] = useState(null);
 	const [userList, setUserList] = useState([]);
 
-	const handleDateChange = (date) => {
-		setSelectedDate(date);
-	};
-
-	const handleAccessTypeChange = (event) => {
-		setAccessType(event.target.value);
+	const handleSelectAccessType = (value) => {
+		setAccessType(value.label);
 	};
 
 	const handleSubmit = (e) => {
@@ -126,7 +122,7 @@ export default function CreateUser() {
 
 		axios({
 			method: "post",
-			url: getProfileDataURL,
+			url: getAccessNameList,
 			data: bodyFormData,
 			headers: { "Content-Type": "multipart/form-data" },
 		})
@@ -136,7 +132,8 @@ export default function CreateUser() {
 				if (res_data.status_code === 101) {
 					toast("Api Aithentication failed. login again.");
 				} else if (res_data.status_code === 200) {
-					const ret_data_at = response.data.data_access_type;
+					const ret_data_at = response.data.access_data;
+					console.log(ret_data_at);
 					setAccessTypeList(ret_data_at);
 				} else {
 					console.log(res_data.status_msg);
@@ -165,7 +162,6 @@ export default function CreateUser() {
 					toast("Api Aithentication failed. login again.");
 				} else if (res_data.status_code === 200) {
 					const ret_data_at = response.data.User_data;
-					console.log(ret_data_at);
 					setUserList(ret_data_at);
 				} else {
 					console.log(res_data.status_msg);
@@ -175,10 +171,6 @@ export default function CreateUser() {
 				//handle error
 				console.log(response);
 			});
-	};
-
-	const handleSelectedRow = (rowId) => {
-		console.log(rowId);
 	};
 
 	const UserTableComponent = () => {
@@ -197,7 +189,7 @@ export default function CreateUser() {
 					</TableHead>
 					<TableBody>
 						{list.map((row) => (
-							<TableRow key={row.id} onClick={handleSelectedRow(row.id)}>
+							<TableRow key={row.id}>
 								<TableCell align="left">{row.emp_no}</TableCell>
 								<TableCell align="left">{row.fname}</TableCell>
 								<TableCell align="left">{row.mobile_no}</TableCell>
@@ -225,6 +217,7 @@ export default function CreateUser() {
 			</TableContainer>
 		);
 	};
+
 	useEffect(() => {
 		handleGetAccessList();
 	}, []);
@@ -354,7 +347,21 @@ export default function CreateUser() {
 																	value={mobileId}
 																	onChange={(e) => setMobileId(e.target.value)}
 																/>
-																<FormControl fullWidth>
+																<Autocomplete
+																	disablePortal
+																	id="combo-box-demo"
+																	options={accessTypeList}
+																	renderInput={(params) => (
+																		<TextField
+																			{...params}
+																			label="Access Types Existing"
+																		/>
+																	)}
+																	onChange={(e, value) =>
+																		handleSelectAccessType(value)
+																	}
+																/>
+																{/* <FormControl fullWidth>
 																	<InputLabel
 																		id="access_type_lbl"
 																		style={{
@@ -389,7 +396,7 @@ export default function CreateUser() {
 																			);
 																		})}
 																	</Select>
-																</FormControl>
+																</FormControl> */}
 
 																<div className="float-right my-2 ">
 																	<Button

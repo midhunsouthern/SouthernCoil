@@ -27,8 +27,13 @@ export default function Login(prop) {
 				//handle success
 				const res_data = response.data;
 				if (res_data.status_code === 200) {
-					prop.onLogin(res_data.access_code);
+					console.log(res_data);
+					prop.onLogin({
+						access_code: res_data.access_code,
+						accessModuleList: res_data.accessModuleList,
+					});
 					localStorage.setItem("authId", res_data.access_code);
+					localStorage.setItem("accessModuleList", res_data.accessModuleList);
 					navigate("/main");
 				} else if (res_data.status_code === 201) {
 					toast(
