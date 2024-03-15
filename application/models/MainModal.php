@@ -104,6 +104,9 @@ class MainModal extends CI_Model
      */
     private function saveImageOrder($refId, $orderType)
     {
+        $ci =& get_instance();
+        log_message('debug','Instance Name:'.print_r($ci->router,true));
+        log_message('debug','Im calling here '.$orderType.' Order Ref ID '.$refId);
         try {
             $image_path = realpath(APPPATH . '../uploads');
             $imageKeys = [
