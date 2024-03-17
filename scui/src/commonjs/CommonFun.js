@@ -2,7 +2,6 @@
 import { saveAs } from "file-saver";
 import XlsxPopulate from "xlsx-populate";
 import orderListLabelId from "./orderListLabelId.json";
-import OrderHistory from "../components/Tables/OrderHistory";
 
 export const handleSize = (length, height, row, quantity) => {
 	const len = length === null ? 0 : length;

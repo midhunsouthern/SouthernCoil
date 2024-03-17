@@ -22,7 +22,7 @@ import {
 	AppBar,
 	Toolbar,
 } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 
 import Slide from "@mui/material/Slide";
 import { IOSSwitch } from "../../commonjs/TableFunc";
@@ -45,8 +45,6 @@ import {
 	allData_excel,
 	setOrderGeneric,
 	setOrderDelete,
-	setOrderHold,
-	setOrderSplitNew,
 } from "../../constant/url";
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -63,7 +61,6 @@ export default function EnhancedTable() {
 	const [selEvent, setSelEvent] = useState({
 		target: { name: "", checked: null },
 	});
-	const [orderToSplit, setOrderTOSPlit] = useState(null);
 
 	const [unSplitOrderId, setUnSplitOrderId] = useState(0);
 	const [splitId, setSplitId] = useState(0);
@@ -77,7 +74,6 @@ export default function EnhancedTable() {
 	const [openAddRemoveQuantity, setOpenAddRemoveQuantity] = useState(false);
 
 	const handleClickOpenStatus = (rowId, e) => {
-		
 		setSelectedRowId(rowId);
 		setSelEvent(e);
 		setOpenStatusCnf(true);
@@ -272,11 +268,11 @@ export default function EnhancedTable() {
 					<Button
 						fullWidth
 						onClick={() => {
-							console.log('Open Order Edit',openOrderEdit)
+							console.log("Open Order Edit", openOrderEdit);
 							setSelectedRowId(params.row.id);
 							//setIsEdit(false);
 							setOpenOrderEdit(false);
-							console.log('Open Order Edit',openOrderEdit)
+							console.log("Open Order Edit", openOrderEdit);
 							setOpenOrderView(true);
 						}}
 						color="info"
@@ -358,7 +354,6 @@ export default function EnhancedTable() {
 			headerName: "Priority",
 			maxWidth: 70,
 			renderCell: (params) => {
-				console.log("check priority", params.row.priority);
 				return (
 					<div className="position-relative">
 						<IOSSwitch
@@ -540,8 +535,8 @@ export default function EnhancedTable() {
 			</Card>
 
 			<Dialog
-			fullWidth={true}
-			maxWidth='lg'
+				fullWidth={true}
+				maxWidth="lg"
 				open={openOrderEdit}
 				TransitionComponent={Transition}
 				keepMounted
@@ -557,29 +552,29 @@ export default function EnhancedTable() {
 			</Dialog>
 
 			<Dialog
-			fullWidth={true}
-			maxWidth='lg'
+				fullWidth={true}
+				maxWidth="lg"
 				open={openOrderView}
 				TransitionComponent={Transition}
 				keepMounted
 				key={Math.random(1, 100)}
 			>
-				 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          View Order Details
-        </DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseModal}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-		  id="order-view-close-btn"
-        >
-          <CloseIcon />
-        </IconButton>
+				<DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+					View Order Details
+				</DialogTitle>
+				<IconButton
+					aria-label="close"
+					onClick={handleCloseModal}
+					sx={{
+						position: "absolute",
+						right: 8,
+						top: 8,
+						color: (theme) => theme.palette.grey[500],
+					}}
+					id="order-view-close-btn"
+				>
+					<CloseIcon />
+				</IconButton>
 				<OrderViewModal orderId={selectedRowId} key={Math.random(1, 100)} />
 			</Dialog>
 

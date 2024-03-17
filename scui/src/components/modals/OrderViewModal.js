@@ -347,7 +347,6 @@ export default function OrderViewModal(prop) {
 		}
 	};
 	const formatDateIst = (date) => {
-		console.log(date);
 		if (date != "" && date != null && date != "undefined") {
 			const time = date.split(" ")[1] ?? "";
 			let newDate = new Date(date);
