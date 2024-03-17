@@ -290,7 +290,6 @@ export default function LookupEntry() {
 			.then(function (response) {
 				//handle success
 				const res_data = response.data;
-				console.log(res_data);
 				if (res_data.status_code === 200) {
 					setLookupList(res_data);
 				} else {

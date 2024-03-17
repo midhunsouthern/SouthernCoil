@@ -27,7 +27,6 @@ export default function Login(prop) {
 				//handle success
 				const res_data = response.data;
 				if (res_data.status_code === 200) {
-					console.log(res_data);
 					prop.onLogin({
 						access_code: res_data.access_code,
 						accessModuleList: res_data.accessModuleList,
