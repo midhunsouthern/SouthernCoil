@@ -53,6 +53,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 export default function M2tubeCUtting() {
 	const access = useContext(AccessContext).authID;
+	const accessModuleList = useContext(AccessContext).accessModuleList;
 	const [orderList, setOrderList] = useState([]);
 	const [selectedRowId, setSelectedRowId] = useState(0);
 	const [selComment, setSelComment] = useState("");
@@ -450,14 +451,21 @@ export default function M2tubeCUtting() {
 							refreshPage={(request) => refreshData(request)}
 						/>
 						<div style={{ border: "1px solid grey" }}></div>
-						<NavLink to="/epBending" className="toolButton">
-							<KeyboardDoubleArrowLeftIcon style={{ color: "#BC1921" }} />
-							Prev Module
-						</NavLink>
-						<NavLink to="/finpunching" className="toolButton">
-							Next Module
-							<KeyboardDoubleArrowRightIcon style={{ color: "#BC1921" }} />
-						</NavLink>
+						{accessModuleList.filter((x) => x.module_name === "M1epBending")[0]
+							.access_rw === "1" && (
+							<NavLink to="/epBending" className="toolButton">
+								<KeyboardDoubleArrowLeftIcon style={{ color: "#BC1921" }} />
+								Prev Module
+							</NavLink>
+						)}
+						{accessModuleList.filter(
+							(x) => x.module_name === "M3finsPunching"
+						)[0].access_rw === "1" && (
+							<NavLink to="/finpunching" className="toolButton">
+								Next Module
+								<KeyboardDoubleArrowRightIcon style={{ color: "#BC1921" }} />
+							</NavLink>
+						)}
 					</Stack>
 					<div className="mt-3">
 						<DataGrid

@@ -49,6 +49,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 export default function Dispatch() {
 	const access = useContext(AccessContext).authID;
+	const accessModuleList = useContext(AccessContext).accessModuleList;
 	const [orderList, setOrderList] = useState([]);
 	const [selectedRowId, setSelectedRowId] = useState(0);
 	const [selComment, setSelComment] = useState("");
@@ -382,10 +383,14 @@ export default function Dispatch() {
 							refreshPage={(request) => refreshData(request)}
 						/>
 						<div style={{ border: "1px solid grey" }}></div>
-						<NavLink to="/paintingpacking" className="toolButton">
-							<KeyboardDoubleArrowLeftIcon style={{ color: "#BC1921" }} />
-							Prev Module
-						</NavLink>
+						{accessModuleList.filter(
+							(x) => x.module_name === "M4paintPacking"
+						)[0].access_rw === "1" && (
+							<NavLink to="/paintingpacking" className="toolButton">
+								<KeyboardDoubleArrowLeftIcon style={{ color: "#BC1921" }} />
+								Prev Module
+							</NavLink>
+						)}
 					</Stack>
 					<div className="mt-3">
 						<DataGrid

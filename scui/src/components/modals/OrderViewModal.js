@@ -296,7 +296,7 @@ export default function OrderViewModal(prop) {
 					setFinFoilNo(ret_data_cd[0].finpunching_foilno);
 					setBrazingStatus(ret_data_cd[0].brazing_status);
 					setBrazingDate(ret_data_cd[0].brazing_status_dt);
-					setBrazingExpansion(ret_data_cd[0].brazing_expansion);
+					setBrazingExpansion(ret_data_cd[0].ce_status_dt);
 					setCaStatus(ret_data_cd[0].ca_status);
 					setCaStatusDate(ret_data_cd[0].ca_status_dt);
 					setCeStatus(ret_data_cd[0].ce_status);
@@ -539,14 +539,13 @@ export default function OrderViewModal(prop) {
 											</tr>
 											<tr>
 												<th style={{ textAlign: "left", paddingLeft: "10px" }}>
-													Cover Type 
+													Cover Type
 												</th>
 												<td style={{ textAlign: "left", paddingLeft: "10px" }}>
 													<Stack direction="row" spacing={3}>
 														{lookUpList["coverType"]?.map((item) => {
 															return (
 																<>
-																	
 																	{lookUpList["coverDetail"]?.map((itemd) => {
 																		if (
 																			coverDetail !== undefined &&
@@ -898,9 +897,7 @@ export default function OrderViewModal(prop) {
 								{
 									<tr>
 										<th style={{ textAlign: "left" }}>CNC Nesting</th>
-										<td>
-											{formatDateIst(cncNestingDate)}
-										</td>
+										<td>{formatDateIst(cncNestingDate)}</td>
 									</tr>
 								}
 
@@ -951,7 +948,7 @@ export default function OrderViewModal(prop) {
 												border: "0",
 											}}
 										>
-											{epComments}
+											Comments: {epComments}
 										</td>
 									</tr>
 								}
@@ -968,29 +965,26 @@ export default function OrderViewModal(prop) {
 											}}
 										>
 											<span>Roll Number: {tCuttingRollNo}</span>
-											{
-												(pbStraight=='true' &&
+											{pbStraight == "true" && (
 												<span>
-												Pipe Straight-{pbStraightQty} Nos {pbStraightSize}mm
-											</span>)
-											}
-											{
-												(pbCross=='true' && 
+													Pipe Straight-{pbStraightQty} Nos {pbStraightSize}mm
+												</span>
+											)}
+											{pbCross == "true" && (
 												<span>
-													Pipe Cross-{pbCrossQty} Nos  {pbCrossSize}mm
-												</span>)
-											}
-											{	(pbSingle=='true' && 
-											<span>
-												Pipe Single-{pbSingleQty} Nos {pbSingleSize}mm
-											</span>)
-}{
-												(pbOther=='true' && 
+													Pipe Cross-{pbCrossQty} Nos {pbCrossSize}mm
+												</span>
+											)}
+											{pbSingle == "true" && (
+												<span>
+													Pipe Single-{pbSingleQty} Nos {pbSingleSize}mm
+												</span>
+											)}
+											{pbOther == "true" && (
 												<span>
 													Pipe Others-{pbOtherQty} Nos {pbOtherSize}mm
-												</span>)
-											}
-											
+												</span>
+											)}
 										</td>
 									</tr>
 								}
@@ -1086,7 +1080,7 @@ export default function OrderViewModal(prop) {
 											}}
 										>
 											{" "}
-											{brazingComments}
+											Comments: {brazingComments}
 										</td>
 									</tr>
 								}
