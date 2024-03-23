@@ -55,6 +55,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 export default function M3coilExpansion() {
 	const access = useContext(AccessContext).authID;
+	const accessModuleList = useContext(AccessContext).accessModuleList;
 	const [orderList, setOrderList] = useState([]);
 	const [selectedRowId, setSelectedRowId] = useState(0);
 	const [selComment, setSelComment] = useState("");
@@ -356,14 +357,22 @@ export default function M3coilExpansion() {
 							refreshPage={(request) => refreshData(request)}
 						/>
 						<div style={{ border: "1px solid grey" }}></div>
-						<NavLink to="/coilassembly" className="toolButton">
-							<KeyboardDoubleArrowLeftIcon style={{ color: "#BC1921" }} />
-							Prev Module
-						</NavLink>
-						<NavLink to="/brazing" className="toolButton">
-							Next Module
-							<KeyboardDoubleArrowRightIcon style={{ color: "#BC1921" }} />
-						</NavLink>
+						{accessModuleList.filter(
+							(x) => x.module_name === "M3coilAssembly"
+						)[0].access_rw === "1" && (
+							<NavLink to="/coilassembly" className="toolButton">
+								<KeyboardDoubleArrowLeftIcon style={{ color: "#BC1921" }} />
+								Prev Module
+							</NavLink>
+						)}
+						{accessModuleList.filter(
+							(x) => x.module_name === "M4brazingLeak"
+						)[0].access_rw === "1" && (
+							<NavLink to="/brazing" className="toolButton">
+								Next Module
+								<KeyboardDoubleArrowRightIcon style={{ color: "#BC1921" }} />
+							</NavLink>
+						)}
 					</Stack>
 					<div className="mt-3">
 						<DataGrid
