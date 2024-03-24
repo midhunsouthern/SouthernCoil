@@ -102,61 +102,58 @@ class MainModal extends CI_Model
     /**
      * Save Images against order id
      */
-    private function saveImageOrder($refId, $orderType)
-    {
-        $ci = &get_instance();
-        log_message('debug', 'Instance Name:' . print_r($ci->router, true));
-        log_message('debug', 'Im calling here ' . $orderType . ' Order Ref ID ' . $refId);
+     private function saveImageOrder($refId,$orderType){
         try {
             $image_path = realpath(APPPATH . '../uploads');
-            $imageKeys = [
-                'ep' => 'ep',
-                'asm' => 'assembly',
-                'bz' => 'brazing'
+            $imageKeys=[
+                'ep'=>'ep',
+                'asm'=>'assembly',
+                'bz'=>'brazing'
             ];
-            log_message('debug', 'Image Order');
-            log_message('debug', $orderType);
-            $fetchData = $this->db->select('drawing_base64')
-                ->from('drawing_images')
-                ->where(['drawing_refid' => $refId, 'order_type' => $orderType])
-                ->get();
-            log_message('debug', json_encode($fetchData->result_array()));
-            $resultSet = $fetchData->result_array();
-            log_message('debug', print_r($resultSet, true));
-            if (count($resultSet) > 0) {
-                foreach ($resultSet as $key => $value) {
-                    if (file_exists($image_path . '/' . $value['drawing_base64'])) {
-                        if (unlink($image_path . '/' . $value['drawing_base64'])) {
-                            log_message('debug', 'File deleted');
-                        } else {
-                            log_message('debug', 'Not Deleted');
+            $existingImagesId=[];
+            $fetchData=$this->db->select('drawing_base64,draw_type,id')
+                            ->from('drawing_images')
+                            ->where(['drawing_refid'=>$refId,'order_type'=>$orderType])
+                            ->get();
+                            //log_message('debug',json_encode($fetchData->result_array()));
+                            $resultSet=$fetchData->result_array();
+                            if(count($resultSet)>0){
+                                foreach($resultSet as $key=>$value){
+                                    $existingImagesId[$value['draw_type']][$value['id']]=$value['drawing_base64'];
+                                }
+                            }
+                            log_message('debug',print_r($existingImagesId,true));
+                            foreach ($imageKeys as $index => $value) {
+                                if(isset($_POST[$value.'Photo'])){
+                                    foreach ($_POST[$value.'Photo'] as $row) {
+                                        $logMessage = (preg_match('/\.webp/', $row) ? "Yes" : "No");
+                                        if(count($existingImagesId)>0){
+                                           foreach($existingImagesId[$index] as $exKey=>$exValue){
+                                            log_message('debug',print_r($exValue,true));
+                                                if('uploads/'.$exValue==$row){
+                                                    unset($existingImagesId[$index][$exKey]);
+                                                }
+                                            }
+                                        }
+                                        if($logMessage=='No') {
+                                            $webpData=convert_base64_to_webp($row,$image_path,$refId);
+                                            $this->db->insert('drawing_images', array('drawing_refid' => $refId, 'drawing_base64' => $webpData,'order_type'=>$orderType,'draw_type'=>$index));
+                                        }
+                                 }
+                                }
+                            }
+                            // Delete Images
+                            log_message('debug',print_r($existingImagesId,true));
+                            if(count($existingImagesId)>0){
+                            foreach ($imageKeys as $index => $value) {
+                                if(count($existingImagesId[$index])>0){
+                            foreach ($existingImagesId[$index] as $exDelKey =>$exDelValue) {
+                                $this->db->delete('drawing_images',['id'=>$exDelKey]);
+                             }
                         }
                     }
-                }
-            }
-            $this->db->delete('drawing_images', ['drawing_refid' => $refId, 'order_type' => $orderType]);
-
-            foreach ($imageKeys as $keys => $value) {
-                if (isset($_POST[$value . 'Photo'])) {
-                    foreach ($_POST[$value . 'Photo'] as $row) {
-
-
-                        $logMessage = (preg_match('/\.webp/', $row) ? "Yes" : "No");
-                        log_message('debug', print_r($logMessage, true));
-                        if ($logMessage == 'No') {
-                            $webpData = convert_base64_to_webp($row, $image_path, $refId);
-                        } else {
-                            // Use parse_url() to extract the path part of the URL
-                            $path = parse_url($row, PHP_URL_PATH);
-                            // Use basename() to get the filename from the path
-                            $filename = basename($path);
-                            $webpData = $filename;
-                        }
-                        $this->db->insert('drawing_images', array('drawing_refid' => $refId, 'drawing_base64' => $webpData, 'order_type' => $orderType, 'draw_type' => $keys));
-                        $data[$value . '_Photo'] = $refId;
                     }
-                }
-            }
+        
         } catch (\Throwable $th) {
             throw $th;
         }
