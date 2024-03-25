@@ -827,7 +827,7 @@ export default function OrderViewModal(prop) {
 														/>
 														<IconButton
 															className="order-view-img"
-															onClick={() => handleClickOpenimg(item)}
+															onClick={() => handleClickOpenimg(imageURL + item)}
 														>
 															<PreviewIcon />
 														</IconButton>
@@ -856,7 +856,7 @@ export default function OrderViewModal(prop) {
 															}}
 														/>
 														<IconButton
-															onClick={() => handleClickOpenimg(item)}
+															onClick={() => handleClickOpenimg(imageURL + item)}
 														>
 															<PreviewIcon />
 														</IconButton>
