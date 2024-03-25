@@ -509,13 +509,11 @@ export default function M3coilExpansion() {
 								},
 							}}
 							processRowUpdate={(param, event) => {
-								handleGenericUpdateRow(
-									access,
-									["dispatch_comment"],
-									param
-								).then((pStatus) => {
-									console.log(pStatus);
-								});
+								handleGenericUpdateRow(access, ["brazing_comment"], param).then(
+									(pStatus) => {
+										console.log(pStatus);
+									}
+								);
 								return param;
 							}}
 							onProcessRowUpdateError={(param) => {

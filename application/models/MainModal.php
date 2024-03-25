@@ -102,58 +102,58 @@ class MainModal extends CI_Model
     /**
      * Save Images against order id
      */
-     private function saveImageOrder($refId,$orderType){
+    private function saveImageOrder($refId, $orderType)
+    {
         try {
             $image_path = realpath(APPPATH . '../uploads');
-            $imageKeys=[
-                'ep'=>'ep',
-                'asm'=>'assembly',
-                'bz'=>'brazing'
+            $imageKeys = [
+                'ep' => 'ep',
+                'asm' => 'assembly',
+                'bz' => 'brazing'
             ];
-            $existingImagesId=[];
-            $fetchData=$this->db->select('drawing_base64,draw_type,id')
-                            ->from('drawing_images')
-                            ->where(['drawing_refid'=>$refId,'order_type'=>$orderType])
-                            ->get();
-                            //log_message('debug',json_encode($fetchData->result_array()));
-                            $resultSet=$fetchData->result_array();
-                            if(count($resultSet)>0){
-                                foreach($resultSet as $key=>$value){
-                                    $existingImagesId[$value['draw_type']][$value['id']]=$value['drawing_base64'];
+            $existingImagesId = [];
+            $fetchData = $this->db->select('drawing_base64,draw_type,id')
+                ->from('drawing_images')
+                ->where(['drawing_refid' => $refId, 'order_type' => $orderType])
+                ->get();
+            //log_message('debug',json_encode($fetchData->result_array()));
+            $resultSet = $fetchData->result_array();
+            if (count($resultSet) > 0) {
+                foreach ($resultSet as $key => $value) {
+                    $existingImagesId[$value['draw_type']][$value['id']] = $value['drawing_base64'];
+                }
+            }
+            log_message('debug', print_r($existingImagesId, true));
+            foreach ($imageKeys as $index => $value) {
+                if (isset($_POST[$value . 'Photo'])) {
+                    foreach ($_POST[$value . 'Photo'] as $row) {
+                        $logMessage = (preg_match('/\.webp/', $row) ? "Yes" : "No");
+                        if (count($existingImagesId) > 0) {
+                            foreach ($existingImagesId[$index] as $exKey => $exValue) {
+                                log_message('debug', print_r($exValue, true));
+                                if ('uploads/' . $exValue == $row) {
+                                    unset($existingImagesId[$index][$exKey]);
                                 }
                             }
-                            log_message('debug',print_r($existingImagesId,true));
-                            foreach ($imageKeys as $index => $value) {
-                                if(isset($_POST[$value.'Photo'])){
-                                    foreach ($_POST[$value.'Photo'] as $row) {
-                                        $logMessage = (preg_match('/\.webp/', $row) ? "Yes" : "No");
-                                        if(count($existingImagesId)>0){
-                                           foreach($existingImagesId[$index] as $exKey=>$exValue){
-                                            log_message('debug',print_r($exValue,true));
-                                                if('uploads/'.$exValue==$row){
-                                                    unset($existingImagesId[$index][$exKey]);
-                                                }
-                                            }
-                                        }
-                                        if($logMessage=='No') {
-                                            $webpData=convert_base64_to_webp($row,$image_path,$refId);
-                                            $this->db->insert('drawing_images', array('drawing_refid' => $refId, 'drawing_base64' => $webpData,'order_type'=>$orderType,'draw_type'=>$index));
-                                        }
-                                 }
-                                }
-                            }
-                            // Delete Images
-                            log_message('debug',print_r($existingImagesId,true));
-                            if(count($existingImagesId)>0){
-                            foreach ($imageKeys as $index => $value) {
-                                if(count($existingImagesId[$index])>0){
-                            foreach ($existingImagesId[$index] as $exDelKey =>$exDelValue) {
-                                $this->db->delete('drawing_images',['id'=>$exDelKey]);
-                             }
+                        }
+                        if ($logMessage == 'No') {
+                            $webpData = convert_base64_to_webp($row, $image_path, $refId);
+                            $this->db->insert('drawing_images', array('drawing_refid' => $refId, 'drawing_base64' => $webpData, 'order_type' => $orderType, 'draw_type' => $index));
                         }
                     }
+                }
+            }
+            // Delete Images
+            log_message('debug', print_r($existingImagesId, true));
+            if (count($existingImagesId) > 0) {
+                foreach ($imageKeys as $index => $value) {
+                    if (count($existingImagesId[$index]) > 0) {
+                        foreach ($existingImagesId[$index] as $exDelKey => $exDelValue) {
+                            $this->db->delete('drawing_images', ['id' => $exDelKey]);
+                        }
                     }
-        
+                }
+            }
         } catch (\Throwable $th) {
             throw $th;
         }

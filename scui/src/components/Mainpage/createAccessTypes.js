@@ -67,7 +67,7 @@ export default function CreateAccessTypes() {
 		bodyFormData.append("authId", access);
 		bodyFormData.append("access_type", accessName);
 		bodyFormData.append("module_list", JSON.stringify(moduleList));
-
+		console.log("handleSetModuleList", moduleList);
 		axios({
 			method: "post",
 			url: setAccessModuleList,
@@ -163,14 +163,6 @@ export default function CreateAccessTypes() {
 	};
 
 	const ModuleComponent = () => {
-		console.log(
-			"ModuleComponent",
-			moduleList,
-
-			moduleList?.map((row) => {
-				return row.access_rw === "0";
-			})
-		);
 		return (
 			<TableContainer component={Paper}>
 				<Table fullWidth aria-label="simple table">
