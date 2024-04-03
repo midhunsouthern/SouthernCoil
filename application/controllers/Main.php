@@ -636,8 +636,14 @@ class Main extends CI_Controller
             }
             $id = $this->input->post('id');
             log_message('debug', print_r($id, true));
+            $isSplit=$this->db->get_where('order_list',array('id'=>$id,'split_id!='=>''))->result_array();
+            
             $customerDetails = $this->db->get_where('lookup', array('category' => 'brazingLkp'))->result_array();
             $ret_data['data_orders'] = $this->db->query("SELECT ifnull( b.fname, 'Not Set') as full_customer_name, a.* FROM order_list a left join customers b on a.customer_name = b.id where a.id = '$id';")->result_array();
+            if(count($isSplit)>0){
+                $orderNoList=$this->db->get_where('order_list',array('order_id'=>$isSplit[0]['order_id'],'split_id='=>''))->result_array();
+                $id=$orderNoList[0]['id'];
+            }
             $imagesList = $this->db->get_where('drawing_images', array('drawing_refid' => $id))->result_array();
             $brazingDetails = $this->db->get_where('brazing_details', array('order_id' => $ret_data['data_orders'][0]['order_id'], 'split_id' => $ret_data['data_orders'][0]['split_id']))->result_array();
 
@@ -731,7 +737,11 @@ class Main extends CI_Controller
         }
         $orderId = $this->input->post('order_id');
         $drawType = $this->input->post('draw_type');
-
+        $isSplit=$this->db->get_where('order_list',array('id'=>$orderId,'split_id!='=>''))->result_array();
+        if(count($isSplit)>0){
+            $orderNoList=$this->db->get_where('order_list',array('order_id'=>$isSplit[0]['order_id'],'split_id='=>''))->result_array();
+            $orderId=$orderNoList[0]['id'];
+        }
         if ($drawType == 'ep') {
             $this->db->select('drawing_base64');
             $ret_data['data_orders']['ep_photo'] = $this->db->get_where('drawing_images', array('draw_type' => $drawType, 'drawing_refid' => $orderId))->result_array();
