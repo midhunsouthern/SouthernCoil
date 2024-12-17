@@ -65,6 +65,15 @@ export default function M2tubeCUtting() {
 	const [openCommentDialog, setOpenCommentDialog] = useState(false);
 	const [openOrderView, setOpenOrderView] = useState(false);
 
+	const _handleGenericUpdateRow = (access, fields, rowData) => {
+		handleGenericUpdateRow(access, fields, rowData).then(function (d) {
+			const newId = orderList.findIndex(function (item) {
+				return d.id === item.id;
+			});
+			var newOrderList = Object.assign([...orderList], { [newId]: d });
+			setOrderList(newOrderList);
+		});
+	};
 	const handleClickOpenStatus = (rowId, e) => {
 		setSelectedRowId(rowId);
 		setSelEvent(e);
@@ -270,6 +279,12 @@ export default function M2tubeCUtting() {
 			flex: 1,
 		},
 		{
+			field: "expansion_type",
+			headerName: "Expansion",
+			maxWidth: 100,
+			flex: 1,
+		},
+		{
 			field: "fin_per_inch",
 			headerName: "FPI",
 			maxWidth: 70,
@@ -393,8 +408,8 @@ export default function M2tubeCUtting() {
 									if (params.row.priority === "true") {
 										return "secon-bg";
 									} else if (
-										params.row.bending_status === "true" &&
-										params.row.finpunch_status === "true"
+										params.row.tcutting_status === "true" &&
+										params.row.bending_status === "true"
 									) {
 										return "partial-comp-bg";
 									} else {
@@ -436,13 +451,15 @@ export default function M2tubeCUtting() {
 								},
 							}}
 							processRowUpdate={(param, event) => {
-								handleGenericUpdateRow(
+								console.log(param);
+								_handleGenericUpdateRow(
 									access,
 									["fin_comments", "finpunching_foilno"],
 									param
-								).then((pStatus) => {
-									console.log(pStatus);
-								});
+								);
+								// .then((pStatus) => {
+								// 	console.log(pStatus);
+								// });
 								return param;
 							}}
 							onProcessRowUpdateError={(param) => {

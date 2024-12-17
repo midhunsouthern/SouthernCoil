@@ -57,7 +57,7 @@ export default function OrderEditModal(prop) {
 	const [orderDate, setOrderDate] = useState("");
 	const [customerName, setCustomerName] = useState({ label: "N/A", id: "0" });
 	const [customerNameList, setCustomerNameList] = useState([]);
-	const [splitId,setSplitId]=useState([]);
+	const [splitId, setSplitId] = useState([]);
 	const [length, setLength] = useState(0);
 	const [height, setHeight] = useState(0);
 	const [row, setRow] = useState(0);
@@ -244,19 +244,16 @@ export default function OrderEditModal(prop) {
 		imgData.forEach((item, index) => {
 			if (item.ep.length > 0) {
 				item.ep.forEach((img, imgIndex) => {
-					console.log("Image Index EP", imgIndex);
 					bodyFormData.append(`epPhoto[${imgIndex}]`, img);
 				});
 			}
 			if (item.assembly.length > 0) {
 				item.assembly.forEach((img, imgIndex) => {
-					console.log("Image Index Assembly", imgIndex);
 					bodyFormData.append(`assemblyPhoto[${imgIndex}]`, img);
 				});
 			}
 			if (item.brazing.length > 0) {
 				item.brazing.forEach((img, imgIndex) => {
-					console.log("Image Index Brazing", imgIndex);
 					bodyFormData.append(`brazingPhoto[${imgIndex}]`, img);
 				});
 			}
@@ -715,7 +712,12 @@ export default function OrderEditModal(prop) {
 								<div className="row  mt-2 rounded prime-border pt-2">
 									<div className="col-3">
 										<FormControl fullWidth>
-											<InputLabel id="modeDispatch-label">Pipe Type</InputLabel>
+											<InputLabel
+												key={() => Math.random()}
+												id="modeDispatch-label"
+											>
+												Pipe Type
+											</InputLabel>
 											<Select
 												required={true}
 												labelId="modeDispatch-label"
@@ -993,7 +995,7 @@ export default function OrderEditModal(prop) {
 													<Stack>
 														<TextField
 															InputLabelProps={{ shrink: true }}
-															type="number"
+															type="text"
 															margin="normal"
 															fullWidth
 															id="otherQty"
@@ -1007,7 +1009,7 @@ export default function OrderEditModal(prop) {
 														/>
 														<TextField
 															InputLabelProps={{ shrink: true }}
-															type="number"
+															type="text"
 															margin="normal"
 															fullWidth
 															id="OtherSize"
@@ -1021,7 +1023,7 @@ export default function OrderEditModal(prop) {
 														/>
 														<TextField
 															InputLabelProps={{ shrink: true }}
-															type="number"
+															type="text"
 															margin="normal"
 															fullWidth
 															id="tototherqty"
@@ -1127,15 +1129,15 @@ export default function OrderEditModal(prop) {
 																	>
 																		<PreviewIcon />
 																	</IconButton>
-																	{splitId=='' && 	
-																	<IconButton
-																		onClick={() =>
-																			handleClickDeleteimg(index, "ep")
-																		}
-																	>
-																		<DeleteIcon />
-																	</IconButton>
-}
+																	{splitId == "" && (
+																		<IconButton
+																			onClick={() =>
+																				handleClickDeleteimg(index, "ep")
+																			}
+																		>
+																			<DeleteIcon />
+																		</IconButton>
+																	)}
 																</Stack>
 															</ImageListItem>
 														))}
@@ -1150,9 +1152,7 @@ export default function OrderEditModal(prop) {
 												}}
 												key={Math.random()}
 											>
-												{ splitId=='' &&
-												<PhotoCameraIcon />
-}
+												{splitId == "" && <PhotoCameraIcon />}
 											</ReactFileReader>
 										</>
 									</div>
@@ -1311,15 +1311,15 @@ export default function OrderEditModal(prop) {
 																	>
 																		<PreviewIcon />
 																	</IconButton>
-																	{splitId=='' &&
-																	<IconButton
-																		onClick={() =>
-																			handleClickDeleteimg(index, "assembly")
-																		}
-																	>
-																		<DeleteIcon />
-																	</IconButton>
-}
+																	{splitId == "" && (
+																		<IconButton
+																			onClick={() =>
+																				handleClickDeleteimg(index, "assembly")
+																			}
+																		>
+																			<DeleteIcon />
+																		</IconButton>
+																	)}
 																</Stack>
 															</ImageListItem>
 														))}
@@ -1331,9 +1331,7 @@ export default function OrderEditModal(prop) {
 												multipleFiles={true}
 												handleFiles={(files) => handleFiles("assembly", files)}
 											>
-												{splitId=='' &&
-												<PhotoCameraIcon />
-}
+												{splitId == "" && <PhotoCameraIcon />}
 											</ReactFileReader>
 										</>
 									</div>
@@ -1445,15 +1443,15 @@ export default function OrderEditModal(prop) {
 																	>
 																		<PreviewIcon />
 																	</IconButton>
-																	{splitId=='' &&
-																	<IconButton
-																		onClick={() =>
-																			handleClickDeleteimg(index, "brazing")
-																		}
-																	>
-																		<DeleteIcon />
-																	</IconButton>
-}
+																	{splitId == "" && (
+																		<IconButton
+																			onClick={() =>
+																				handleClickDeleteimg(index, "brazing")
+																			}
+																		>
+																			<DeleteIcon />
+																		</IconButton>
+																	)}
 																</Stack>
 															</ImageListItem>
 														))}
@@ -1465,9 +1463,7 @@ export default function OrderEditModal(prop) {
 												multipleFiles={true}
 												handleFiles={(files) => handleFiles("brazing", files)}
 											>
-												{splitId=='' &&
-												<PhotoCameraIcon />
-										}
+												{splitId == "" && <PhotoCameraIcon />}
 											</ReactFileReader>
 										</>
 									</div>

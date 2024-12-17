@@ -17,13 +17,11 @@ import {
 	CardContent,
 	Typography,
 	Stack,
-	Checkbox,
 	DialogTitle,
 	DialogActions,
 	ImageList,
 	ImageListItem,
 	Box,
-	TextField,
 	IconButton,
 	Select,
 	MenuItem,
@@ -294,7 +292,7 @@ export default function Dispatch() {
 		{
 			field: "size",
 			headerName: "Size",
-			minWidth: 120,
+			minWidth: 50,
 			flex: 1,
 		},
 		{
@@ -312,11 +310,6 @@ export default function Dispatch() {
 					params.row.dispatch_mode.trim().charAt(0) === ","
 						? params.row.dispatch_mode.substr(1).split(",")[0]
 						: params.row.dispatch_mode.split(",")[0];
-				console.log(
-					"dispatch mode",
-					params.row.dispatch_mode,
-					firstDispatchMethod
-				);
 				return (
 					<Select
 						fullWidth
@@ -334,6 +327,24 @@ export default function Dispatch() {
 			},
 			maxWidth: 100,
 			flex: 1,
+		},
+		{
+			field: "order_confirm_date",
+			headerName: "Order Confirmation",
+			flex: 1,
+			maxWidth: 120,
+			type: "date",
+			editable: true,
+			valueFormatter: (params) => moment(params?.value).format("DD/MM/YYYY"),
+		},
+		{
+			field: "est_delivery_date",
+			headerName: "CTD",
+			flex: 1,
+			maxWidth: 120,
+			type: "date",
+			editable: true,
+			valueFormatter: (params) => moment(params?.value).format("DD/MM/YYYY"),
 		},
 		{
 			field: "dispatch_comment",
@@ -442,7 +453,11 @@ export default function Dispatch() {
 							processRowUpdate={(param, event) => {
 								handleGenericUpdateRow(
 									access,
-									["dispatch_comment"],
+									[
+										"dispatch_comment",
+										"order_confirm_date",
+										"est_delivery_date",
+									],
 									param
 								).then((pStatus) => {
 									console.log(pStatus);

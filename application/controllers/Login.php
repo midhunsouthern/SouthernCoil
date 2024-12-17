@@ -92,4 +92,31 @@ class Login extends CI_Controller
         $this->session->sess_destroy();
         $this->load->view('login');
     }
+
+
+    /** Customer portal access code */
+    public function customer_access()
+    {
+        $email = $this->input->post('email');
+        $pwd = $this->input->post('password');
+
+        $acc = $this->db->query("SELECT * FROM `customers` where email ='$email' and (password ='$pwd' or otp ='$pwd')");
+
+        if ($acc->num_rows() == 1) {
+            $this->session->set_userdata('phone', $acc->row()->phone);
+            $this->session->set_userdata('customer_row_id', $acc->row()->id);
+            $this->session->set_flashdata('success', 'Access Granted');
+        } else {
+            $this->session->set_flashdata('error', 'Credential not correct, please try again.');
+        }
+
+        header("Location: " . base_url('index.php/customerMain'));
+    }
+
+    public function customer_logout()
+    {
+        $this->session->sess_destroy();
+        header("Location: " . base_url('index.php/customerMain'));
+    }
+    /** End Customer portal access code */
 }

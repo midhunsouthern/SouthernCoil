@@ -7,24 +7,18 @@ import {
 	TextField,
 	Autocomplete,
 	Checkbox,
-	FormGroup,
 	FormControlLabel,
 	Stack,
 	IconButton,
-	Grid,
 	Box,
 	Typography,
-	ButtonBase,
 	Modal,
-	Avatar,
 	ImageList,
 	ImageListItem,
 	Dialog,
 	DialogActions,
 	FormHelperText,
 	CircularProgress,
-	LinearProgress,
-	styled,
 } from "@mui/material";
 import { Container } from "@mui/system";
 import InputLabel from "@mui/material/InputLabel";
@@ -34,28 +28,20 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import PreviewIcon from "@mui/icons-material/Preview";
 import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Select from "@mui/material/Select";
 import {
 	setOrderNew,
 	getCustomersDataAll_dd,
 	getSavedOrderDataByID,
 } from "../../constant/url";
 import { AccessContext } from "../../constant/accessContext";
-import {
-	orange,
-	blue,
-	lime,
-	green,
-	grey,
-	purple,
-	yellow,
-	red,
-} from "@mui/material/colors";
+import { green } from "@mui/material/colors";
 import {
 	getLookupData,
 	getOrderDataByID,
 	getOrderAll_dd,
 	getLatestOrder,
+	imageURL,
 } from "../../constant/url";
 import Slide from "@mui/material/Slide";
 import CustomerModal from "../modals/CustomerModal";
@@ -68,6 +54,8 @@ import {
 	handleSize,
 	handleSqFeet,
 	handleInput_Check,
+	webpToBase64,
+	imgSrcArrayToBase64,
 } from "../../commonjs/CommonFun";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -225,10 +213,8 @@ export default function CreateOrder() {
 		const imgData = [
 			{ ep: epPhoto, assembly: assemblyPhoto, brazing: brazingPhoto },
 		];
-		console.log(imgData);
 		const btnname = type;
 		var bodyFormData = new FormData();
-		console.log(access);
 		bodyFormData.append("authId", access);
 		bodyFormData.append("type", btnname);
 
@@ -287,19 +273,16 @@ export default function CreateOrder() {
 		imgData.forEach((item, index) => {
 			if (item.ep.length > 0) {
 				item.ep.forEach((img, imgIndex) => {
-					console.log("Image Index EP", imgIndex);
 					bodyFormData.append(`epPhoto[${imgIndex}]`, img);
 				});
 			}
 			if (item.assembly.length > 0) {
 				item.assembly.forEach((img, imgIndex) => {
-					console.log("Image Index Assembly", imgIndex);
 					bodyFormData.append(`assemblyPhoto[${imgIndex}]`, img);
 				});
 			}
 			if (item.brazing.length > 0) {
 				item.brazing.forEach((img, imgIndex) => {
-					console.log("Image Index Brazing", imgIndex);
 					bodyFormData.append(`brazingPhoto[${imgIndex}]`, img);
 				});
 			}
@@ -367,10 +350,9 @@ export default function CreateOrder() {
 			setDispatchMode([]);
 			setDispatchComments("");
 			setFinalComments("");
-			//setEpPhoto([]);
-			//setAssemblyPhoto([]);
-			//setBrazingPhoto([]);
-			retOrderId("");
+			setEpPhoto([]);
+			setAssemblyPhoto([]);
+			setBrazingPhoto([]);
 			//return data
 		}
 
@@ -446,12 +428,13 @@ export default function CreateOrder() {
 					setDispatchMode(res_data.dispatch_mode.split(","));
 					setDispatchComments(res_data.dispatch_comment);
 					setFinalComments(res_data.final_comment);
-					//setEpPhoto(res_data.ep_photo);
-					//setAssemblyPhoto(res_data.assembly_Photo);
-					//setBrazingPhoto(res_data.brazing_Photo);
+					//set images to the state
+					imgSrcArrayToBase64(res_data.ep_photo, setEpPhoto);
+					imgSrcArrayToBase64(res_data.assembly_Photo, setAssemblyPhoto);
+					imgSrcArrayToBase64(res_data.brazing_Photo, setBrazingPhoto);
 					//return data
 				} else {
-					console.log("rresponse", res);
+					console.log("response", res);
 				}
 			})
 			.catch(function (response) {
@@ -459,6 +442,14 @@ export default function CreateOrder() {
 				console.log(response);
 			});
 	};
+
+	function imgSrcArrayToBase64(srcArray, callback) {
+		srcArray.map((srcUrl) => {
+			webpToBase64(imageURL + srcUrl, async (newBase64) => {
+				callback((oldBase64) => [...oldBase64, newBase64]);
+			});
+		});
+	}
 
 	const handleGetSavedData = (savedId) => {
 		var bodyFormData = new FormData();
@@ -526,9 +517,9 @@ export default function CreateOrder() {
 					setDispatchMode(res_data.dispatch_mode.split(","));
 					setDispatchComments(res_data.dispatch_comment);
 					setFinalComments(res_data.final_comment);
-					//setEpPhoto(res_data.ep_photo);
-					//setAssemblyPhoto(res_data.assembly_Photo);
-					//setBrazingPhoto(res_data.brazing_Photo);
+					setEpPhoto(res_data.ep_photo);
+					setAssemblyPhoto(res_data.assembly_Photo);
+					setBrazingPhoto(res_data.brazing_Photo);
 					//return data
 				} else {
 					console.log(res.status_msg);
@@ -1267,7 +1258,7 @@ export default function CreateOrder() {
 																				<Stack>
 																					<TextField
 																						InputLabelProps={{ shrink: true }}
-																						type="number"
+																						type="text"
 																						margin="normal"
 																						fullWidth
 																						id="otherQty"
@@ -1281,7 +1272,7 @@ export default function CreateOrder() {
 																					/>
 																					<TextField
 																						InputLabelProps={{ shrink: true }}
-																						type="number"
+																						type="text"
 																						margin="normal"
 																						fullWidth
 																						id="OtherSize"
@@ -1295,7 +1286,7 @@ export default function CreateOrder() {
 																					/>
 																					<TextField
 																						InputLabelProps={{ shrink: true }}
-																						type="number"
+																						type="text"
 																						margin="normal"
 																						fullWidth
 																						id="tototherqty"

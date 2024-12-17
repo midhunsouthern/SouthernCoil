@@ -2,6 +2,7 @@
 import { saveAs } from "file-saver";
 import XlsxPopulate from "xlsx-populate";
 import orderListLabelId from "./orderListLabelId.json";
+import { imageURL } from "../constant/url";
 
 export const handleSize = (length, height, row, quantity) => {
 	const len = length === null ? 0 : length;
@@ -40,10 +41,10 @@ export const handleFindLookup_arr = (lookUpList, lkpCat, lkpIds) => {
 	const lkparr = lkpIds?.split(",");
 	retVal = lkparr?.map((a) => {
 		let ret = lookUpList[lkpCat]?.find((i) => i.id === a)?.lkp_value;
-		return ret !== undefined ? ret + " ; " : "";
+		return ret !== undefined ? ret + "  " : "";
 	});
 
-	return retVal;
+	return retVal.toString().replace(/\,/g, "");
 };
 
 export const handleFindCoverDetailLookup_arr = (lookUpList, lkpIds) => {
@@ -52,10 +53,10 @@ export const handleFindCoverDetailLookup_arr = (lookUpList, lkpIds) => {
 	retVal = lkparr?.map((a) => {
 		let ret = lookUpList["coverDetail"]?.find((i) => i.id === a);
 		return ret !== undefined
-			? ret?.lkp_value + " => " + ret?.sublkp_val + ";"
+			? ret?.lkp_value + " => " + ret?.sublkp_val + " "
 			: "";
 	});
-	return retVal;
+	return retVal.toString().replace(/\,/g, "");
 };
 
 export const handlePipeQty = (data) => {
@@ -126,4 +127,20 @@ export async function saveAsExcel(data, filename = "scui") {
 			saveAs(res, filename + ".xlsx");
 		});
 	});
+}
+
+export function webpToBase64(src, callback) {
+	var image = new Image();
+	image.crossOrigin = "Anonymous";
+	image.onload = function () {
+		var canvas = document.createElement("canvas");
+		var context = canvas.getContext("2d");
+		canvas.height = this.naturalHeight;
+		canvas.width = this.naturalWidth;
+		context.drawImage(this, 0, 0);
+		var dataURL = canvas.toDataURL("image/jpeg");
+		console.log("dataURL", dataURL);
+		callback(dataURL);
+	};
+	image.src = src;
 }

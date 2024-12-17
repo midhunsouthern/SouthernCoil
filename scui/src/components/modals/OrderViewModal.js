@@ -7,7 +7,6 @@ import {
 	ImageList,
 	ImageListItem,
 	Stack,
-	TextField,
 	Typography,
 	AppBar,
 	Toolbar,
@@ -19,29 +18,9 @@ import PrintIcon from "@mui/icons-material/Print";
 
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import { Autocomplete } from "@mui/material";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormHelperText from "@mui/material/FormHelperText";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import {
-	baseURL,
-	getLookupData,
-	getOrderDataByID,
-	getCustomersDataAll,
-	imageURL,
-} from "../../constant/url";
+import { getLookupData, getOrderDataByID, imageURL } from "../../constant/url";
 import { AccessContext } from "../../constant/accessContext";
-import {
-	orange,
-	blue,
-	lime,
-	green,
-	grey,
-	purple,
-	yellow,
-} from "@mui/material/colors";
+
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PreviewIcon from "@mui/icons-material/Preview";
@@ -63,7 +42,6 @@ export default function OrderViewModal(prop) {
 		dateObj.getDate() + "/" + dateObj.getMonth() + "/" + dateObj.getFullYear()
 	);
 	const [customerName, setCustomerName] = useState([]);
-	const [customerNameList, setCustomerNameList] = useState([]);
 	const [length, setLength] = useState(null);
 	const [height, setHeight] = useState(null);
 	const [row, setRow] = useState(null);
@@ -330,6 +308,7 @@ export default function OrderViewModal(prop) {
 			T: "0.15mm Thick",
 			H: "0.13mm Thick",
 			B: "0.12mm Thick Hydrophilic blue Aluminum",
+			C: "0.12mm Thick Copper Fins",
 			PP: "Not Applicable",
 			// Add more mappings as needed
 		};
@@ -827,7 +806,9 @@ export default function OrderViewModal(prop) {
 														/>
 														<IconButton
 															className="order-view-img"
-															onClick={() => handleClickOpenimg(imageURL + item)}
+															onClick={() =>
+																handleClickOpenimg(imageURL + item)
+															}
 														>
 															<PreviewIcon />
 														</IconButton>
@@ -856,7 +837,9 @@ export default function OrderViewModal(prop) {
 															}}
 														/>
 														<IconButton
-															onClick={() => handleClickOpenimg(imageURL + item)}
+															onClick={() =>
+																handleClickOpenimg(imageURL + item)
+															}
 														>
 															<PreviewIcon />
 														</IconButton>
@@ -1211,6 +1194,58 @@ export default function OrderViewModal(prop) {
 															{value.completion}
 														</td>
 													</tr>
+													<tr>
+														<th
+															style={{ textAlign: "left", paddingLeft: "10px" }}
+														>
+															Leak Details
+														</th>
+														<td
+															style={{ textAlign: "left", paddingLeft: "10px" }}
+														>
+															{value.A !== "0" ? "A:" + value.A + " " : ""}
+															{value.B !== "0" ? "B:" + value.B + " " : ""}
+															{value.D !== "0" ? "D:" + value.D + " " : ""}
+															{value.E !== "0" ? "E:" + value.E + " " : ""}
+															{value.F !== "0" ? "F:" + value.F + " " : ""}
+															{value.G !== "0" ? "G:" + value.G + " " : ""}
+															{value.H !== "0" ? "H:" + value.H + " " : ""}
+															{value.K !== "0" ? "K:" + value.K + " " : ""}
+															{value.L !== "0" ? "L:" + value.L + " " : ""}
+															{value.N !== "0" ? "N:" + value.N + " " : ""}
+														</td>
+													</tr>
+													<tr>
+														<th
+															style={{ textAlign: "left", paddingLeft: "10px" }}
+														>
+															Workman Details
+														</th>
+														<td
+															style={{ textAlign: "left", paddingLeft: "10px" }}
+														>
+															{value.uBend !== ""
+																? "U-Bend:" + value.uBend + " "
+																: ""}
+															{value.inletOutlet !== ""
+																? "Inlet-Outlet:" + value.inletOutlet + " "
+																: ""}
+															{value.headder !== ""
+																? "Headder:" + value.headder + " "
+																: ""}
+															{value.headderFix !== ""
+																? "Headder Fix:" + value.headderFix + " "
+																: ""}
+															{value.distributor !== ""
+																? "Distributor:" + value.distributor + " "
+																: ""}
+															{value.distributorFix !== ""
+																? "Distributor Fix:" +
+																  value.distributorFix +
+																  " "
+																: ""}
+														</td>
+													</tr>
 													{/* Additional details */}
 												</tbody>
 											</table>
@@ -1220,9 +1255,9 @@ export default function OrderViewModal(prop) {
 									{/* Corresponding Image */}
 									<Grid item xs={6}>
 										{brazingTestingImages &&
-											brazingTestingImages[index + 1] && (
+											brazingTestingImages[value.series_id] && (
 												<ImageList cols={1} rowHeight={200}>
-													{brazingTestingImages[index + 1]?.map(
+													{brazingTestingImages[value.series_id]?.map(
 														(item, index) => (
 															<ImageListItem key={"brazing_testing" + index}>
 																<img

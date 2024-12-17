@@ -35,6 +35,11 @@ class MainModal extends CI_Model
         }
     }
 
+    public function get_user_id($access_code)
+    {
+        return  $this->db->get_where('access_profile', array('access_code' => $access_code))->row()->id;
+    }
+
     public function createOrderId()
     {
         $yr = substr(date("Y"), 2);
@@ -116,14 +121,14 @@ class MainModal extends CI_Model
                 ->from('drawing_images')
                 ->where(['drawing_refid' => $refId, 'order_type' => $orderType])
                 ->get();
-            //log_message('debug',json_encode($fetchData->result_array()));
+            // log_message('debug', json_encode($fetchData->result_array()));
             $resultSet = $fetchData->result_array();
             if (count($resultSet) > 0) {
                 foreach ($resultSet as $key => $value) {
                     $existingImagesId[$value['draw_type']][$value['id']] = $value['drawing_base64'];
                 }
             }
-            log_message('debug', print_r($existingImagesId, true));
+            // log_message('debug', print_r($existingImagesId, true));
             foreach ($imageKeys as $index => $value) {
                 if (isset($_POST[$value . 'Photo'])) {
                     foreach ($_POST[$value . 'Photo'] as $row) {
@@ -144,12 +149,14 @@ class MainModal extends CI_Model
                 }
             }
             // Delete Images
-            log_message('debug', print_r($existingImagesId, true));
+            // log_message('debug', print_r($existingImagesId, true));
             if (count($existingImagesId) > 0) {
                 foreach ($imageKeys as $index => $value) {
-                    if (count($existingImagesId[$index]) > 0) {
-                        foreach ($existingImagesId[$index] as $exDelKey => $exDelValue) {
-                            $this->db->delete('drawing_images', ['id' => $exDelKey]);
+                    if (isset($existingImagesId[$index])) {
+                        if (count($existingImagesId[$index]) > 0) {
+                            foreach ($existingImagesId[$index] as $exDelKey => $exDelValue) {
+                                $this->db->delete('drawing_images', ['id' => $exDelKey]);
+                            }
                         }
                     }
                 }
@@ -276,9 +283,17 @@ class MainModal extends CI_Model
         }
 
         $data = array_merge($parentData, $childData);
+
         $i = 0;
         foreach ($data as $row) {
             unset($row['brazing_photo']);
+            if ($row['split_id'] != "") {
+                $series_ref_id = $row['series_ref'];
+                $row['series_ref'] = $row['order_id'] . '-' . $row['series_id'] . '-' . $row['split_id'];
+                $this->db->where('order_serial_ref', $series_ref_id);
+                $this->db->update('drawing_images', array('order_serial_ref' => $row['series_ref']));
+            }
+
             if ($this->db->insert('brazing_details', $row)) {
                 $i = $i + 1;
             }
@@ -303,6 +318,7 @@ class MainModal extends CI_Model
 
         return $ret_data['status_msg'];
     }
+
     public function getBrazingDetailsObj($orderId, $splitId)
     {
 
@@ -427,8 +443,14 @@ class MainModal extends CI_Model
     public function pendingSQ_graph()
     {
         $fieldName = array(
-            'CNC Nesting' => 'cncNesting', 'CNC Punching' => 'cncPunchingNumbering', 'CNC Bending' => 'endPlateBending', 'Tube Cutting' => 'tubeCuttingBending',
-            'Fin Punch' => 'finsPuncing', 'Coil Assembly' => 'coilAssembly', 'Coil Expansion' => 'coilExpansion', 'Brazing Testing' => 'brazingTesting',
+            'CNC Nesting' => 'cncNesting',
+            'CNC Punching' => 'cncPunchingNumbering',
+            'CNC Bending' => 'endPlateBending',
+            'Tube Cutting' => 'tubeCuttingBending',
+            'Fin Punch' => 'finsPuncing',
+            'Coil Assembly' => 'coilAssembly',
+            'Coil Expansion' => 'coilExpansion',
+            'Brazing Testing' => 'brazingTesting',
             'Paint & Packing' => 'paintingPacking',
             'Dispatch' => 'dispatch'
         );
@@ -472,8 +494,16 @@ class MainModal extends CI_Model
     public function completedModelWiseSQ_graph()
     {
         $fieldName = array(
-            'Order Dt' => 'ol_date', 'CNC Nesting' => 'cnc_nest_compsq', 'CNC Punching' => 'cnc_punch_compsq', 'CNC Bending' => 'bending_compsq', 'Tube Cutting' => 'tcutting_compsq',
-            'Fin Punch' => 'finpunch_compsq', 'Coil Assembly' => 'ca_compsq', 'Coil Expansion' => 'ce_compsq', 'Brazing Testing' => 'brazing_compsq', 'Paint & Packing' => 'pp_compsq',
+            'Order Dt' => 'ol_date',
+            'CNC Nesting' => 'cnc_nest_compsq',
+            'CNC Punching' => 'cnc_punch_compsq',
+            'CNC Bending' => 'bending_compsq',
+            'Tube Cutting' => 'tcutting_compsq',
+            'Fin Punch' => 'finpunch_compsq',
+            'Coil Assembly' => 'ca_compsq',
+            'Coil Expansion' => 'ce_compsq',
+            'Brazing Testing' => 'brazing_compsq',
+            'Paint & Packing' => 'pp_compsq',
             'Dispatch' => 'dispatch_compsq'
         );
 

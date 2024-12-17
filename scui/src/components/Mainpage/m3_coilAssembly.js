@@ -33,11 +33,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import OrderViewModal from "../modals/OrderViewModal";
 import ModuleTools from "../modals/ModuleTools";
-import {
-	handlePipeQty,
-	handleFindLookup_arr,
-	handleFindCoverDetailLookup_arr,
-} from "../../commonjs/CommonFun";
+import { handleFindCoverDetailLookup_arr } from "../../commonjs/CommonFun";
 
 import {
 	getLookupData,
@@ -69,6 +65,16 @@ export default function M3coilAssembly() {
 	});
 	const [openCommentDialog, setOpenCommentDialog] = useState(false);
 	const [openOrderView, setOpenOrderView] = useState(false);
+
+	const _handleGenericUpdateRow = (access, fields, rowData) => {
+		handleGenericUpdateRow(access, fields, rowData).then(function (d) {
+			const newId = orderList.findIndex(function (item) {
+				return d.id === item.id;
+			});
+			var newOrderList = Object.assign([...orderList], { [newId]: d });
+			setOrderList(newOrderList);
+		});
+	};
 
 	const handleClickOpenStatus = (rowId, e) => {
 		setSelectedRowId(rowId);
@@ -332,6 +338,12 @@ export default function M3coilAssembly() {
 			flex: 1,
 		},
 		{
+			field: "expansion_type",
+			headerName: "Expansion",
+			maxWidth: 100,
+			flex: 1,
+		},
+		{
 			field: "cover_detail",
 			headerName: "Cover Details",
 			valueGetter: (params) => {
@@ -479,7 +491,7 @@ export default function M3coilAssembly() {
 								},
 							}}
 							processRowUpdate={(param, event) => {
-								handleGenericUpdateRow(access, ["fin_comments"], param).then(
+								_handleGenericUpdateRow(access, ["fin_comments"], param).then(
 									(pStatus) => {
 										console.log(pStatus);
 									}

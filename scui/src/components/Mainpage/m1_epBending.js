@@ -67,6 +67,16 @@ export default function M1epBending() {
 	const [openCommentDialog, setOpenCommentDialog] = useState(false);
 	const [openOrderView, setOpenOrderView] = useState(false);
 
+	const _handleGenericUpdateRow = (access, fields, rowData) => {
+		handleGenericUpdateRow(access, fields, rowData).then(function (d) {
+			const newId = orderList.findIndex(function (item) {
+				return d.id === item.id;
+			});
+			var newOrderList = Object.assign([...orderList], { [newId]: d });
+			setOrderList(newOrderList);
+		});
+	};
+
 	const handleClickOpenStatus = (rowId) => {
 		setSelectedRowId(rowId);
 		setOpenStatusCnf(true);
@@ -435,7 +445,7 @@ export default function M1epBending() {
 						<div style={{ border: "1px solid grey" }}></div>
 						{accessModuleList.filter((x) => x.module_name === "M1cncNesting")[0]
 							.access_rw === "1" && (
-							<NavLink to="/M1cncPunching" className="toolButton">
+							<NavLink to="/cncpunching" className="toolButton">
 								<KeyboardDoubleArrowLeftIcon style={{ color: "#BC1921" }} />
 								Prev Module
 							</NavLink>
@@ -511,7 +521,7 @@ export default function M1epBending() {
 								},
 							}}
 							processRowUpdate={(param, event) => {
-								handleGenericUpdateRow(
+								_handleGenericUpdateRow(
 									access,
 									["ep_comments", "cnc_nesting_pgm_no"],
 									param

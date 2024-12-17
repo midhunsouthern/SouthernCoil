@@ -70,6 +70,16 @@ export default function M3coilExpansion() {
 	const [openCommentDialog, setOpenCommentDialog] = useState(false);
 	const [openOrderView, setOpenOrderView] = useState(false);
 
+	const _handleGenericUpdateRow = (access, fields, rowData) => {
+		handleGenericUpdateRow(access, fields, rowData).then(function (d) {
+			const newId = orderList.findIndex(function (item) {
+				return d.id === item.id;
+			});
+			var newOrderList = Object.assign([...orderList], { [newId]: d });
+			setOrderList(newOrderList);
+		});
+	};
+
 	const handleClickOpenStatus = (rowId, e) => {
 		setSelectedRowId(rowId);
 		setSelEvent(e);
@@ -422,7 +432,7 @@ export default function M3coilExpansion() {
 								},
 							}}
 							processRowUpdate={(param, event) => {
-								handleGenericUpdateRow(access, ["fin_comments"], param).then(
+								_handleGenericUpdateRow(access, ["fin_comments"], param).then(
 									(pStatus) => {
 										console.log(pStatus);
 									}

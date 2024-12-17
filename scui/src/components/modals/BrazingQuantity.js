@@ -1,22 +1,23 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, forwardRef } from "react";
 import axios from "axios";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 
 import PreviewIcon from "@mui/icons-material/Preview";
 import {
+	Dialog,
+	DialogActions,
+	Typography,
+	AppBar,
+	Toolbar,
 	IconButton,
 	Button,
-	TextField,
 	Stack,
-	Checkbox,
 	FormControl,
 	InputLabel,
 	Select,
 	MenuItem,
-	FormGroup,
 	FormControlLabel,
 	ImageListItem,
 	ImageList,
@@ -30,17 +31,21 @@ import {
 	getLookupData,
 	setBrazingDetails,
 	getBrazingDetail,
-	setAddBrazingQuantity,
 	imageURL,
 } from "../../constant/url";
 import { AccessContext } from "../../constant/accessContext";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Slide from "@mui/material/Slide";
+import CloseIcon from "@mui/icons-material/Close";
+
+const Transition = forwardRef(function Transition(props, ref) {
+	return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export default function BrazingQuantity(prop) {
 	const access = useContext(AccessContext).authID;
 	const orderId = prop.orderId;
 	const splitId = prop.splitId;
-	const [bzQtyPhoto, setBzQtyPhoto] = useState([]);
 	const [lookUpList, setLookupList] = useState([]);
 	const [addQty, setAddQty] = useState(0);
 	const [brazingPhotosInLeak, setBrazingPhotosInLeak] = useState([]);
@@ -73,7 +78,6 @@ export default function BrazingQuantity(prop) {
 					return { ...prevImages }; // Return a new object to trigger a state update
 				}
 			});
-			console.log(brazingPhotosInLeak);
 		}
 	};
 
@@ -93,17 +97,15 @@ export default function BrazingQuantity(prop) {
 				[seriesRef]: updatedBrazePhoto,
 			};
 		});
-
-		console.log(brazingPhotosInLeak);
 	};
 	const handleSetBrazingData = (paramOrder, paramSplit) => {
 		var bodyFormData = new FormData();
 		bodyFormData.append("authId", access);
 		bodyFormData.append("orderId", paramOrder);
 		bodyFormData.append("splitId", paramSplit);
-		bodyFormData.append("data", JSON.stringify(brazingQtyData));
-		bodyFormData.append(`brazingPhoto`, JSON.stringify(brazingPhotosInLeak));
-
+		// bodyFormData.append("data", JSON.stringify(brazingQtyData));
+		bodyFormData.append("data", JSON.stringify([selData]));
+		bodyFormData.append("brazingPhoto", JSON.stringify(brazingPhotosInLeak));
 		/**add photos */
 		axios({
 			method: "post",
@@ -167,7 +169,6 @@ export default function BrazingQuantity(prop) {
 				//handle success
 				const res_data = response.data;
 				if (res_data.status_code === 200) {
-					console.log(res_data.data);
 					setBrazingQtyData(res_data.data);
 					toast(res_data.status_msg);
 				} else if (res_data.status_code === 202) {
@@ -215,8 +216,6 @@ export default function BrazingQuantity(prop) {
 	// };
 
 	const handleSeriesSel = (seriedId) => {
-		console.log("Handle Series", seriedId);
-		console.log(brazingPhotosInLeak);
 		setBrazingPhotosInLeak("");
 		const selData = brazingQtyData.filter((item) => item.id === seriedId)[0];
 		const newBrazingPhotosInLeak = { ...brazingPhotosInLeak }; // Create a copy of the state
@@ -237,7 +236,6 @@ export default function BrazingQuantity(prop) {
 
 	const handleSelDataChange = (e) => {
 		const { name, value } = e.target;
-		console.log("sel data", name, value);
 		setSelData({ ...selData, [name]: value });
 	};
 
@@ -254,33 +252,63 @@ export default function BrazingQuantity(prop) {
 
 	const handleCheckChange = (e) => {
 		const { name, checked, value } = e.target;
-		console.log(name, checked, value);
-
 		if (checked) {
-			console.log("setting the array");
-			setSelData({ ...selData, [name]: value });
+			if (name === "leak" && value !== "leakFound") {
+				setSelData({
+					...selData,
+					[name]: value,
+					A: 0,
+					B: 0,
+					D: 0,
+					E: 0,
+					F: 0,
+					G: 0,
+					H: 0,
+					K: 0,
+					L: 0,
+					N: 0,
+				});
+			} else if (name === "leak" && value === "leakFound") {
+				setSelData({ ...selData, [name]: value });
+			}
 		}
 	};
 
 	const handleInc = (name) => {
-		if (name === "qty") {
-			setAddQty((item) => item + 1);
+		if (selData?.leak === "leakFound") {
+			if (name === "qty") {
+				setAddQty((item) => item + 1);
+			} else {
+				setSelData((item) => ({
+					...selData,
+					[name]: isNaN(item[name]) ? 0 : parseInt(item[name]) + 1,
+				}));
+			}
 		} else {
-			setSelData((item) => ({
-				...selData,
-				[name]: isNaN(item[name]) ? 0 : parseInt(item[name]) + 1,
-			}));
+			toast(
+				"Cannot update Count as Leak is not found and Leak record is not found"
+			);
 		}
 	};
 
 	const handleDesc = (name) => {
-		if (name === "qty") {
-			setAddQty((item) => item - 1);
+		if (selData?.leak === "leakFound") {
+			if (name === "qty") {
+				setAddQty((item) => item - 1);
+			} else {
+				setSelData((item) => ({
+					...selData,
+					[name]: isNaN(item[name])
+						? 0
+						: parseInt(item[name]) - 1 < 0
+						? 0
+						: parseInt(item[name]) - 1,
+				}));
+			}
 		} else {
-			setSelData((item) => ({
-				...selData,
-				[name]: isNaN(item[name]) ? 0 : parseInt(item[name]) - 1,
-			}));
+			toast(
+				"Cannot update Count as Leak is not found and Leak record is not found"
+			);
 		}
 	};
 
@@ -419,51 +447,7 @@ export default function BrazingQuantity(prop) {
 								sx={{ "& .MuiFormControlLabel-label": { fontSize: 14 } }}
 							/>
 						</RadioGroup>
-						{/* <div className="col p-0">
-                                <FormControlLabel control={<Checkbox value="leakFound" />}  name="leak" label="Leak Found" checked={selData?.leak === "leakFound"}
-                                sx={{ '& .MuiSvgIcon-root': { fontSize: 16 }, '& .MuiFormControlLabel-label':{fontSize:12} }} onChange={(e) => handleCheckChange(e)}/>
-                            </div>
-                            <div className="col p-0">
-                                <FormControlLabel control={<Checkbox value="noLeak" />}  name="leak" label="No Leak" checked={selData?.leak === "noLeak"}
-                                sx={{ '& .MuiSvgIcon-root': { fontSize: 16 }, '& .MuiFormControlLabel-label':{fontSize:12} }} onChange={(e) => handleCheckChange(e)}/>
-                            </div>
-                            <div className="col p-0">
-                                <FormControlLabel control={<Checkbox value="notRecord" />}  name="leak" label="Not Record" checked={selData?.leak === "notRecord"}
-                                sx={{ '& .MuiSvgIcon-root': { fontSize: 16 }, '& .MuiFormControlLabel-label':{fontSize:12} }} onChange={(e) => handleCheckChange(e)}/>
-                            </div> */}
 					</div>
-					{/* <div className="col-3">
-						<>
-							{
-								<ImageList cols={3} rowHeight={164}>
-									{bzQtyPhoto?.map((item, index) => (
-										<ImageListItem key={"bzqty" + index}>
-											<img
-												src={item}
-												srcSet={item}
-												alt={"bzqty"}
-												loading="lazy"
-											/>
-											<IconButton onClick={() => handleClickOpenimg(item)}>
-												<PreviewIcon />
-											</IconButton>
-										</ImageListItem>
-									))}
-								</ImageList>
-							}
-							<ReactFileReader
-								fileTypes={[".png", ".jpg"]}
-								base64={true}
-								handleFiles={(files) => {
-									handleFiles("bzQty", files);
-								}}
-								multipleFiles={true}
-								key={Math.random()}
-							>
-								<AddAPhotoIcon />
-							</ReactFileReader>
-						</>
-					</div> */}
 				</div>
 				<div className="row d-flex justify-content-between mt-3">
 					<div className="col-2">
@@ -887,6 +871,34 @@ export default function BrazingQuantity(prop) {
 					</Button>
 				</div>
 			</div>
+			<Dialog
+				fullScreen
+				open={bzQtyImgDialog}
+				TransitionComponent={Transition}
+				keepMounted
+				onClose={() => setBzQtyImgDialog(false)}
+				aria-describedby="alert-dialog-slide-description"
+			>
+				<AppBar sx={{ position: "relative" }}>
+					<Toolbar>
+						<IconButton
+							edge="start"
+							color="inherit"
+							onClick={() => setBzQtyImgDialog(false)}
+							aria-label="close"
+						>
+							<CloseIcon />
+						</IconButton>
+						<Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+							Brazing Images
+						</Typography>
+					</Toolbar>
+				</AppBar>
+				<img src={bzQtyImg} srcSet={bzQtyImg} alt={bzQtyImg} loading="lazy" />
+				<DialogActions>
+					<Button onClick={() => setBzQtyImgDialog(false)}>Close</Button>
+				</DialogActions>
+			</Dialog>
 		</div>
 	);
 }

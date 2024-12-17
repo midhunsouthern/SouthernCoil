@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect, forwardRef } from "react";
 import axios from "axios";
-import moment from "moment";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 
 import { AccessContext } from "../../constant/accessContext";
@@ -14,7 +13,6 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import {
 	Dialog,
 	Button,
-	Container,
 	Card,
 	CardContent,
 	Typography,
@@ -25,7 +23,6 @@ import {
 	ImageList,
 	ImageListItem,
 	Box,
-	TextField,
 	IconButton,
 } from "@mui/material";
 import Slide from "@mui/material/Slide";
@@ -34,11 +31,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import OrderViewModal from "../modals/OrderViewModal";
 import ModuleTools from "../modals/ModuleTools";
 import BrazingQuantity from "../modals/BrazingQuantity";
-import {
-	handlePipeQty,
-	handleFindLookup_arr,
-	handleFindCoverDetailLookup_arr,
-} from "../../commonjs/CommonFun";
+import { handleFindLookup_arr } from "../../commonjs/CommonFun";
 
 import {
 	getLookupData,
@@ -71,6 +64,16 @@ export default function M3coilExpansion() {
 	const [openCommentDialog, setOpenCommentDialog] = useState(false);
 	const [openOrderView, setOpenOrderView] = useState(false);
 	const [OpenBrazing, setOpenBrazing] = useState(false);
+
+	const _handleGenericUpdateRow = (access, fields, rowData) => {
+		handleGenericUpdateRow(access, fields, rowData).then(function (d) {
+			const newId = orderList.findIndex(function (item) {
+				return d.id === item.id;
+			});
+			var newOrderList = Object.assign([...orderList], { [newId]: d });
+			setOrderList(newOrderList);
+		});
+	};
 
 	const handleClickOpenStatus = (rowId, e) => {
 		setSelectedRowId(rowId);
@@ -509,11 +512,13 @@ export default function M3coilExpansion() {
 								},
 							}}
 							processRowUpdate={(param, event) => {
-								handleGenericUpdateRow(access, ["brazing_comment"], param).then(
-									(pStatus) => {
-										console.log(pStatus);
-									}
-								);
+								_handleGenericUpdateRow(
+									access,
+									["brazing_comment"],
+									param
+								).then((pStatus) => {
+									console.log(pStatus);
+								});
 								return param;
 							}}
 							onProcessRowUpdateError={(param) => {

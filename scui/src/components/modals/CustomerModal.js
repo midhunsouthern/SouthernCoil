@@ -14,6 +14,7 @@ export default function CustomerModal(prop) {
 	const [phone, setPhone] = useState(null);
 	const [address, setAddress] = useState(null);
 	const [poc, setPoc] = useState(null);
+	const [password, setPassword] = useState(null);
 	const [isUpdated, setIsUpdate] = useState(false);
 
 	const handleEditUpdate = () => {
@@ -25,6 +26,7 @@ export default function CustomerModal(prop) {
 		bodyFormData.append("phone", phone);
 		bodyFormData.append("address", address);
 		bodyFormData.append("poc", poc);
+		bodyFormData.append("password", password);
 
 		axios({
 			method: "post",
@@ -199,6 +201,22 @@ export default function CustomerModal(prop) {
 											}}
 											onChange={(e) => {
 												setPoc(e.target.value);
+											}}
+										/>
+										<TextField
+											margin="normal"
+											required
+											fullWidth
+											id="password"
+											size="small"
+											label="Password"
+											name="password"
+											value={password}
+											InputLabelProps={{
+												shrink: password !== "" ? true : false,
+											}}
+											onChange={(e) => {
+												setPassword(e.target.value);
 											}}
 										/>
 										<Button

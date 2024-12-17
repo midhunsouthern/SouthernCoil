@@ -1,3 +1,5 @@
+// export const baseURL = "https://demo.southerncoil.com/backend/index.php/";
+// export const baseURL_noIndex = "https://demo.southerncoil.com/backend/";
 // export const baseURL = "http://localhost:8080/scoil/index.php/";
 // export const baseURL_noIndex = "http://localhost:8080/scoil/";
 export const baseURL = "https://scui.southerncoil.com/backend/index.php/";
@@ -71,3 +73,20 @@ export const setAccessSetup = baseURL + "main/setAccessSetup";
 /**image url */
 export const imageURL = baseURL_noIndex;
 export const getActiveOrderIds = baseURL + "main/getActiveOrders";
+
+/**WIP */
+export const get_wip_ep = baseURL + "main/get_wip_ep";
+export const set_wip_ep = baseURL + "main/set_wip_ep";
+export const del_wip_ep = baseURL + "main/del_wip_ep";
+export const get_wip_pipe = baseURL + "main/get_wip_pipe";
+export const set_wip_pipe = baseURL + "main/set_wip_pipe";
+export const del_wip_pipe = baseURL + "main/del_wip_pipe";
+export const get_wip_fins = baseURL + "main/get_wip_fins";
+export const set_wip_fins = baseURL + "main/set_wip_fins";
+export const del_wip_fins = baseURL + "main/del_wip_fins";
+
+export const get_order_id_list = baseURL + "main/get_order_id_list";
+export const get_cnc_program_names = baseURL + "main/get_cnc_program_names";
+export const set_cnc_program_master = baseURL + "main/set_cnc_program_master";
+export const get_cnc_program_master_list =
+	baseURL + "main/get_cnc_program_master_list";

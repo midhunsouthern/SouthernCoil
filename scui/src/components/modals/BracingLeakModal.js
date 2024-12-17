@@ -1,5 +1,4 @@
 import {
-	Box,
 	Button,
 	ButtonGroup,
 	Card,
@@ -8,7 +7,6 @@ import {
 	Container,
 	FormControl,
 	FormControlLabel,
-	IconButton,
 	InputLabel,
 	MenuItem,
 	Select,
@@ -56,6 +54,7 @@ export default function BracingLeakModal(prop) {
 	const repeat = (arrdata, n) => Array(n).fill(arrdata).flat();
 	const [lookUpList, setLookupList] = React.useState([]);
 	const handleBrazingData = (data) => {
+		console.log("handleBrazingData", data);
 		handleContentSave(data);
 	};
 	//component
@@ -79,6 +78,7 @@ export default function BracingLeakModal(prop) {
 			}
 			setCompArray(editData);
 		};
+
 		const handleGenricSel = (index, event) => {
 			const { name, value } = event.target;
 			const editData = compArray.map((item, itemIndex) =>
@@ -86,6 +86,7 @@ export default function BracingLeakModal(prop) {
 			);
 			setCompArray(editData);
 		};
+
 		const handleAddVal = (eleName, index) => {
 			const editData = compArray.map((item, itemIndex) =>
 				index === itemIndex && eleName
@@ -94,10 +95,14 @@ export default function BracingLeakModal(prop) {
 			);
 			setCompArray(editData);
 		};
+
 		const handleMinusVal = (eleName, index) => {
 			const editData = compArray.map((item, itemIndex) =>
 				index === itemIndex && eleName
-					? { ...item, [eleName]: item[eleName] - 1 }
+					? {
+							...item,
+							[eleName]: item[eleName] - 1 < 0 ? 0 : item[eleName] - 1,
+					  }
 					: item
 			);
 			setCompArray(editData);
@@ -519,6 +524,7 @@ export default function BracingLeakModal(prop) {
 		bodyFormData.append("orderId", dataId);
 		bodyFormData.append("authId", access);
 		bodyFormData.append("data", JSON.stringify(data));
+		return;
 		axios({
 			method: "post",
 			url: setBrazingDetails,

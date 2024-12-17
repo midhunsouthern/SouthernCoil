@@ -11,21 +11,17 @@ import Dashboard from "../components/Mainpage/dashboard.js";
 /**Module 1 */
 import M1cncNesting from "../components/Mainpage/m1_cncNesting";
 import M1cncPunching from "../components/Mainpage/m1_cncPunching";
-import M1wipStock from "../components/Mainpage/m1_wipStock";
 
 /**Module 2 */
 import M2tubeCutting from "../components/Mainpage/m2_tubeCutting";
-import M2wipStock from "../components/Mainpage/m2_wipStock";
 
 /**Module 3 */
 import M3finsPunching from "../components/Mainpage/m3_finsPunching";
 import M3coilAssembly from "../components/Mainpage/m3_coilAssembly";
 import M3coilExpansion from "../components/Mainpage/m3_coilExpansion";
-import M3wipStock from "../components/Mainpage/m3_wipStock";
 /**Module 4 */
 import M4brazingLeak from "../components/Mainpage/m4_brazingLeak";
 import M4paintPacking from "../components/Mainpage/m4_paintPacking";
-import M4wipStock from "../components/Mainpage/m4_wipStock";
 /**Module 5 */
 import Dispatch from "../components/Mainpage/dispatch";
 import FinishedStock from "../components/Mainpage/finishedStock";
@@ -43,6 +39,12 @@ import M1epBending from "../components/Mainpage/m1_epBending";
 /**Module 6 */
 import Scheduler from "../components/Modules/Scheduler/index";
 import ModuleAccess from "../components/Mainpage/ModuleAccess.js";
+
+/**WIP */
+import WIP_EP from "../components/Mainpage/WIP/wip_ep.js";
+import WIP_Pipe from "../components/Mainpage/WIP/wip_pipe.js";
+import WIP_Fins from "../components/Mainpage/WIP/wip_fins.js";
+import CNCProgramMaster from "../components/Mainpage/CNCProgramMaster.js";
 
 const MainRoutes = {
 	path: "",
@@ -297,26 +299,7 @@ const MainRoutes = {
 				</>
 			),
 		},
-		{
-			path: "m1_wip",
-			element: (
-				<>
-					<Header />
-					<div className="container-fluid">
-						<div className="row">
-							<div className="col-1">
-								<SideNav />
-							</div>
-							<div className="col-11">
-								<M1wipStock />
-							</div>
-						</div>
-					</div>
 
-					<Footer />
-				</>
-			),
-		},
 		/**Module 2 */
 		{
 			path: "tubecutting",
@@ -338,27 +321,6 @@ const MainRoutes = {
 				</>
 			),
 		},
-		{
-			path: "m2_wip",
-			element: (
-				<>
-					<Header />
-					<div className="container-fluid">
-						<div className="row">
-							<div className="col-1">
-								<SideNav />
-							</div>
-							<div className="col-11">
-								<M2wipStock />
-							</div>
-						</div>
-					</div>
-
-					<Footer />
-				</>
-			),
-		},
-
 		/**Module 3 */
 		{
 			path: "finpunching",
@@ -420,26 +382,6 @@ const MainRoutes = {
 				</>
 			),
 		},
-		{
-			path: "m3_wip",
-			element: (
-				<>
-					<Header />
-					<div className="container-fluid">
-						<div className="row">
-							<div className="col-1">
-								<SideNav />
-							</div>
-							<div className="col-11">
-								<M3wipStock />
-							</div>
-						</div>
-					</div>
-
-					<Footer />
-				</>
-			),
-		},
 		/**Module 4 */
 		{
 			path: "brazing",
@@ -473,26 +415,6 @@ const MainRoutes = {
 							</div>
 							<div className="col-11">
 								<M4paintPacking />
-							</div>
-						</div>
-					</div>
-
-					<Footer />
-				</>
-			),
-		},
-		{
-			path: "m4_wip",
-			element: (
-				<>
-					<Header />
-					<div className="container-fluid">
-						<div className="row">
-							<div className="col-1">
-								<SideNav />
-							</div>
-							<div className="col-11">
-								<M4wipStock />
 							</div>
 						</div>
 					</div>
@@ -573,6 +495,82 @@ const MainRoutes = {
 							</div>
 							<div className="col-11">
 								<ModuleAccess />
+							</div>
+						</div>
+					</div>
+					<Footer />
+				</>
+			),
+		},
+		{
+			path: "wip_ep",
+			element: (
+				<>
+					<Header />
+					<div className="container-fluid">
+						<div className="row">
+							<div className="col-1">
+								<SideNav />
+							</div>
+							<div className="col-11">
+								<WIP_EP />
+							</div>
+						</div>
+					</div>
+					<Footer />
+				</>
+			),
+		},
+		{
+			path: "wip_pipe",
+			element: (
+				<>
+					<Header />
+					<div className="container-fluid">
+						<div className="row">
+							<div className="col-1">
+								<SideNav />
+							</div>
+							<div className="col-11">
+								<WIP_Pipe />
+							</div>
+						</div>
+					</div>
+					<Footer />
+				</>
+			),
+		},
+		{
+			path: "wip_fins",
+			element: (
+				<>
+					<Header />
+					<div className="container-fluid">
+						<div className="row">
+							<div className="col-1">
+								<SideNav />
+							</div>
+							<div className="col-11">
+								<WIP_Fins />
+							</div>
+						</div>
+					</div>
+					<Footer />
+				</>
+			),
+		},
+		{
+			path: "cnc_program_master",
+			element: (
+				<>
+					<Header />
+					<div className="container-fluid">
+						<div className="row">
+							<div className="col-1">
+								<SideNav />
+							</div>
+							<div className="col-11">
+								<CNCProgramMaster />
 							</div>
 						</div>
 					</div>

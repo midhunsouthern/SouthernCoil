@@ -31,7 +31,7 @@ const Mainpage = () => {
 						<div className="row ">
 							{accessModuleList.filter((x) => x.module_name === "Dashboard")[0]
 								.access_rw === "1" && (
-								<div className="col-2">
+								<div className="col-6 col-md-3 p-1">
 									<NavLink className="btn" exact to="/dashboard">
 										<img src={dash} alt="Dashboard" className="btn-img" />{" "}
 										Dashboard
@@ -41,7 +41,7 @@ const Mainpage = () => {
 							{accessModuleList.filter(
 								(x) => x.module_name === "CreateOrder"
 							)[0].access_rw === "1" && (
-								<div className="col-2">
+								<div className="col-6 col-md-3 p-1">
 									<NavLink to="/createOrder" className="btn " exact>
 										<img src={oentry} alt="CNC Nesting" className="btn-img" />{" "}
 										Order Entry
@@ -51,7 +51,7 @@ const Mainpage = () => {
 							{accessModuleList.filter(
 								(x) => x.module_name === "CreateOrder"
 							)[0].access_rw === "1" && (
-								<div className="col-2">
+								<div className="col-6 col-md-3 p-1">
 									<NavLink to="/orderList" className="btn " exact>
 										<img src={status} alt="CNC Nesting" className="btn-img" />
 										Order Status
@@ -61,7 +61,7 @@ const Mainpage = () => {
 							{accessModuleList.filter(
 								(x) => x.module_name === "CreateOrder"
 							)[0].access_rw === "1" && (
-								<div className="col-3">
+								<div className="col-6 col-md-3 p-1">
 									<NavLink to="/orderhistory" className="btn " exact>
 										<img src={porder} alt="CNC Nesting" className="btn-img" />
 										Order History
@@ -75,7 +75,7 @@ const Mainpage = () => {
 							{accessModuleList.filter(
 								(x) => x.module_name === "M1cncNesting"
 							)[0].access_rw === "1" && (
-								<div className="col-2">
+								<div className="col-6 col-md-3 p-1">
 									<NavLink to="/cncnesting" className="btn">
 										<img src={nesting} alt="CNC Nesting" className="btn-img" />
 										CNC Nesting
@@ -85,7 +85,7 @@ const Mainpage = () => {
 							{accessModuleList.filter(
 								(x) => x.module_name === "M1cncPunching"
 							)[0].access_rw === "1" && (
-								<div className="col-3">
+								<div className="col-6 col-md-3 p-1">
 									<NavLink to="/cncpunching" className="btn " exact>
 										<img src={punch} alt="CNC Nesting" className="btn-img" />
 										CNC Punching & Numbering
@@ -95,7 +95,7 @@ const Mainpage = () => {
 							{accessModuleList.filter(
 								(x) => x.module_name === "M1epBending"
 							)[0].access_rw === "1" && (
-								<div className="col-2">
+								<div className="col-6 col-md-3 p-1">
 									<NavLink to="/epBending" className="btn " exact>
 										<img src={ep_bend} alt="CNC Nesting" className="btn-img" />
 										End Plate Bending
@@ -105,8 +105,8 @@ const Mainpage = () => {
 							{accessModuleList.filter(
 								(x) => x.module_name === "M1epBending"
 							)[0].access_rw === "1" && (
-								<div className="col-3">
-									<NavLink to="/cncpgmmaster" className="btn " exact>
+								<div className="col-6 col-md-3 p-1">
+									<NavLink to="/cnc_program_master" className="btn " exact>
 										<img src={prg_mst} alt="CNC Nesting" className="btn-img" />
 										CNC Program Master
 									</NavLink>
@@ -115,8 +115,8 @@ const Mainpage = () => {
 							{accessModuleList.filter(
 								(x) => x.module_name === "M1epBending"
 							)[0].access_rw === "1" && (
-								<div className="col-2">
-									<NavLink to="/m1_wip" className="btn " exact>
+								<div className="col-6 col-md-3 p-1">
+									<NavLink to="/wip_ep" className="btn " exact>
 										<img src={wip} alt="CNC Nesting" className="btn-img" />
 										EP WIP Stock
 									</NavLink>
@@ -125,7 +125,7 @@ const Mainpage = () => {
 						</div>
 					</Card>
 					<div className="row">
-						<div className="col">
+						<div className="col-12 col-md-6">
 							<Card className="mt-4 p-3">
 								<div className="row">
 									{accessModuleList.filter(
@@ -142,7 +142,7 @@ const Mainpage = () => {
 										(x) => x.module_name === "M2tubeCutting"
 									)[0].access_rw === "1" && (
 										<div className="col-6">
-											<NavLink to="/m2_wip" className="btn " exact>
+											<NavLink to="/wip_pipe" className="btn " exact>
 												<img src={wip} alt="CNC Nesting" className="btn-img" />
 												Pipe WIP Stock
 											</NavLink>
@@ -151,7 +151,7 @@ const Mainpage = () => {
 								</div>
 							</Card>
 						</div>
-						<div className="col">
+						<div className="col-12 col-md-6">
 							<Card className="mt-4 p-3">
 								<div className="row">
 									{accessModuleList.filter(
@@ -160,7 +160,7 @@ const Mainpage = () => {
 										<div className="col-6">
 											<NavLink to="/finpunching" className="btn">
 												<img src={fin} alt="CNC Nesting" className="btn-img" />
-												FINS Punching
+												Fins Punching
 											</NavLink>
 										</div>
 									)}
@@ -168,9 +168,9 @@ const Mainpage = () => {
 										(x) => x.module_name === "M3finsPunching"
 									)[0].access_rw === "1" && (
 										<div className="col-6">
-											<NavLink to="/m3_wip" className="btn " exact>
+											<NavLink to="/wip_fins" className="btn " exact>
 												<img src={wip} alt="CNC Nesting" className="btn-img" />
-												WIP Stock
+												Fins WIP Stock
 											</NavLink>
 										</div>
 									)}
@@ -179,7 +179,7 @@ const Mainpage = () => {
 						</div>
 					</div>
 					<div className="row">
-						<div className="col">
+						<div className="col-12 col-md-6">
 							<Card className="mt-4 p-3">
 								<div className="row">
 									{accessModuleList.filter(
@@ -205,7 +205,7 @@ const Mainpage = () => {
 								</div>
 							</Card>
 						</div>
-						<div className="col">
+						<div className="col-12 col-md-6">
 							<Card className="mt-4 p-3">
 								<div className="row">
 									{accessModuleList.filter(
@@ -218,7 +218,7 @@ const Mainpage = () => {
 													alt="CNC Nesting"
 													className="btn-img"
 												/>
-												Brazin & Leak
+												Brazing & Leak
 											</NavLink>
 										</div>
 									)}
@@ -236,7 +236,7 @@ const Mainpage = () => {
 											</NavLink>
 										</div>
 									)}
-									{accessModuleList.filter(
+									{/* {accessModuleList.filter(
 										(x) => x.module_name === "M4paintPacking"
 									)[0].access_rw === "1" && (
 										<div className="col-4  ">
@@ -245,7 +245,7 @@ const Mainpage = () => {
 												WIP Stock
 											</NavLink>
 										</div>
-									)}
+									)} */}
 								</div>
 							</Card>
 						</div>
@@ -257,7 +257,7 @@ const Mainpage = () => {
 									{accessModuleList.filter(
 										(x) => x.module_name === "Dispatch"
 									)[0]?.access_rw === "1" && (
-										<div className="col-6">
+										<div className="col-12 col-md-6">
 											<NavLink to="/dispatch" className="btn">
 												<img src={disp} alt="Dispatch" className="btn-img" />
 												Dispatch

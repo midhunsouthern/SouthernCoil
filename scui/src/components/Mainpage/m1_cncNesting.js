@@ -18,14 +18,11 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import {
 	Dialog,
 	Button,
-	Container,
-	Tooltip,
 	IconButton,
 	Card,
 	CardContent,
 	Typography,
 	Stack,
-	TextField,
 	Checkbox,
 	DialogTitle,
 	DialogActions,
@@ -73,6 +70,16 @@ export default function M1cncNesting() {
 
 	const [openCommentDialog, setOpenCommentDialog] = useState(false);
 	const [openOrderView, setOpenOrderView] = useState(false);
+
+	const _handleGenericUpdateRow = (access, fields, rowData) => {
+		handleGenericUpdateRow(access, fields, rowData).then(function (d) {
+			const newId = orderList.findIndex(function (item) {
+				return d.id === item.id;
+			});
+			var newOrderList = Object.assign([...orderList], { [newId]: d });
+			setOrderList(newOrderList);
+		});
+	};
 
 	const handleClickOpenStatus = (rowId) => {
 		setSelectedRowId(rowId);
@@ -556,7 +563,7 @@ export default function M1cncNesting() {
 								},
 							}}
 							processRowUpdate={(param, event) => {
-								handleGenericUpdateRow(
+								_handleGenericUpdateRow(
 									access,
 									["ep_comments", "cnc_nesting_pgm_no"],
 									param

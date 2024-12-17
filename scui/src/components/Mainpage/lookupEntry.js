@@ -394,6 +394,11 @@ export default function LookupEntry() {
 								name="brazingLkp"
 								{...a11yProps(13)}
 							/>
+							<Tab
+								label="CNC Master Program Model"
+								name="cncMasterPmgLkp"
+								{...a11yProps(14)}
+							/>
 						</Tabs>
 					</AppBar>
 					<SwipeableViews
@@ -442,6 +447,9 @@ export default function LookupEntry() {
 						</TabPanel>
 						<TabPanel value={value} index={13} dir={theme.direction}>
 							<TabContent dataList={lookUpList} index={13} />
+						</TabPanel>
+						<TabPanel value={value} index={14} dir={theme.direction}>
+							<TabContent dataList={lookUpList} index={14} />
 						</TabPanel>
 					</SwipeableViews>
 				</Box>

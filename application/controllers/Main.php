@@ -450,7 +450,7 @@ class Main extends CI_Controller
             a.pbCrossTotQty, a.pbOther, a.pbOtherQty,a.pbOtherSize, a.pbOtherTotQty, a.pipe_comment, e.lkp_value as  end_plate_material, f.lkp_value as  end_plate_modal, end_plate_orientation, a.ep_photo, a.cover_type, 
             a.cover_detail,a.ep_comments, a.fin_per_inch, a.assembly_Photo, a.fin_comments, g.lkp_value as circuit_models, a.brazing_Photo, a.circuit_no, a.liquid_line, a.discharge_line, 
             a.brazing_comment, a.paint, a.packing_type, a.dispatch_mode, a.dispatch_comment, a.final_comment, a.cnc_nesting_pgm_no, a.cnc_nested, a.cnc_nesting_status, a.cnc_nesting_status_dt,
-                      a.cnc_punching_status, a.cnc_punching_status_dt,
+                      a.cnc_punching_status, a.cnc_punching_status_dt, 
                       a.ep_DateTime,
                       a.bending_status,
                       a.bending_status_dt,
@@ -481,7 +481,8 @@ class Main extends CI_Controller
                       a.coil_ready_at,
                       a.est_delivery_date,
                       a.order_status,
-                      a.created_dt
+                      a.created_dt,
+                      a.order_confirm_date
                       FROM order_list a left join customers b on a.customer_name = b.id
                       left join lookup c on a.pipe_type = c.id
                       left join lookup d on a.expansion_type = d.id
@@ -636,16 +637,22 @@ class Main extends CI_Controller
             }
             $id = $this->input->post('id');
             log_message('debug', print_r($id, true));
-            $isSplit=$this->db->get_where('order_list',array('id'=>$id,'split_id!='=>''))->result_array();
-            
+            $isSplit = $this->db->get_where('order_list', array('id' => $id, 'split_id!=' => ''))->result_array();
+
             $customerDetails = $this->db->get_where('lookup', array('category' => 'brazingLkp'))->result_array();
             $ret_data['data_orders'] = $this->db->query("SELECT ifnull( b.fname, 'Not Set') as full_customer_name, a.* FROM order_list a left join customers b on a.customer_name = b.id where a.id = '$id';")->result_array();
-            if(count($isSplit)>0){
-                $orderNoList=$this->db->get_where('order_list',array('order_id'=>$isSplit[0]['order_id'],'split_id='=>''))->result_array();
-                $id=$orderNoList[0]['id'];
+            if (count($isSplit) > 0) {
+                $orderNoList = $this->db->get_where('order_list', array('order_id' => $isSplit[0]['order_id'], 'split_id=' => ''))->result_array();
+                $id = $orderNoList[0]['id'];
             }
-            $imagesList = $this->db->get_where('drawing_images', array('drawing_refid' => $id))->result_array();
+            $imagesList = $this->db->get_where('drawing_images', array('drawing_refid' => $id, 'draw_type <>' => "bz-t"))->result_array();
             $brazingDetails = $this->db->get_where('brazing_details', array('order_id' => $ret_data['data_orders'][0]['order_id'], 'split_id' => $ret_data['data_orders'][0]['split_id']))->result_array();
+            $brazingImagesList = $this->db->query("select a.* from drawing_images a , brazing_details b 
+            where a.order_serial_ref = b.series_ref and b.order_id ='" . $ret_data['data_orders'][0]['order_id'] . "' and b.split_id ='" . $ret_data['data_orders'][0]['split_id'] . "';")->result_array();
+
+            foreach ($brazingImagesList as $row) {
+                array_push($imagesList, $row);
+            }
 
             if (count($brazingDetails) > 0) {
                 $brazingIds = [
@@ -692,6 +699,7 @@ class Main extends CI_Controller
                     }
                     $indices[$drawType]++;
                 }
+
                 if (isset($arr['ep'])) {
                     $ret_data['data_orders'][0]['ep_photo'] = $arr['ep'];
                 } else {
@@ -718,6 +726,7 @@ class Main extends CI_Controller
                 $ret_data['data_orders'][0]['brazing_Photo'] = [];
                 $ret_data['data_orders'][0]['brazing_testing_Photo'] = [];
             }
+            // var_dump($arr['bz-t']);
             $ret_data['status_code'] = 200;
             $ret_data['status_msg'] = "Data retrival successful";
             echo json_encode($ret_data);
@@ -737,10 +746,10 @@ class Main extends CI_Controller
         }
         $orderId = $this->input->post('order_id');
         $drawType = $this->input->post('draw_type');
-        $isSplit=$this->db->get_where('order_list',array('id'=>$orderId,'split_id!='=>''))->result_array();
-        if(count($isSplit)>0){
-            $orderNoList=$this->db->get_where('order_list',array('order_id'=>$isSplit[0]['order_id'],'split_id='=>''))->result_array();
-            $orderId=$orderNoList[0]['id'];
+        $isSplit = $this->db->get_where('order_list', array('id' => $orderId, 'split_id!=' => ''))->result_array();
+        if (count($isSplit) > 0) {
+            $orderNoList = $this->db->get_where('order_list', array('order_id' => $isSplit[0]['order_id'], 'split_id=' => ''))->result_array();
+            $orderId = $orderNoList[0]['id'];
         }
         if ($drawType == 'ep') {
             $this->db->select('drawing_base64');
@@ -841,6 +850,7 @@ class Main extends CI_Controller
             $ret_data['status_code'] = 201;
             $ret_data['status_msg'] = "Hold not updated successful.";
         }
+        echo $this->db->last_query();
         echo json_encode($ret_data);
     }
 
@@ -1080,6 +1090,7 @@ class Main extends CI_Controller
             $ret_data['packingType'] = $this->db->get_where('lookup', array('category' => 'packingType'))->result_array();
             $ret_data['dispatchMode'] = $this->db->get_where('lookup', array('category' => 'dispatchMode'))->result_array();
             $ret_data['brazingLkp'] = $this->db->get_where('lookup', array('category' => 'brazingLkp'))->result_array();
+            $ret_data['cncMasterPmgLkp'] = $this->db->get_where('lookup', array('category' => 'cncMasterPmgLkp'))->result_array();
         }
 
         $ret_data['status_code'] = 200;
@@ -1155,15 +1166,23 @@ class Main extends CI_Controller
         log_message('debug', print_r($data, true));
         $this->db->trans_start();
 
-        $this->db->where('order_id', $orderId);
-        $this->db->where('split_id', $splitId);
-        $this->db->delete('brazing_details');
-
         $i = 0;
         foreach ($data as $row) {
             unset($row['brazing_photo']);
-            if ($this->db->insert('brazing_details', $row)) {
-                $i = $i + 1;
+            $is_exist = $this->db->get_where('brazing_details', array('id' => $row['id']));
+
+            if ($is_exist->num_rows() > 0) {
+                $this->db->where('id', $row['id']);
+                $date = date_create();
+                $row['completion'] =
+                    date_format($date, "Y-m-d H:i:s");
+                if ($this->db->update('brazing_details', $row)) {
+                    $i = $i + 1;
+                }
+            } else {
+                if ($this->db->insert('brazing_details', $row)) {
+                    $i = $i + 1;
+                }
             }
         }
         // Get order information
@@ -1314,7 +1333,9 @@ class Main extends CI_Controller
         foreach ($data as $row) {
             for ($i = 1; $i <= $row['quantity']; $i++) {
                 $this->db->insert('brazing_details', array(
-                    'order_id' => $row['order_id'], 'split_id' => $row['split_id'], 'series_id' => $i,
+                    'order_id' => $row['order_id'],
+                    'split_id' => $row['split_id'],
+                    'series_id' => $i,
                     'series_ref' => $row['order_id'] . $row['split_id'] . '-' . $i
                 ));
             }
@@ -1768,14 +1789,297 @@ left join customers cu on h.customer_name = cu.id");
     //     echo json_encode($ret_data);
     // }
 
+    // WIP
 
-    public function test()
+
+    public function get_wip_ep()
     {
-        $data = $this->mm->completedModelWiseSQ_graph();
-        var_dump($data);
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+
+
+        $ret_data['data'] = $this->db->get('wip_end_plate')->result_array();
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Data Retrieved";
+        echo json_encode($ret_data);
     }
+    public function set_wip_ep()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+        $access_code = $this->input->post('authId');
+        unset($_POST['authId']);
+        $data = $this->mm->arrayToDataArray($_POST);
+        $data['create_by'] = $this->mm->get_user_id($access_code);
+        $data['create_dt'] = date('Y-m-d H:i:s');
+
+        $isExist = $this->db->get_where('wip_end_plate', array('id' => $data['id']));
+        $id = $data['id'];
+        unset($data['id']);
+        if ($isExist->num_rows() > 0) {
+            $this->db->where('id', $id);
+            $this->db->update('wip_end_plate', $data);
+        } else {
+            $this->db->insert('wip_end_plate', $data);
+        }
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Data Retrieved";
+        echo json_encode($ret_data);
+    }
+
+    public function del_wip_ep()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+        $access_code = $this->input->post('authId');
+        unset($_POST['authId']);
+        $data = $this->mm->arrayToDataArray($_POST);
+
+        $isExist = $this->db->get_where('wip_end_plate', array('id' => $data['id']));
+        $id = $data['id'];
+        unset($data['id']);
+        if ($isExist->num_rows() > 0) {
+            $this->db->where('id', $id);
+            $this->db->delete('wip_end_plate');
+        }
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Data Retrieved";
+        echo json_encode($ret_data);
+    }
+
+    public function get_wip_pipe()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+
+
+        $ret_data['data'] = $this->db->get('wip_pipe')->result_array();
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Data Retrieved";
+        echo json_encode($ret_data);
+    }
+    public function set_wip_pipe()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+        $access_code = $this->input->post('authId');
+        unset($_POST['authId']);
+        $data = $this->mm->arrayToDataArray($_POST);
+        $data['create_by'] = $this->mm->get_user_id($access_code);
+        $data['create_dt'] = date('Y-m-d H:i:s');
+
+        $isExist = $this->db->get_where('wip_pipe', array('id' => $data['id']));
+        $id = $data['id'];
+        unset($data['id']);
+        if ($isExist->num_rows() > 0) {
+            $this->db->where('id', $id);
+            $this->db->update('wip_pipe', $data);
+            $ret_data['status_msg'] = "Data updated";
+        } else {
+            $this->db->insert('wip_pipe', $data);
+            $ret_data['status_msg'] = "Data inserted";
+        }
+        $ret_data['status_code'] = 200;
+
+        echo json_encode($ret_data);
+    }
+    public function del_wip_pipe()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+        $access_code = $this->input->post('authId');
+        unset($_POST['authId']);
+        $data = $this->mm->arrayToDataArray($_POST);
+
+        $isExist = $this->db->get_where('wip_pipe', array('id' => $data['id']));
+        $id = $data['id'];
+        unset($data['id']);
+        if ($isExist->num_rows() > 0) {
+            $this->db->where('id', $id);
+            $this->db->delete('wip_pipe');
+        }
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Data deleted";
+        echo json_encode($ret_data);
+    }
+    public function get_wip_fins()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+        $ret_data['data'] = $this->db->get('wip_fins')->result_array();
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Data Retrieved";
+        echo json_encode($ret_data);
+    }
+    public function set_wip_fins()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+        $access_code = $this->input->post('authId');
+        unset($_POST['authId']);
+        $data = $this->mm->arrayToDataArray($_POST);
+        $data['create_by'] = $this->mm->get_user_id($access_code);
+        $data['create_dt'] = date('Y-m-d H:i:s');
+
+        $isExist = $this->db->get_where('wip_fins', array('id' => $data['id']));
+        $id = $data['id'];
+        unset($data['id']);
+        if ($isExist->num_rows() > 0) {
+            $this->db->where('id', $id);
+            $this->db->update('wip_fins', $data);
+            $ret_data['status_msg'] = "Data updated";
+        } else {
+            $this->db->insert('wip_fins', $data);
+            $ret_data['status_msg'] = "Data inserted";
+        }
+        $ret_data['status_code'] = 200;
+
+        echo json_encode($ret_data);
+    }
+    public function del_wip_fins()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+        $access_code = $this->input->post('authId');
+        unset($_POST['authId']);
+        $data = $this->mm->arrayToDataArray($_POST);
+
+        $isExist = $this->db->get_where('wip_fins', array('id' => $data['id']));
+        $id = $data['id'];
+        unset($data['id']);
+        if ($isExist->num_rows() > 0) {
+            $this->db->where('id', $id);
+            $this->db->delete('wip_fins');
+        }
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Data deleted";
+        echo json_encode($ret_data);
+    }
+
     public function convert_sf_to_webp()
     {
         return $this->im->process();
+    }
+
+    public function get_order_id_list()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+
+        $order_List = $this->db->query("SELECT CONCAT(a.order_id,a.split_id) as label, CONCAT(a.order_id,a.split_id) as value, 
+        CONCAT(a.length, ' x ', a.height, ' x ', a.rows,'R - ', a.quantity) as size , b.fname as customer_name
+        FROM `order_list` a left join customers b on a.customer_name = b.id;")->result_array();
+
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Data Retrieved";
+        $ret_data['data'] = $order_List;
+        echo json_encode($ret_data);
+    }
+
+    public function get_cnc_program_names()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+
+        $this->db->distinct();
+        $this->db->select(" program_name as label, program_name as value");
+        $cncpmg = $this->db->get('cnc_program')->result_array();
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Data Retrieved";
+        $ret_data['data'] = $cncpmg;
+        echo json_encode($ret_data);
+    }
+
+    public function set_cnc_program_master()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+
+        $access_code = $this->input->post('authId');
+        unset($_POST['authId']);
+        $data = $this->mm->arrayToDataArray($_POST);
+
+        $data['create_by_id'] = $this->mm->get_user_id($access_code);
+        $data['create_dt'] = date('Y-m-d H:i:s');
+
+        if (isset($data['id'])) {
+            $data['complete_datetime'] = date('Y-m-d H:i:s');
+            $this->db->where('id', $data['id']);
+            $retval = $this->db->update('cnc_program', $data);
+        } else {
+            $retval = $this->db->insert('cnc_program', $data);
+        }
+        if ($retval) {
+            $ret_data['status_code'] = 200;
+            $ret_data['status_msg'] = "Action Performed Successfully";
+        } else {
+            $ret_data['status_code'] = 201;
+            $ret_data['status_msg'] = "Unable to perform action";
+        }
+        echo json_encode($ret_data);
+    }
+
+    public function get_cnc_program_master_list()
+    {
+        if (!$this->mm->access_code_verify($this->input->post('authId'))) {
+            $ret_data['status_code'] = 101;
+            $ret_data['status_msg'] = "Access Code not correct, Please login again.";
+            echo json_encode($ret_data);
+            return;
+        }
+        $this->db->order_by("program_name, complete_datetime");
+        $data = $this->db->get('cnc_program')->result_array();
+        $ret_data['status_code'] = 200;
+        $ret_data['status_msg'] = "Data Retrieved";
+        $ret_data['data'] = $data;
+        echo json_encode($ret_data);
     }
 }
