@@ -11,7 +11,7 @@ import Painting from "../../assets/img/appIcons/Painting.png";
 import Punching from "../../assets/img/appIcons/Punching.png";
 import Tube from "../../assets/img/appIcons/Tube.png";
 import user from "../../assets/img/prof-img.jpeg";
-
+import prg_mst from "../../assets/img/appIcons/prg_mst.png";
 import brazing_cl from "../../assets/img/appIcons/br-braz.png";
 import ca_cl from "../../assets/img/appIcons/br-ca.png";
 import ce_cl from "../../assets/img/appIcons/br-ce.png";
@@ -28,7 +28,6 @@ import punch_cl from "../../assets/img/appIcons/br-punch.png";
 import status_cl from "../../assets/img/appIcons/br-status.png";
 import tc_cl from "../../assets/img/appIcons/br-tc.png";
 import wip_cl from "../../assets/img/appIcons/br-wip.png";
-
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import { IconButton, Tooltip } from "@mui/material";
 import { AccessContext } from "../../constant/accessContext";
@@ -93,6 +92,36 @@ const Header = () => {
 									</NavLink>
 								</li>
 							)}
+
+							{accessModuleList.filter(
+								(x) => x.module_name === "M1epBending"
+							)[0].access_rw === "1" && (
+								<li
+									className={`top-menu-Item ${
+										getActivePage("/cncpgmmaster") ? "top-menu-Item-active" : ""
+									}`}
+								>
+									{/* <img src={prg_mst} alt="CNC Nesting" className="btn-img" /> */}
+									
+									<NavLink
+										className="inactive-tm top-menu-link"
+										exact
+										activeClassName="active-tm"
+										to="/cncpgmmaster"
+									>
+										<Tooltip title="CNC Program Master" placement="left-end">
+											<img
+												src={getActivePage("/cncpgmmaster") ? prg_mst_cl : prg_mst}
+												height={45}
+												width={45}
+												alt="modules"
+											/>
+										</Tooltip>
+									</NavLink>
+								</li>
+							)}
+
+							
 							{accessModuleList.filter(
 								(x) => x.module_name === "M1cncPunching"
 							)[0].access_rw === "1" && (

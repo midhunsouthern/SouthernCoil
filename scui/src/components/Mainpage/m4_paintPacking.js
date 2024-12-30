@@ -90,9 +90,11 @@ export default function M4paintPacking() {
 	const handleCloseImg = (response) => {
 		setOpenImgDialog(false);
 	};
+	
 	const handleCloseModal = (response) => {
 		setOpenOrderView(false);
 	};
+
 	const handleOrderList = () => {
 		var bodyFormData = new FormData();
 		bodyFormData.append("authId", access);
@@ -317,24 +319,34 @@ export default function M4paintPacking() {
 			field: "paint",
 			headerName: "Paint Type",
 			valueGetter: (params) => {
-				return handleFindLookup_arr(lookUpList, "paintType", params.value);
+			  const value = params.value;
+			  // Ensure that params.value is not undefined or null before passing it to the lookup function
+			  if (value != null) {
+				return handleFindLookup_arr(lookUpList, "paintType", value);
+			  }
+			  return ""; // Or return a default value if value is not valid
 			},
 			maxWidth: 150,
 			flex: 1,
-		},
-		{
+		  }, 
+		  {
 			field: "packing_type",
 			headerName: "Packing Type",
 			valueGetter: (params) => {
+			  if (params.row && params.row.packing_type) {
 				return handleFindLookup_arr(
-					lookUpList,
-					"packingType",
-					params.row.packing_type
+				  lookUpList,
+				  "packingType",
+				  params.row.packing_type || ''    
 				);
+			  }
+		  
+	 
+			  return ' ';   
 			},
 			maxWidth: 150,
 			flex: 1,
-		},
+		  }, 
 		{
 			field: "dispatch_comment",
 			headerName: "Dispatch Comments",

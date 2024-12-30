@@ -32,7 +32,7 @@ export default function Login(prop) {
 						accessModuleList: res_data.accessModuleList,
 					});
 					localStorage.setItem("authId", res_data.access_code);
-					localStorage.setItem("accessModuleList", res_data.accessModuleList);
+					localStorage.setItem("accessModuleList",JSON.stringify(res_data.accessModuleList));
 					navigate("/main");
 				} else if (res_data.status_code === 201) {
 					toast(

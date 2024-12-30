@@ -9,7 +9,9 @@ import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import moment from "moment";
-
+import { CheckCircle } from "@mui/icons-material";
+import Cancel from "@mui/icons-material/Cancel";
+import Warning from "@mui/icons-material/Warning";
 import { AccessContext } from "../../constant/accessContext";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
@@ -109,23 +111,43 @@ export default function M1cncNesting() {
 			data: bodyFormData,
 			headers: { "Content-Type": "multipart/form-data" },
 		})
-			.then(function (response) {
-				//handle success
-				const res_data = response.data;
-				if (res_data.status_code === 101) {
-					toast("Api Authentication failed. login again.");
-				} else if (res_data.status_code === 200) {
-					const ret_data_cd = res_data.data_orders;
-					setOrderList(ret_data_cd);
-					toast("Order Retrieved");
-				} else {
-					console.log(res_data.status_msg);
-				}
-			})
-			.catch(function (response) {
-				//handle error
-				console.log(response);
-			});
+		.then(function (response) {
+		 
+			const res_data = response.data;
+			console.log(res_data);
+		
+			if (res_data.status_code === 101) {
+				toast("API Authentication failed. Login again.");
+			} else if (res_data.status_code === 200) {
+				const ret_data_cd = res_data.data_orders;
+		
+				 
+				const updatedOrders = ret_data_cd.map((order) => ({
+					...order,  
+					masterstatus: Number(order.cnc_master_status) === 1
+						? <CheckCircle sx={{ fontSize: 25, color: "green" }} />
+						: Number(order.cnc_master_status) === 2
+						? <Cancel sx={{ fontSize: 25, color: "red" }} />
+						: Number(order.cnc_master_status) === 3
+						? <Warning sx={{ fontSize: 25, color: "orange" }} />
+						: null  
+				}));
+				
+		
+			 
+				setOrderList(updatedOrders);
+		 
+				toast("Order Retrieved");
+			} else {
+				console.log(res_data.status_msg);
+			}
+		})
+		.catch(function (error) {
+		 
+			console.error(error);
+			toast.error("An error occurred while fetching the data.");
+		});
+		
 	};
 
 	const handleNested = (rowId, e) => {
@@ -377,25 +399,35 @@ export default function M1cncNesting() {
 			field: "end_plate_orientation",
 			headerName: "LH/RH",
 			valueGetter: (params) => {
-				return handleFindLookup_arr(
-					lookUpList,
-					"oreientation",
-					params.row.end_plate_orientation
+		 
+			  if (params.row && params.row.end_plate_orientation !== undefined) {
+			 
+				const lookupValue = handleFindLookup_arr(
+				  lookUpList,
+				  "oreientation",   
+				  params.row.end_plate_orientation
 				);
+				return lookupValue || "Not Available";  
+			  }
+			  return "";  
 			},
-			maxWidth: 70,
-			flex: 1,
-		},
-		{
+			maxWidth: 70,   
+			flex: 1,        
+		  },
+		  
+		  {
 			field: "cover_detail",
 			headerName: "Cover Details",
 			valueGetter: (params) => {
-				return handleFindCoverDetailLookup_arr(
-					lookUpList,
-					params.row.cover_detail
-				);
+				if (params.row && params.row.cover_detail !== undefined) {
+					return handleFindCoverDetailLookup_arr(
+						lookUpList,
+						params.row.cover_detail
+					);
+				}
+				return "";  
 			},
-			minWidth: 150,
+			minWidth: 50,
 			flex: 1,
 		},
 		{
@@ -451,6 +483,23 @@ export default function M1cncNesting() {
 			maxWidth: 60,
 			flex: 1,
 		},
+		{
+			field: "masterstatus",
+			headerName: "Cnc Master status",
+			flex: 1,
+			renderCell: (params) => (
+			  <div
+				style={{
+				  display: "flex",
+				  justifyContent: "center",
+				  alignItems: "center",
+
+				}}
+			  >
+				{params.value}
+			  </div>
+			),
+		}
 	];
 
 	return (

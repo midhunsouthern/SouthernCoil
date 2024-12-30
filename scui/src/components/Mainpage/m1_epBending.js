@@ -318,11 +318,14 @@ export default function M1epBending() {
 			field: "end_plate_orientation",
 			headerName: "LH/RH",
 			valueGetter: (params) => {
-				return handleFindLookup_arr(
-					lookUpList,
-					"oreientation",
-					params.row.end_plate_orientation
-				);
+				if (params.row && params.row.end_plate_orientation !== undefined) {
+					return handleFindLookup_arr(
+						lookUpList,
+						"orientation",  
+						params.row.end_plate_orientation
+					);
+				}
+				return "";  
 			},
 			maxWidth: 70,
 			flex: 1,
@@ -353,10 +356,13 @@ export default function M1epBending() {
 			field: "cover_detail",
 			headerName: "Cover Details",
 			valueGetter: (params) => {
+				if (params.row && params.row.cover_detail !== undefined) {
+				
 				return handleFindCoverDetailLookup_arr(
 					lookUpList,
 					params.row.cover_detail
 				);
+			}
 			},
 			minWidth: 150,
 			flex: 1,

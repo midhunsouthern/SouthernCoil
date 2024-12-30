@@ -1072,3 +1072,28 @@ input[type=number]::-webkit-outer-spin-button {
     width:280px;
   transform: scale(2.2);
 }
+
+
+.MuiButtonBase-root {
+  font-size: 12px !important; 
+}
+
+/* .MuiMultiSectionDigitalClockSection-item {
+  font-size: 12px !important;   
+} */
+
+
+  
+.loading{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+}
+
+.programstyle{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap:"10px";
+}

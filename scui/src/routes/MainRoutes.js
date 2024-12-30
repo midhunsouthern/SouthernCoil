@@ -35,7 +35,7 @@ import CreateUser from "../components/Mainpage/createUser";
 import LookupEntry from "../components/Mainpage/lookupEntry";
 import M1cncProgramMaster from "../components/Mainpage/m1_cncprogrammaster";
 import M1epBending from "../components/Mainpage/m1_epBending";
-
+import M1cncProgramMasterComplete  from  "../components/Mainpage/m1_cnc_complete"
 /**Module 6 */
 import Scheduler from "../components/Modules/Scheduler/index";
 import ModuleAccess from "../components/Mainpage/ModuleAccess.js";
@@ -96,6 +96,25 @@ const MainRoutes = {
 			path: "/signup",
 			element: <Signup />,
 		},
+		{
+            path:"/complete",
+            element:(
+                <>
+                    <Header />
+                    <div className="container-fluid">
+                        <div className="row">
+                            <div className="col-1">
+                                <SideNav />
+                            </div>
+                            <div className="col-11">
+                            <M1cncProgramMasterComplete/>
+                            </div>
+                        </div>
+                    </div>
+                    <Footer />
+                </>
+            ),
+        },
 		{
 			path: "myprofile",
 			element: (

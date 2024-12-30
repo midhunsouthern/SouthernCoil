@@ -347,10 +347,12 @@ export default function M3coilAssembly() {
 			field: "cover_detail",
 			headerName: "Cover Details",
 			valueGetter: (params) => {
+				if (params.row && params.row.cover_detail !== undefined) {
+					
 				return handleFindCoverDetailLookup_arr(
 					lookUpList,
 					params.row.cover_detail
-				);
+				);}
 			},
 			minWidth: 200,
 			flex: 1,

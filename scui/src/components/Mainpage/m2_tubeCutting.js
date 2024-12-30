@@ -68,16 +68,6 @@ export default function M2tubeCUtting() {
 	const [openCommentDialog, setOpenCommentDialog] = useState(false);
 	const [openOrderView, setOpenOrderView] = useState(false);
 
-	const _handleGenericUpdateRow = (access, fields, rowData) => {
-		handleGenericUpdateRow(access, fields, rowData).then(function (d) {
-			const newId = orderList.findIndex(function (item) {
-				return d.id === item.id;
-			});
-			var newOrderList = Object.assign([...orderList], { [newId]: d });
-			setOrderList(newOrderList);
-		});
-	};
-
 	const handleClickOpenStatus = (rowId, e) => {
 		setSelectedRowId(rowId);
 		setSelEvent(e);
@@ -355,11 +345,15 @@ export default function M2tubeCUtting() {
 			field: "Pipe_Qty",
 			headerName: "Pipe Qty",
 			valueGetter: (params) => {
-				return handlePipeQty(params.row);
+				const row = params?.row;  
+				if (row) {
+					return handlePipeQty(row);   
+				}
+				return 0;  
 			},
 			minWidth: 150,
 			flex: 1,
-		},
+		},	
 		{
 			field: "pipe_comment",
 			headerName: "Pipe Comments",
@@ -408,12 +402,12 @@ export default function M2tubeCUtting() {
 				return (
 					<Checkbox
 						checked={moment(
-							params.row.tcutting_datetime,
+							params?.row?.tcutting_datetime,
 							"YYYY-MM-DD HH:mm:ss"
 						).isValid()}
 						sx={{ m: 1 }}
 						name="tcutting_datetime"
-						onChange={(e) => handleTCutDateTime(params.row.id, e)}
+						onChange={(e) => handleTCutDateTime(params?.row?.id, e)}
 					/>
 				);
 			},
@@ -539,7 +533,7 @@ export default function M2tubeCUtting() {
 								},
 							}}
 							processRowUpdate={(param, event) => {
-								_handleGenericUpdateRow(
+								handleGenericUpdateRow(
 									access,
 									["pipe_comment", "tcutting_roll_no"],
 									param
