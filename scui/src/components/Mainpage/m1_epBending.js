@@ -317,7 +317,7 @@ export default function M1epBending() {
 		{
 			field: "end_plate_orientation",
 			headerName: "LH/RH",
-			valueGetter: (params) => {
+			renderCell: (params) => {
 				if (params.row && params.row.end_plate_orientation !== undefined) {
 					return handleFindLookup_arr(
 						lookUpList,
@@ -355,7 +355,9 @@ export default function M1epBending() {
 		{
 			field: "cover_detail",
 			headerName: "Cover Details",
-			valueGetter: (params) => {
+			renderCell: (params) => {
+
+				console.log('cover detail')
 				if (params.row && params.row.cover_detail !== undefined) {
 				
 				return handleFindCoverDetailLookup_arr(

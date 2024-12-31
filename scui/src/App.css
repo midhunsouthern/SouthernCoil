@@ -1097,3 +1097,11 @@ input[type=number]::-webkit-outer-spin-button {
   align-items: center;
   gap:"10px";
 }
+
+ 
+.row-span-cell {
+  display: inline-block;  
+  vertical-align: top;  
+  grid-row-end: span 2;  
+}
+

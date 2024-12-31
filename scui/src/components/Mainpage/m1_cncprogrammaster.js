@@ -1124,7 +1124,9 @@ export default function M1cncProgramMaster() {
   };
 
   const CombinedCellRenderer = (params) => {
+    console.log(params)
     const { row } = params;
+   
 
     const handleProgramChange = (row, value) => {
       let updatedRow = null;

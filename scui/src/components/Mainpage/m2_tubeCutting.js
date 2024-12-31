@@ -344,16 +344,13 @@ export default function M2tubeCUtting() {
 		{
 			field: "Pipe_Qty",
 			headerName: "Pipe Qty",
-			valueGetter: (params) => {
-				const row = params?.row;  
-				if (row) {
-					return handlePipeQty(row);   
-				}
-				return 0;  
+			renderCell: (params) => {
+				console.log("params", params)
+				return handlePipeQty(params?.row);
 			},
 			minWidth: 150,
 			flex: 1,
-		},	
+		},
 		{
 			field: "pipe_comment",
 			headerName: "Pipe Comments",

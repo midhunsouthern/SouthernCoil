@@ -334,11 +334,11 @@ export default function M3coilExpansion() {
 		{
 			field: "Liquid",
 			headerName: "Liquid",
-			valueGetter: (params) => {
+			renderCell: (params) => {
 				return handleFindLookup_arr(
 					lookUpList,
 					"liquidLine",
-					params?.row?.liquid_line || ''   
+					params.row.liquid_line
 				);
 			},
 			maxWidth: 100,
@@ -347,11 +347,11 @@ export default function M3coilExpansion() {
 		{
 			field: "Discharge",
 			headerName: "Discharge",
-			valueGetter: (params) => {
+			renderCell: (params) => {
 				return handleFindLookup_arr(
 					lookUpList,
 					"dischargeLine",
-					params?.row?.discharge_line||''
+					params.row.discharge_line
 				);
 			},
 			maxWidth: 100,

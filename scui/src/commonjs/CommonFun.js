@@ -37,6 +37,7 @@ export const handleInput_Check = (inputList, value, checked) => {
 };
 
 export const handleFindLookup_arr = (lookUpList, lkpCat, lkpIds) => {
+	console.log()
 	let retVal = "";
 	const lkparr = lkpIds?.split(",");
 	retVal = lkparr?.map((a) => {
@@ -44,19 +45,19 @@ export const handleFindLookup_arr = (lookUpList, lkpCat, lkpIds) => {
 		return ret !== undefined ? ret + "  " : "";
 	});
 
-	return retVal.toString().replace(/\,/g, "");
+	return retVal?.toString().replace(/\,/g, "");
 };
 
 export const handleFindCoverDetailLookup_arr = (lookUpList, lkpIds) => {
 	let retVal = [];
-	const lkparr = lkpIds.split(",");
+	const lkparr = lkpIds?.split(",");
 	retVal = lkparr?.map((a) => {
 		let ret = lookUpList["coverDetail"]?.find((i) => i.id === a);
 		return ret !== undefined
 			? ret?.lkp_value + " => " + ret?.sublkp_val + " "
 			: "";
 	});
-	return retVal.toString().replace(/\,/g, "");
+	return retVal?.toString().replace(/\,/g, "");
 };
 
 export const handlePipeQty = (data) => {
@@ -64,25 +65,25 @@ export const handlePipeQty = (data) => {
 		return;
 	}
 	let retVal, retVal1, retVal2, retVal3, retVal4;
-	if (data.pbStraight === "true") {
+	if (data?.pbStraight === "true") {
 		retVal1 =
 			"Straight - " +
-			data.pbStraightSize +
+			data?.pbStraightSize +
 			" - " +
-			data.pbStraightTotQty +
+			data?.pbStraightTotQty +
 			"Nos";
 	}
-	if (data.pbSingle === "true") {
+	if (data?.pbSingle === "true") {
 		retVal2 =
-			"Single - " + data.pbSingleSize + " - " + data.pbSingleTotQty + "Nos";
+			"Single - " + data?.pbSingleSize + " - " + data?.pbSingleTotQty + "Nos";
 	}
-	if (data.pbCross === "true") {
+	if (data?.pbCross === "true") {
 		retVal3 =
-			"Cross - " + data.pbCrossSize + " - " + data.pbCrossTotQty + "Nos";
+			"Cross - " + data?.pbCrossSize + " - " + data?.pbCrossTotQty + "Nos";
 	}
-	if (data.pbOther === "true") {
+	if (data?.pbOther === "true") {
 		retVal4 =
-			"Other - " + data.pbOtherSize + " - " + data.pbOtherTotQty + "Nos";
+			"Other - " + data?.pbOtherSize + " - " + data?.pbOtherTotQty + "Nos";
 	}
 	retVal1 = retVal1 !== undefined ? retVal1 : "";
 	retVal2 = retVal2 !== undefined ? retVal2 : "";

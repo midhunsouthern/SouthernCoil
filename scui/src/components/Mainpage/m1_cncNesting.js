@@ -112,6 +112,8 @@ export default function M1cncNesting() {
 			headers: { "Content-Type": "multipart/form-data" },
 		})
 		.then(function (response) {
+
+			console.log(response)
 		 
 			const res_data = response.data;
 			console.log(res_data);
@@ -389,7 +391,7 @@ export default function M1cncNesting() {
 						color="info"
 						className="toolButton-grid "
 					>
-						{params.row.end_plate_modal}
+						{params.row?.end_plate_modal}
 					</Button>
 				);
 			},
@@ -398,36 +400,28 @@ export default function M1cncNesting() {
 		{
 			field: "end_plate_orientation",
 			headerName: "LH/RH",
-			valueGetter: (params) => {
-		 
-			  if (params.row && params.row.end_plate_orientation !== undefined) {
-			 
-				const lookupValue = handleFindLookup_arr(
-				  lookUpList,
-				  "oreientation",   
-				  params.row.end_plate_orientation
+			valueGetter: (end_plate_orientation) => {
+						console.log("LHS",end_plate_orientation)
+				return handleFindLookup_arr(
+					lookUpList,
+					"oreientation",
+					end_plate_orientation
 				);
-				return lookupValue || "Not Available";  
-			  }
-			  return "";  
 			},
-			maxWidth: 70,   
-			flex: 1,        
-		  },
-		  
-		  {
+			maxWidth: 70,
+			flex: 1,
+		},
+		{
 			field: "cover_detail",
 			headerName: "Cover Details",
-			valueGetter: (params) => {
-				if (params.row && params.row.cover_detail !== undefined) {
-					return handleFindCoverDetailLookup_arr(
-						lookUpList,
-						params.row.cover_detail
-					);
-				}
-				return "";  
+			valueGetter: (cover_detail) => {
+				console.log("coverDetaisl",cover_detail)
+				return handleFindCoverDetailLookup_arr(
+					lookUpList,
+					cover_detail
+				);
 			},
-			minWidth: 50,
+			minWidth: 150,
 			flex: 1,
 		},
 		{
@@ -444,14 +438,14 @@ export default function M1cncNesting() {
 				return (
 					<Checkbox
 						checked={
-							params.row.cnc_nested === "true" ||
-							moment(params.row.cnc_nested, "YYYY-MM-DD HH:mm:ss").isValid()
+							params.row?.cnc_nested === "true" ||
+							moment(params.row?.cnc_nested, "YYYY-MM-DD HH:mm:ss").isValid()
 								? true
 								: false
 						}
 						sx={{ m: 1 }}
 						name="cnc_nested"
-						onChange={(e) => handleNested(params.row.id, e)}
+						onChange={(e) => handleNested(params.row?.id, e)}
 					/>
 				);
 			},
@@ -475,7 +469,7 @@ export default function M1cncNesting() {
 						sx={{ m: 1 }}
 						name="cnc_nesting_status"
 						onChange={(e) => {
-							handleClickOpenStatus(params.row.id);
+							handleClickOpenStatus(params.row?.id);
 						}}
 					></IOSSwitch>
 				);

@@ -311,15 +311,12 @@ export default function M1cncPunching() {
 		{
 			field: "end_plate_orientation",
 			headerName: "LH/RH",
-			valueGetter: (params) => {
-				if (params.row && params.row.end_plate_orientation !== undefined) {
-					return handleFindLookup_arr(
-						lookUpList,
-						"orientation", 
-						params.row.end_plate_orientation
-					);
-				}
-				return "";  
+			valueGetter: (end_plate_orientation) => {
+				return handleFindLookup_arr(
+					lookUpList,
+					"oreientation",
+					end_plate_orientation
+				);
 			},
 			maxWidth: 70,
 			flex: 1,
@@ -349,7 +346,7 @@ export default function M1cncPunching() {
 		{
 			field: "cover_detail",
 			headerName: "Cover Details",
-			valueGetter: (params) => {
+			renderCell: (params) => {
 				// Check if params.row and params.row.cover_detail are defined
 				if (params.row && params.row.cover_detail !== undefined) {
 					return handleFindCoverDetailLookup_arr(

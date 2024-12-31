@@ -318,35 +318,25 @@ export default function M4paintPacking() {
 		{
 			field: "paint",
 			headerName: "Paint Type",
-			valueGetter: (params) => {
-			  const value = params.value;
-			  // Ensure that params.value is not undefined or null before passing it to the lookup function
-			  if (value != null) {
-				return handleFindLookup_arr(lookUpList, "paintType", value);
-			  }
-			  return ""; // Or return a default value if value is not valid
+			renderCell: (params) => {
+				return handleFindLookup_arr(lookUpList, "paintType", params.value);
 			},
 			maxWidth: 150,
 			flex: 1,
-		  }, 
-		  {
+		},
+		{
 			field: "packing_type",
 			headerName: "Packing Type",
-			valueGetter: (params) => {
-			  if (params.row && params.row.packing_type) {
+			renderCell: (params) => {
 				return handleFindLookup_arr(
-				  lookUpList,
-				  "packingType",
-				  params.row.packing_type || ''    
+					lookUpList,
+					"packingType",
+					params?.row?.packing_type
 				);
-			  }
-		  
-	 
-			  return ' ';   
 			},
 			maxWidth: 150,
 			flex: 1,
-		  }, 
+		},
 		{
 			field: "dispatch_comment",
 			headerName: "Dispatch Comments",
